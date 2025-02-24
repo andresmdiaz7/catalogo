@@ -61,6 +61,8 @@ class Articulo
     #[ORM\OneToMany(mappedBy: 'articulo', targetEntity: ArticuloArchivo::class)]
     private Collection $archivos;
 
+    private $precios;
+
     public function __construct()
     {
         $this->archivos = new ArrayCollection();
@@ -256,4 +258,15 @@ class Articulo
         }
         return $this->archivos->first() ?: null;
     }
-} 
+
+    public function setPrecios(array $precios): self
+    {
+        $this->precios = $precios;
+        return $this;
+    }
+    
+    public function getPrecios(): array
+    {
+        return $this->precios ?? [];
+    }
+}

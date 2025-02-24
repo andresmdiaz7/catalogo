@@ -87,17 +87,13 @@ class CatalogoController extends AbstractController
     public function show(string $codigo, ArticuloRepository $articuloRepository): Response
     {
         $articulo = $articuloRepository->findOneBy(['codigo' => $codigo]);
-        $cliente = $this->getUser();
         
         if (!$articulo) {
             throw $this->createNotFoundException('El artículo no existe.');
         }
 
-        $precios = $this->articuloPrecioService->getTodosLosPrecios($articulo);
-
         return $this->render('catalogo/show.html.twig', [
             'articulo' => $articulo,
-            'precios' => $precios,
         ]);
     }
 

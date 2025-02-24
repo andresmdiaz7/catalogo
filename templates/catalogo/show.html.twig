@@ -110,10 +110,10 @@
             <h1 class="mb-3">{{ articulo.detalle }}</h1>
             <p class="lead text-muted">Código: {{ articulo.codigo }}</p>
 
-            <p class="lead text-muted">precioBase: {{ precios.precioBase }}</p>  
-            <p class="lead text-muted">precioSinIVA: {{ precios.precioSinIVA }}</p>
-            <p class="lead text-muted">precioConDescuento: {{ precios.precioConDescuento }}</p>
-            <p class="lead text-muted">precioConDescuentoyRecargo: {{ precios.precioConDescuentoyRecargo }}</p>
+            <p class="lead text-muted">precioBase: {{ articulo.precios.precioBase }}</p>  
+            <p class="lead text-muted">precioSinIVA: {{ articulo.precios.precioSinIVA }}</p>
+            <p class="lead text-muted">precioConDescuento: {{ articulo.precios.precioConDescuento }}</p>
+            <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioConDescuentoyRecargo }}</p>
 
 
 
@@ -134,7 +134,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-middle">
-                        <span class="h2 mb-0">${{ articulo.precioLista|number_format(2, ',', '.') }}</span>
+                        <span class="h2 mb-0">${{ articulo.precios.precioBase|number_format(2, ',', '.') }}</span>
                         {% if is_granted('ROLE_CLIENTE') %}
                             <form action="{{ path('app_cliente_cart_add') }}" method="POST" style="display: inline;">
                                 <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
