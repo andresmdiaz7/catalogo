@@ -1,0 +1,156 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestión de Clientes{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Clientes</h1>
+        <a href="{{ path('app_admin_cliente_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nuevo Cliente
+        </a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-2">
+                    <label for="buscar" class="form-label">Buscar</label>
+                    <input type="text" name="buscar" class="form-control" 
+                           placeholder="Buscar..." value="{{ app.request.query.get('buscar') }}">
+                </div>
+                <div class="col-md-2">
+                    <label for="localidad" class="form-label">Localidad</label>
+                    <select name="localidad" id="localidad" class="form-select">
+                        <option value="">Todas las localidades</option>
+                        {% for localidad in localidades %}
+                            <option value="{{ localidad.id }}" {% if app.request.query.get('localidad') == localidad.id %}selected{% endif %}>
+                                {{ localidad.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="vendedor" class="form-label">Vendedor</label>
+                    <select name="vendedor" id="vendedor" class="form-select">
+                        <option value="">Todos los vendedores</option>
+                        {% for vendedor in vendedores %}
+                            <option value="{{ vendedor.id }}" {% if app.request.query.get('vendedor') == vendedor.id %}selected{% endif %}>
+                                {{ vendedor.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="habilitado" class="form-label">Estado</label>
+                    <select class="form-select" id="habilitado" name="habilitado">
+                        <option value="1" {% if app.request.query.get('habilitado') == '1' %}selected{% endif %}>Habilitados</option>
+                        <option value="0" {% if app.request.query.get('habilitado') == '0' %}selected{% endif %}>Deshabilitados</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <label for="buscar" class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+
+                    <a href="{{ path('app_admin_cliente_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Razón Social</th>
+                            <th>CUIT</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Localidad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                            <tr>
+                                <td>{{ cliente.codigo }}</td>
+                                <td>{{ cliente.razonSocial }}</td>
+                                <td>{{ cliente.cuit }}</td>
+                                <td>{{ cliente.email }}</td>
+                                <td>{{ cliente.telefono }}</td>
+                                <td>{{ cliente.localidad.nombre }}</td>
+                                <td>
+                                    {% if cliente.habilitado %}
+                                        <span class="badge bg-success">Habilitado</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Deshabilitado</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ path('app_admin_cliente_edit', {'id': cliente.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <form method="post" 
+                                              action="{{ path('app_admin_cliente_toggle_habilitado', {'id': cliente.id}) }}" 
+                                              style="display: inline;">
+                                            <input type="hidden" name="_token" 
+                                                   value="{{ csrf_token('toggle-habilitado' ~ cliente.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                                {% if cliente.habilitado %}
+                                                    <i class="bi bi-x-circle"></i> Deshabilitar
+                                                {% else %}
+                                                    <i class="bi bi-check-circle"></i> Habilitar
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                        <form method="post" 
+                                              action="{{ path('app_admin_cliente_delete', {'id': cliente.id}) }}"
+                                              onsubmit="return confirm('¿Está seguro que desea eliminar este cliente?');"
+                                              style="display: inline;">
+                                            <input type="hidden" name="_token" 
+                                                   value="{{ csrf_token('delete' ~ cliente.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8">No hay clientes registrados</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

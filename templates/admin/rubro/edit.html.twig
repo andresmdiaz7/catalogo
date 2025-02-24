@@ -1,0 +1,97 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Editar Rubro{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Editar Rubro</h1>
+        <a href="{{ path('app_admin_rubro_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al listado
+        </a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form_row(form.codigo) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.nombre) }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form_row(form.habilitado) }}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Subrubros</h5>
+                        <a href="{{ path('app_admin_subrubro_new', {'codigo': rubro.codigo}) }}" 
+                           class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-circle"></i> Agregar
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if rubro.subrubros|length > 0 %}
+                        <div class="list-group">
+                            {% for subrubro in rubro.subrubros %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>{{ subrubro.nombre }}</span>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_admin_subrubro_edit', {'codigo': subrubro.codigo}) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form method="post" 
+                                                  action="{{ path('app_admin_subrubro_delete', {'codigo': subrubro.codigo}) }}"
+                                                  onsubmit="return confirm('¿Está seguro que desea eliminar este subrubro?');"
+                                                  style="display: inline;">
+                                                <input type="hidden" name="_token" 
+                                                       value="{{ csrf_token('delete' ~ subrubro.codigo) }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No hay subrubros registrados</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

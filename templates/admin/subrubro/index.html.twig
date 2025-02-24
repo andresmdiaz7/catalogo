@@ -1,0 +1,127 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administración de SubRubros{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">SubRubros</h1>
+            
+        </div>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}    
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}    
+
+    {% for message in app.flashes('warning') %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}    
+        
+        <div class="card-body">
+            {# Filtros #}
+            <form method="get" class="mb-4">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="rubro" class="form-label">Rubro</label>
+                            <select name="rubro" id="rubro" class="form-select">
+                                <option value="">Todos los rubros</option>
+                                {% for rubro in rubros %}
+                                    <option value="{{ rubro.codigo }}" 
+                                            {% if filtro_rubro == rubro.codigo %}selected{% endif %}>
+                                        {{ rubro.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="habilitado" class="form-label">Estado</label>
+                            <select name="habilitado" id="habilitado" class="form-select">
+                                <option value="">Todos</option>
+                                <option value="true" {% if filtro_habilitado == 'true' %}selected{% endif %}>Habilitados</option>
+                                <option value="false" {% if filtro_habilitado == 'false' %}selected{% endif %}>Deshabilitados</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="bi bi-search"></i> Filtrar
+                            </button>
+                            <a href="{{ path('app_admin_subrubro_index') }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Limpiar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Rubro</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for subrubro in pagination %}
+                        <tr>
+                            <td>{{ subrubro.codigo }}</td>
+                            <td>{{ subrubro.nombre }}</td>
+                            <td>{{ subrubro.rubro.nombre }}</td>
+                            <td>
+                                <span class="badge {% if subrubro.habilitado %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ subrubro.habilitado ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ path('app_admin_subrubro_edit', {'codigo': subrubro.codigo}) }}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_admin_subrubro_delete', {'codigo': subrubro.codigo}) }}" 
+                                        onsubmit="return confirm('¿Está seguro que desea eliminar este subrubro?');" 
+                                        style="display: inline-block">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ subrubro.codigo) }}">
+                                        <button class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No se encontraron registros</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="navigation d-flex justify-content-center">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+{% endblock %} 

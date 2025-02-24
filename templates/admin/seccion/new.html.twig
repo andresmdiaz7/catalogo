@@ -1,0 +1,55 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nueva Sección{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Nueva Sección</h1>
+        <a href="{{ path('app_admin_seccion_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al listado
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.nombre) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.orden) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ form_row(form.icono) }}
+                        <div class="form-text">
+                            <a href="https://icons.getbootstrap.com/" target="_blank">
+                                Ver lista de íconos disponibles <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        {% if form.vars.value.icono %}
+                            <div class="mt-4">
+                                <span class="me-2">Vista previa:</span>
+                                <i class="bi {{ form.vars.value.icono }} fs-4"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.habilitado) }}
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %} 

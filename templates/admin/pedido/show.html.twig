@@ -1,0 +1,94 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Detalle de Pedido #{{ pedido.id }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Pedido #{{ pedido.id }}</h1>
+        <div class="btn-group">
+            <a href="{{ path('app_admin_pedido_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al listado
+            </a>
+            <form method="post" 
+                  action="{{ path('app_admin_pedido_cambiar_estado', {'id': pedido.id, 'estado': pedido.estado == 'enviado' ? 'pendiente' : 'enviado'}) }}" 
+                  style="display: inline;">
+                <input type="hidden" name="_token" 
+                       value="{{ csrf_token('cambiar-estado' ~ pedido.id) }}">
+                <button type="submit" class="btn btn-success">
+                    {% if pedido.estado == 'enviado' %}
+                        <i class="bi bi-x-circle"></i> Marcar como Pendiente
+                    {% else %}
+                        <i class="bi bi-check-circle"></i> Marcar como Enviado
+                    {% endif %}
+                </button>
+            </form>
+            <form method="post" 
+                  action="{{ path('app_admin_pedido_delete', {'id': pedido.id}) }}"
+                  onsubmit="return confirm('¿Está seguro que desea eliminar este pedido?');"
+                  style="display: inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pedido.id) }}">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Eliminar Pedido
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Información del Cliente</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Razón Social:</strong> {{ pedido.cliente.razonSocial }}</p>
+                    <p><strong>CUIT:</strong> {{ pedido.cliente.cuit }}</p>
+                    <p><strong>Email:</strong> {{ pedido.cliente.email }}</p>
+                    <p><strong>Teléfono:</strong> {{ pedido.cliente.telefono }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Detalles del Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Artículo</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-end">Precio</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detalle in pedido.detalles %}
+                                    <tr>
+                                        <td>{{ detalle.articulo.codigo }}</td>
+                                        <td>{{ detalle.articulo.detalle }}</td>
+                                        <td class="text-center">{{ detalle.cantidad }}</td>
+                                        <td class="text-end">${{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
+                                        <td class="text-end">${{ detalle.subtotal|number_format(2, ',', '.') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                    <td class="text-end"><strong>${{ pedido.total|number_format(2, ',', '.') }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

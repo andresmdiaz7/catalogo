@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel de Cliente{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Información de la Cuenta</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Razón Social:</strong> {{ app.user.razonSocial }}</p>
+                    <p><strong>CUIT:</strong> {{ app.user.cuit }}</p>
+                    <p><strong>Email:</strong> {{ app.user.email }}</p>
+                    <p><strong>Teléfono:</strong> {{ app.user.telefono }}</p>
+                    {% if app.user.vendedor is not null %}
+                        <p>
+                            <strong>Vendedor:</strong> 
+                            {{ app.user.vendedor.nombre }} {{ app.user.vendedor.apellido }} 
+                            <spam class="text-body-tertiary"><i class="bi bi-envelope ms-3"></i> <spam class="text-body-tertiary">{{ app.user.vendedor.email }}<spam>
+                        </p>
+                    {% endif %}
+                    {% if app.user.responsableLogistica is not null %}
+                        <p>
+                            <strong>Responsable de logistica:</strong> 
+                            {{ app.user.responsableLogistica.nombre }} {{ app.user.responsableLogistica.apellido }}
+                            <spam class="text-body-tertiary"><i class="bi bi-envelope ms-3"></i> {{ app.user.responsableLogistica.email }}<spam>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Últimos Pedidos</h5>
+                </div>
+                <div class="card-body">
+                    {% if pedidos_recientes|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Número</th>
+                                        <th>Fecha</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pedido in pedidos_recientes %}
+                                        <tr>
+                                            <td>{{ pedido.id }}</td>
+                                            <td>{{ pedido.fecha|date('d/m/Y') }}</td>
+                                            <td>
+                                                ${{ pedido.detalles|reduce((total, detalle) => 
+                                            total + (detalle.precioUnitario * detalle.cantidad), 0)|number_format(2, ',', '.') }}
+                                            </td>
+                                            <td>
+                                                {% if pedido.estado == 'enviado' %}
+                                                    <span class="badge bg-success">Enviado</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">Pendiente</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No hay pedidos recientes.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px; border: 1px solid #ddd; }
+        th { background-color: #f5f5f5; }
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Nuevo Pedido #{{ pedido.id }}</h1>
+    
+    <h3>Información del Cliente</h3>
+    <p><strong>Razón Social:</strong> {{ pedido.cliente.razonSocial }}</p>
+    <p><strong>CUIT:</strong> {{ pedido.cliente.cuit }}</p>
+    <p><strong>Email:</strong> {{ pedido.cliente.email }}</p>
+    <p><strong>Teléfono:</strong> {{ pedido.cliente.telefono }}</p>
+
+    <h3>Detalles del Pedido</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Artículo</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detalle in pedido.detalles %}
+                <tr>
+                    <td>{{ detalle.articulo.codigo }}</td>
+                    <td>{{ detalle.articulo.detalle }}</td>
+                    <td class="text-center">{{ detalle.cantidad }}</td>
+                    <td class="text-end">${{ detalle.precio|number_format(2, ',', '.') }}</td>
+                    <td class="text-end">${{ (detalle.precio * detalle.cantidad)|number_format(2, ',', '.') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                <td class="text-end"><strong>${{ pedido.total|number_format(2, ',', '.') }}</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    {% if pedido.observaciones %}
+        <h3>Observaciones</h3>
+        <p>{{ pedido.observaciones|nl2br }}</p>
+    {% endif %}
+</body>
+</html> 

@@ -1,0 +1,24 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block title %}Confirmación de Pedido{% endblock %}
+
+{% block content %}
+    <h1>¡Gracias por su pedido!</h1>
+    
+    <p>Estimado/a {{ pedido.cliente.razonSocial }},</p>
+    
+    <p>Hemos recibido correctamente su pedido #{{ pedido.id }}. A continuación encontrará los detalles:</p>
+
+    {% include 'emails/_pedido_details.html.twig' %}
+
+    <p>Nuestro equipo procesará su pedido lo antes posible.</p>
+    
+    <p>Si tiene alguna pregunta, no dude en contactar con su vendedor:</p>
+    <p>
+        {{ pedido.cliente.vendedor.nombre }} {{ pedido.cliente.vendedor.apellido }}<br>
+        Email: {{ pedido.cliente.vendedor.email }}<br>
+        {% if pedido.cliente.vendedor.telefono %}
+        Tel: {{ pedido.cliente.vendedor.telefono }}
+        {% endif %}
+    </p>
+{% endblock %} 

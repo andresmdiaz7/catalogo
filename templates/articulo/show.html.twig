@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ articulo.nombre }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            {% if articulo.imagen %}
+                <img src="{{ vich_uploader_asset(articulo) }}" class="img-fluid" alt="{{ articulo.nombre }}">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1>{{ articulo.nombre }}</h1>
+            <p class="lead">Código: {{ articulo.codigo }}</p>
+            <p class="h3 text-primary mb-4">${{ articulo.precio|number_format(2, ',', '.') }}</p>
+            
+            <div class="mb-4">
+                <p>{{ articulo.descripcion }}</p>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a href="{{ path('app_cliente_cart_add', {'id': articulo.id}) }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-cart-plus"></i> Agregar al carrito
+                </a>
+                <a href="{{ path('app_cliente_articulo_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+        {% block stylesheets %}
+            <!-- ... otros estilos ... -->
+            <link rel="stylesheet" href="{{ asset('css/personalizacion.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+        {% include 'partials/_mensajes_flash.html.twig' %}
+
+        <div class="container-fluid fegime">
+            <div class="end-0 me-3 pt-1">
+                <img src="/images/fegime-logo.png">
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row py-3 align-items-center">
+                <!-- Logo - Columna izquierda -->
+                <div class="col-12 col-lg-3 text-center text-lg-start mb-3 my-lg-3">
+                    <a class="navbar-brand" href="/">
+                        <img src="/images/logo.jpg" alt="Ciardi Hnos" class="logo">
+                    </a>
+                </div>
+                
+                <!-- Buscador - Columna central -->
+                <div class="col-12 col-lg-5 mb-3 mb-lg-0 pe-lg-4">
+                    <form class="d-flex" action="{{ path('app_catalogo_index') }}" method="GET">
+                        <div class="input-group">
+                            <input type="text" 
+                                   name="buscar" 
+                                   class="form-control" 
+                                   placeholder="Buscar artículo" 
+                                   value="{{ app.request.query.get('buscar') }}"
+                                   aria-label="Buscar artículo" 
+                                   aria-describedby="button-addon2">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Botones de usuario - Columna derecha -->
+                <div class="col-12 col-lg-4 text-center text-lg-end">
+                    <div class="btn-group" role="group" aria-label="User actions">
+                        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="btn btn-outline-primary" href="{{ path('app_admin_dashboard') }}">Panel de Admin</a>
+                            {% else %}
+                                <a class="btn btn-outline-primary position-relative" href="{{ path('app_cliente_cart_index') }}">
+                                    <i class="bi bi-cart"></i> 
+                                    <span class="badge text-bg-secondary">{{ carrito_articulos_totales }}</span>    
+                                    </span>
+                                </a>
+                                <a class="btn btn-outline-primary" href="{{ path('app_cliente_dashboard') }}">Mi Cuenta</a>
+                            {% endif %}
+                            <a class="btn btn-outline-primary" href="{{ path('app_logout') }}">Cerrar Sesión</a>
+                        {% else %}
+                            <a class="btn btn-primary" href="{{ path('app_login') }}">Iniciar Sesión</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar p-0 bg-body-secondary">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    {% set seccionActiva = app.request.attributes.get('id') %}
+                    <ul class="navbar-nav me-auto">
+                        {% for seccion in menu_secciones %}
+                            <li class="nav-item">
+                                <a 
+                                    class="nav-link {% if seccionActiva == seccion.id %}active{% endif %}"
+                                    href="{{ path('app_catalogo_seccion', {id: seccion.id}) }}">
+                                    
+                                    {{ seccion.nombre }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid px-5 py-5">
+            <div class="row">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+        
+        <script>
+            Array.from(document.querySelectorAll('.toast'))
+                .forEach(toastNode => new Toast(toastNode))
+            </script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

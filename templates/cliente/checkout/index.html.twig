@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Finalizar Compra{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mb-4">Finalizar Compra</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Resumen del Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Artículo</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-end">Precio</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for codigo, item in cart %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ item.articulo.codigo }}</strong><br>
+                                            {{ item.articulo.detalle }}
+                                        </td>
+                                        <td class="text-center">{{ item.cantidad }}</td>
+                                        <td class="text-end">${{ item.precio|number_format(2, ',', '.') }}</td>
+                                        <td class="text-end">${{ (item.precio * item.cantidad)|number_format(2, ',', '.') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                    <td class="text-end"><strong>${{ total|number_format(2, ',', '.') }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Información de Envío</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Razón Social:</strong> {{ app.user.razonSocial }}</p>
+                    <p><strong>CUIT:</strong> {{ app.user.cuit }}</p>
+                    <p><strong>Dirección:</strong> {{ app.user.direccion }}</p>
+                    <p><strong>Localidad:</strong> {{ app.user.localidad.nombre }}</p>
+                    <p><strong>Teléfono:</strong> {{ app.user.telefono }}</p>
+                    <p><strong>Email:</strong> {{ app.user.email }}</p>
+
+                    <form method="post" action="{{ path('app_cliente_checkout_confirm') }}" class="mt-4">
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label">Observaciones</label>
+                            <textarea name="observaciones" id="observaciones" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Confirmar Pedido
+                            </button>
+                            <a href="{{ path('app_cliente_cart_index') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Volver al Carrito
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mis Pedidos{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mb-4">Mis Pedidos</h1>
+
+    {% if pedidos is empty %}
+        <div class="alert alert-info">
+            No tienes pedidos realizados. 
+            <a href="{{ path('app_cliente_articulo_index') }}">Ver catálogo de artículos</a>
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th class="text-end">Total</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pedido in pedidos %}
+                                <tr>
+                                    <td>{{ pedido.id }}</td>
+                                    <td>{{ pedido.fecha|date('d/m/Y H:i') }}</td>
+                                    <td>
+                                        {% if pedido.estado == 'enviado' %}
+                                            <span class="badge bg-success">Enviado</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Pendiente</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        ${{ pedido.total|number_format(2, ',', '.') }}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_cliente_pedido_show', {'id': pedido.id}) }}" 
+                                           class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                        {% if pedido.estado != 'enviado' %}
+                                            <form method="post" 
+                                                  action="{{ path('app_cliente_pedido_delete', {'id': pedido.id}) }}" 
+                                                  style="display: inline;">
+                                                <input type="hidden" name="_token" 
+                                                       value="{{ csrf_token('delete' ~ pedido.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-danger" 
+                                                        onclick="return confirm('¿Está seguro que desea eliminar este pedido?')">
+                                                    <i class="bi bi-trash"></i> Eliminar
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

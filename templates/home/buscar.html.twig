@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Búsqueda: {{ query }}{% endblock %}
+
+{% block body %}
+    <h2 class="mb-4">Resultados de búsqueda para "{{ query }}"</h2>
+
+    {% if articulos is empty %}
+        <div class="alert alert-info">
+            No se encontraron artículos que coincidan con tu búsqueda.
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {# Mismo contenido que index.html.twig para mostrar artículos #}
+        </div>
+    {% endif %}
+{% endblock %} 

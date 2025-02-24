@@ -1,0 +1,33 @@
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+    <thead>
+        <tr>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Código</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Artículo</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Cantidad</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Precio</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detalle in pedido.detalles %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ detalle.articulo.codigo }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ detalle.articulo.detalle }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ detalle.cantidad }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${{ detalle.precio|number_format(2, ',', '.') }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${{ (detalle.precio * detalle.cantidad)|number_format(2, ',', '.') }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: right;"><strong>Total:</strong></td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: right;"><strong>${{ pedido.total|number_format(2, ',', '.') }}</strong></td>
+        </tr>
+    </tfoot>
+</table>
+
+{% if pedido.observaciones %}
+    <h3>Observaciones</h3>
+    <p>{{ pedido.observaciones|nl2br }}</p>
+{% endif %} 

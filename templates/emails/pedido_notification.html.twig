@@ -1,0 +1,25 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block title %}Nuevo Pedido{% endblock %}
+
+{% block content %}
+    <h1>Nuevo Pedido #{{ pedido.id }}</h1>
+    
+    <p>Se ha recibido un nuevo pedido con los siguientes detalles:</p>
+
+    <h3>Cliente</h3>
+    <p>
+        <strong>Razón Social:</strong> {{ pedido.cliente.razonSocial }}<br>
+        <strong>CUIT:</strong> {{ pedido.cliente.cuit }}<br>
+        <strong>Email:</strong> {{ pedido.cliente.email }}<br>
+        <strong>Teléfono:</strong> {{ pedido.cliente.telefono }}
+    </p>
+
+    {% include 'emails/_pedido_details.html.twig' %}
+
+    {% if recipient == 'logistica' %}
+        <p>Por favor, procese este pedido según los procedimientos establecidos.</p>
+    {% else %}
+        <p>Por favor, revise el pedido y contacte al cliente si es necesario.</p>
+    {% endif %}
+{% endblock %} 

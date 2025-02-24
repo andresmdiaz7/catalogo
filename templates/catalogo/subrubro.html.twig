@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ subrubro.nombre }} - Catálogo{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    {# Breadcrumb #}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_catalogo_index') }}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_catalogo_subrubro', {'codigo': subrubro.codigo}) }}">{{ rubro.nombre }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ subrubro.nombre }}</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">{{ subrubro.nombre }}</h1>
+
+    {% if articulos|length > 0 %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+            {% for articulo in articulos %}
+                <div class="col">
+                    <div class="card h-100">
+                        {% if articulo.imagen is defined and articulo.imagen is not null %}
+                                <img src="{{ asset(articulo.imagen.rutaArchivo) }}" 
+                                     class="card-img-top" alt="{{ articulo.detalle }}">
+                            {% else %}
+                                <img src="{{ asset('images/no-image.jpg') }}" 
+                                     class="card-img-top" alt="Sin imagen">
+                            {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ articulo.detalle }}</h5>
+                            {% if articulo.detalleWeb %}
+                                <p class="card-text">{{ articulo.detalleWeb }}</p>
+                            {% endif %}
+                            <p class="card-text">
+                                <small class="text-muted">Código: {{ articulo.codigo }}</small>
+                            </p>
+                            {% if articulo.marca %}
+                                <p class="card-text">
+                                    <small class="text-muted">Marca: {{ articulo.marca }}</small>
+                                </p>
+                            {% endif %}
+                            {% if articulo.modelo %}
+                                <p class="card-text">
+                                    <small class="text-muted">Modelo: {{ articulo.modelo }}</small>
+                                </p>
+                            {% endif %}
+                            <p class="card-text">
+                                <strong class="text-primary">
+                                    Precio: ${{ articulo.precioLista|number_format(2, ',', '.') }}
+                                </strong>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ path('app_catalogo_show', {'codigo': articulo.codigo}) }}" 
+                               class="btn btn-primary w-100">
+                                Ver detalle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Paginación #}
+        <div class="d-flex justify-content-center">
+            {{ knp_pagination_render(articulos, 'pagination/custom_pagination.html.twig') }}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No hay artículos disponibles en este subrubro.
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

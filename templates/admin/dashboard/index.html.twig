@@ -1,0 +1,141 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Panel de Control{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">Panel de Control</h1>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Artículos</h5>
+                    <p class="card-text display-6">{{ stats.totalArticulos }}</p>
+                    <a href="{{ path('app_admin_articulo_index') }}" class="text-white">
+                        Ver todos <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Pedidos</h5>
+                    <p class="card-text display-6">{{ stats.totalPedidos }}</p>
+                    <a href="{{ path('app_admin_pedido_index') }}" class="text-white">
+                        Ver todos <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Pedidos Pendientes</h5>
+                    <p class="card-text display-6">{{ stats.pedidosPendientes }}</p>
+                    <a href="{{ path('app_admin_pedido_index', {filtro: 'pendientes'}) }}" class="text-dark">
+                        Ver pendientes <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Clientes</h5>
+                    <p class="card-text display-6">{{ stats.totalClientes }}</p>
+                    <a href="{{ path('app_admin_cliente_index') }}" class="text-white">
+                        Ver todos <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Últimos Pedidos -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Últimos Pedidos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in ultimosPedidos %}
+                                    <tr>
+                                        <td>{{ pedido.id }}</td>
+                                        <td>{{ pedido.cliente.razonSocial }}</td>
+                                        <td>{{ pedido.fecha|date('d/m/Y H:i') }}</td>
+                                        <td>
+                                            {% if pedido.estado %}
+                                                <span class="badge bg-success">Enviado</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Pendiente</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>${{ pedido.total|number_format(2, ',', '.') }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5">No hay pedidos registrados</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Artículos Destacados -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Artículos Destacados</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Detalle</th>
+                                    <th>Marca</th>
+                                    <th>Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for articulo in articulosDestacados %}
+                                    <tr>
+                                        <td>{{ articulo.codigo }}</td>
+                                        <td>{{ articulo.detalle }}</td>
+                                        <td>{{ articulo.marca }}</td>
+                                        <td>${{ articulo.precioLista|number_format(2, ',', '.') }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4">No hay artículos destacados</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

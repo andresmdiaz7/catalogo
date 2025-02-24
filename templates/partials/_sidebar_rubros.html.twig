@@ -1,0 +1,43 @@
+<div class="card shadow rounded">
+    <div class="card-header">
+        <h5 class="card-title mb-0 fw-normal">
+            {% if seccion.icono %}
+                <i class="bi {{ seccion.icono }} me-1"></i> {{ seccion.nombre }}
+            {% else %}
+                {{ seccion.nombre }}
+            {% endif %}
+        </h5>
+    </div>
+    <div class="list-group list-group-flush">
+        {% for rubro in seccion.rubros %}
+            {% set rubro_activo = rubro_actual is defined and rubro_actual is not null and rubro.codigo == rubro_actual.codigo %}
+            {% set subrubro_activo = subrubro_actual is defined and subrubro_actual is not null and subrubro_actual.rubro.codigo == rubro.codigo %}
+            
+            <div class="sidebar-item">
+                <a href="{{ path('app_catalogo_seccion', {'id': seccion.id, 'rubro': rubro.codigo}) }}" 
+                   class="list-group-item list-group-item-action {% if rubro_activo %}active{% endif %} fw-normal"
+                   aria-expanded="{% if rubro_activo or subrubro_activo %}true{% else %}false{% endif %}"
+                >
+                   <i class="bi {% if rubro_activo or subrubro_activo %} bi-caret-down-fill {% else %} bi-caret-right {% endif %} me-2"></i>
+                   {{ rubro.nombre }} 
+                </a>
+                
+                <div class="collapse {% if rubro_activo or subrubro_activo %}show{% endif %}" 
+                     id="rubro{{ rubro.codigo }}">
+                    <div class="list-group list-group-flush ps-3">
+                        {% for subrubro in rubro.subrubros %}
+                            <a href="{{ path('app_catalogo_seccion', {'id': seccion.id, 'rubro': rubro.codigo, 'subrubro': subrubro.codigo}) }}" 
+                               class="list-group-item list-group-item-action border-0 py-2 fw-normal
+                                      {% if subrubro_actual is defined and subrubro_actual is not null and subrubro.codigo == subrubro_actual.codigo %}subrubro-active{% endif %}">
+                            {% if subrubro_actual is defined and subrubro_actual is not null and subrubro.codigo == subrubro_actual.codigo %}
+                                <i class="bi bi-caret-right-fill me-2"></i>
+                            {% endif %}
+                                {{ subrubro.nombre }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

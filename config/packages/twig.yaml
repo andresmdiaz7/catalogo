@@ -1,0 +1,11 @@
+twig:
+    file_name_pattern: '*.twig'
+    form_themes:
+        - 'form/fields.html.twig' # Agregue este tema para el formulario de usuarios que tiene checkboxes
+    globals:
+        directorio_archivos: '%directorio_archivos%'
+
+when@test:
+    twig:
+        strict_variables: true
+    

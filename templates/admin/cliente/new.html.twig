@@ -1,0 +1,81 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nuevo Cliente{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Nuevo Cliente</h1>
+        <a href="{{ path('app_admin_cliente_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al listado
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.razonSocial) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.cuit) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.categoriaImpositiva) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.direccion) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.localidad) }}
+                    </div>
+                    
+                </div>
+
+                <div class="row">
+                   
+                    <div class="col-md-3">
+                        {{ form_row(form.telefono) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.email) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.vendedor) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.responsableLogistica) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ form_row(form.observaciones) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-check mb-3">
+                            aaa
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %} 
