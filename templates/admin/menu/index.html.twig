@@ -18,6 +18,7 @@
                             <th>Nombre</th>
                             <th>Por Defecto</th>
                             <th>Activo</th>
+                            <th>Cant Secciones</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -27,6 +28,7 @@
                             <td>{{ menu.nombre }}</td>
                             <td>{{ menu.porDefecto ? 'Sí' : 'No' }}</td>
                             <td>{{ menu.activo ? 'Sí' : 'No' }}</td>
+                            <td>{{ menu.menuSecciones|length }}</td>
                             <td>
                                 <a href="{{ path('app_admin_menu_edit', {'id': menu.id}) }}" 
                                    class="btn btn-sm btn-primary">

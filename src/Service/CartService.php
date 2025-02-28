@@ -18,14 +18,14 @@ class CartService
     {
         $cart = $this->session->get('cart', []);
         $codigo = $articulo->getCodigo();
-
+        
         if (!isset($cart[$codigo])) {
             $cart[$codigo] = [
                 'codigo' => $codigo,
                 'detalle' => $articulo->getDetalle(),
                 'marca' => $articulo->getMarca(),
                 'modelo' => $articulo->getModelo(), 
-                'precioLista' => $articulo->getprecioLista(),
+                'precio' => $articulo->getPrecios()['precioFinal'],
                 'cantidad' => 0
             ];
         }
@@ -62,7 +62,7 @@ class CartService
     {
         $total = 0;
         foreach ($this->getItems() as $item) {
-            $total += $item['precioLista'] * $item['cantidad'];
+            $total += $item['precio'] * $item['cantidad'];
         }
         return $total;
 

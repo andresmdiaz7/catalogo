@@ -32,10 +32,11 @@ class ArticuloPrecioService
     }
 
 
-    public function getPrecioSinIVACalculado(Articulo $articulo): float
+    public function getPrecioSinIVA(Articulo $articulo): float
     {
         $precioBase = $this->obtenerPrecioBase($articulo);
-        return $precioBase / (1 + ($articulo->getImpuesto() / 100));
+        $calculo = $precioBase / (1 + ($articulo->getImpuesto() / 100));
+        return number_format($calculo, 2, '.', '');
     }
 
     public function getPrecioConDescuentoCalculado(Articulo $articulo): float
@@ -45,7 +46,8 @@ class ArticuloPrecioService
         }
         
         $descuento = $this->user->getPorcentajeDescuento();
-        return $this->getPrecioSinIVACalculado($articulo) * (1 - ($descuento / 100));
+        $calculo = $this->getPrecioSinIVA($articulo) * (1 - ($descuento / 100));
+        return number_format($calculo, 2, '.', '');
     }
 
     public function precioConDescuentoyRecargo(Articulo $articulo): float
@@ -55,16 +57,29 @@ class ArticuloPrecioService
         }
         
         $recargo = $this->user->getRentabilidad();
-        return $this->getPrecioConDescuentoCalculado($articulo) * (1 + ($recargo / 100));
+        $calculo = $this->getPrecioConDescuentoCalculado($articulo) * (1 + ($recargo / 100));
+        return number_format($calculo, 2, '.', '');
+    }
+
+    public function precioFinal(Articulo $articulo): float
+    {
+        if (!$this->user or !$this->security->isGranted('ROLE_CLIENTE')) {
+            return 0;
+        }
+        $impuesto = $articulo->getImpuesto();
+        
+        $calculo = $this->precioConDescuentoyRecargo($articulo) * (1 + ($impuesto / 100));
+        return number_format($calculo, 2, '.', '');
     }
 
     public function getTodosLosPrecios(Articulo $articulo): array
     {
         return [
-            'precioBase' => number_format($this->obtenerPrecioBase($articulo), 2, '.', ''),
-            'precioSinIVA' => number_format($this->getPrecioSinIVACalculado($articulo), 2, '.', ''),
-            'precioConDescuento' => number_format($this->getPrecioConDescuentoCalculado($articulo), 2, '.', ''),
-            'precioConDescuentoyRecargo' => number_format($this->precioConDescuentoyRecargo($articulo), 2, '.', '')
+            'precioBase' => $this->obtenerPrecioBase($articulo),
+            'precioBaseSIVA' => $this->getPrecioSinIVA($articulo),
+            'precioConDescuento' => $this->getPrecioConDescuentoCalculado($articulo),
+            'precioConDescuentoRecargo' => $this->precioConDescuentoyRecargo($articulo),
+            'precioFinal' => $this->precioFinal($articulo)
         ];
     }
 } 

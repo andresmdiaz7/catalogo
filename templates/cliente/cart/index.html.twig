@@ -40,7 +40,7 @@
                                     <td>{{ item.detalle }}</td>
                                     <td>{{ item.marca }}</td>
                                     <td>{{ item.modelo }}</td>
-                                    <td class="text-end">${{ item.precioLista|number_format(2, ',', '.') }}</td>
+                                    <td class="text-end">${{ item.precio|number_format(2, ',', '.') }}</td>
                                     <td class="text-center">
                                         <div class="input-group input-group-sm">
                                             <a href="{{ path('app_cliente_cart_decrease', {'codigo': item.codigo}) }}" 
@@ -54,7 +54,7 @@
                                             </a>
                                         </div>
                                     </td>
-                                    <td class="text-end">${{ (item.precioLista * item.cantidad)|number_format(2, ',', '.') }}</td>
+                                    <td class="text-end">${{ (item.precio * item.cantidad)|number_format(2, ',', '.') }}</td>
 
                                     <td class="text-end">
                                         <a href="{{ path('app_cliente_cart_remove', {'codigo': item.codigo}) }}" 
