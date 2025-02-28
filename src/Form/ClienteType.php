@@ -21,6 +21,8 @@ use App\Repository\LocalidadRepository;
 use App\Entity\CategoriaImpositiva;
 use App\Repository\CategoriaImpositivaRepository;
 use Doctrine\ORM\EntityRepository;
+use App\Entity\Categoria;
+use App\Repository\CategoriaRepository;
 
 class ClienteType extends AbstractType
 {
@@ -70,7 +72,20 @@ class ClienteType extends AbstractType
                         ->orderBy('l.nombre', 'ASC');
                 }
             ])
-            
+            ->add('categoria', EntityType::class, [
+                'class' => Categoria::class,
+                'choice_label' => 'nombre',
+                'required' => false,
+                'placeholder' => 'Seleccione una categoría',
+                'label' => 'Categoría',
+                'attr' => ['class' => 'form-select'],
+                'query_builder' => function (CategoriaRepository $cr) {
+                    return $cr->createQueryBuilder('c')
+                        ->where('c.activo = :activo')
+                        ->setParameter('activo', true)
+                        ->orderBy('c.nombre', 'ASC');
+                },
+            ])
             ->add('telefono', TextType::class, [
                 'label' => 'Teléfono',
                 'required' => false,

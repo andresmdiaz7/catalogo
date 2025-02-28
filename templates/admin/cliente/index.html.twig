@@ -91,6 +91,7 @@
                             <th>Teléfono</th>
                             <th>Localidad</th>
                             <th>Estado</th>
+                            <th>Categoría</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -110,6 +111,7 @@
                                         <span class="badge bg-danger">Deshabilitado</span>
                                     {% endif %}
                                 </td>
+                                <td>{{ cliente.categoria ? cliente.categoria.nombre : 'Sin categoría' }}</td>
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="{{ path('app_admin_cliente_edit', {'id': cliente.id}) }}" 

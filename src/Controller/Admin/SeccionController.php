@@ -72,7 +72,7 @@ class SeccionController extends AbstractController
                 $entityManager->flush();
                 $this->addFlash('success', 'Sección eliminada correctamente');
             } catch (\Exception $e) {
-                $this->addFlash('error', 'No se puede eliminar la sección porque tiene artículos asociados');
+                $this->addFlash('error', 'No se puede eliminar la sección, verifique que la sección no este dentro de un menú.');
             }
         }
 

@@ -78,13 +78,13 @@
                 <div class="collapse navbar-collapse" id="navbarMain">
                     {% set seccionActiva = app.request.attributes.get('id') %}
                     <ul class="navbar-nav me-auto">
-                        {% for seccion in menu_secciones %}
+                        {% for item in secciones_global %}
                             <li class="nav-item">
                                 <a 
-                                    class="nav-link {% if seccionActiva == seccion.id %}active{% endif %}"
-                                    href="{{ path('app_catalogo_seccion', {id: seccion.id}) }}">
+                                    class="nav-link {% if seccionActiva == item.seccion.id %}active{% endif %}"
+                                    href="{{ path('app_catalogo_seccion', {id: item.seccion.id}) }}">
                                     
-                                    {{ seccion.nombre }}
+                                    {{ item.seccion.nombre }}
                                 </a>
                             </li>
                         {% endfor %}

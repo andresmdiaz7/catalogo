@@ -41,7 +41,19 @@
                                     <td>{{ item.marca }}</td>
                                     <td>{{ item.modelo }}</td>
                                     <td class="text-end">${{ item.precioLista|number_format(2, ',', '.') }}</td>
-                                    <td class="text-center">{{ item.cantidad }}</td>
+                                    <td class="text-center">
+                                        <div class="input-group input-group-sm">
+                                            <a href="{{ path('app_cliente_cart_decrease', {'codigo': item.codigo}) }}" 
+                                               class="btn btn-outline-secondary">
+                                                <i class="bi bi-dash"></i>
+                                            </a>
+                                            <input type="text" class="form-control text-center" value="{{ item.cantidad }}" readonly style="width: 50px;">
+                                            <a href="{{ path('app_cliente_cart_increase', {'codigo': item.codigo}) }}" 
+                                               class="btn btn-outline-secondary">
+                                                <i class="bi bi-plus"></i>
+                                            </a>
+                                        </div>
+                                    </td>
                                     <td class="text-end">${{ (item.precioLista * item.cantidad)|number_format(2, ',', '.') }}</td>
 
                                     <td class="text-end">
@@ -75,8 +87,8 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            El carrito está vacío. <a href="{{ path('app_cliente_articulo_index') }}">Ver artículos disponibles</a>
+            El carrito está vacío. <a href="{{ path('app_catalogo_index') }}">Ver artículos disponibles</a>
         </div>
     {% endif %}
 </div>
-{% endblock %} 
+{% endblock %}

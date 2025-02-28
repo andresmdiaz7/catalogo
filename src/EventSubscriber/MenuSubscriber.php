@@ -2,7 +2,7 @@
 
 namespace App\EventSubscriber;
 
-use App\Repository\SeccionRepository;
+use App\Service\MenuService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -11,10 +11,9 @@ use Twig\Environment;
 class MenuSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private SeccionRepository $seccionRepository,
+        private MenuService $menuService,
         private Environment $twig
-    ) {
-    }
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -25,12 +24,13 @@ class MenuSubscriber implements EventSubscriberInterface
 
     public function onKernelController(ControllerEvent $event): void
     {
-        $secciones = $this->seccionRepository->createQueryBuilder('s')
-            ->where('s.habilitado = :habilitado')
-            ->setParameter('habilitado', true)
-            ->orderBy('s.orden', 'ASC')
-            ->getQuery()
-            ->getResult();
-        $this->twig->addGlobal('menu_secciones', $secciones);
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
+        $menu = $this->menuService->obtenerMenuDisponible();
+        $secciones = $this->menuService->obtenerSeccionesMenu($menu);
+
+        $this->twig->addGlobal('secciones_global', $secciones);
     }
-} 
+}

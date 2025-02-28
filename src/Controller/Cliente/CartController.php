@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/cliente/cart')]
 class CartController extends AbstractController
@@ -73,6 +74,36 @@ class CartController extends AbstractController
         $this->cartService->clear();
         
         $this->addFlash('success', 'Carrito vaciado correctamente');
+        
+        return $this->redirectToRoute('app_cliente_cart_index');
+    }
+
+    #[Route('/increase/{codigo}', name: 'app_cliente_cart_increase')]
+    public function increase(string $codigo, SessionInterface $session): Response
+    {
+        $cart = $session->get('cart', []);
+        
+        if (isset($cart[$codigo])) {
+            $cart[$codigo]['cantidad']++;
+            $session->set('cart', $cart);
+        }
+        
+        return $this->redirectToRoute('app_cliente_cart_index');
+    }
+
+    #[Route('/decrease/{codigo}', name: 'app_cliente_cart_decrease')]
+    public function decrease(string $codigo, SessionInterface $session): Response
+    {
+        $cart = $session->get('cart', []);
+        
+        if (isset($cart[$codigo])) {
+            if ($cart[$codigo]['cantidad'] > 1) {
+                $cart[$codigo]['cantidad']--;
+            } else {
+                unset($cart[$codigo]);
+            }
+            $session->set('cart', $cart);
+        }
         
         return $this->redirectToRoute('app_cliente_cart_index');
     }

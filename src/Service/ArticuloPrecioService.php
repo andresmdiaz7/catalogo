@@ -23,9 +23,8 @@ class ArticuloPrecioService
     public function obtenerPrecioBase(Articulo $articulo): float
     {
         if ($this->user && $this->security->isGranted('ROLE_CLIENTE')) {
-            $cliente = $this->user;
-            return $cliente->getTipoCliente()->getNombre() === 'Mayorista' 
-                ? $articulo->getPrecio400() 
+            return $this->user->getTipoCliente()->getNombre() === 'Mayorista' 
+                ? $articulo->getPrecio400()
                 : $articulo->getPrecioLista();
         }
         

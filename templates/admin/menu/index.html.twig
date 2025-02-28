@@ -1,0 +1,57 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestión de Menús{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1>Gestión de Menús</h1>
+
+        <a href="{{ path('app_admin_menu_new') }}" class="btn btn-primary mb-3">
+            <i class="bi bi-plus-circle"></i> Nuevo Menú
+        </a>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Por Defecto</th>
+                            <th>Activo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for menu in menus %}
+                        <tr>
+                            <td>{{ menu.nombre }}</td>
+                            <td>{{ menu.porDefecto ? 'Sí' : 'No' }}</td>
+                            <td>{{ menu.activo ? 'Sí' : 'No' }}</td>
+                            <td>
+                                <a href="{{ path('app_admin_menu_edit', {'id': menu.id}) }}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                
+                                <form method="post" action="{{ path('app_admin_menu_delete', {'id': menu.id}) }}" 
+                                      style="display: inline-block"
+                                      onsubmit="return confirm('¿Está seguro que desea eliminar este menú?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ menu.id) }}">
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+
+                                <a href="{{ path('app_admin_menu_secciones', {'id': menu.id}) }}" 
+                                    class="btn btn-sm btn-info">
+                                    <i class="bi bi-list-check"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

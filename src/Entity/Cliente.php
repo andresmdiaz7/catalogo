@@ -77,6 +77,10 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: true)]  // Cambiado a true para permitir valores nulos
     private ?ResponsableLogistica $responsableLogistica = null;
 
+    #[ORM\ManyToOne(targetEntity: Categoria::class, inversedBy: 'clientes')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Categoria $categoria = null;
+
     #[ORM\Column(type: 'boolean')]
     private bool $habilitado = true;
 
@@ -285,6 +289,17 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    public function getCategoria(): ?Categoria
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?Categoria $categoria): self
+    {
+        $this->categoria = $categoria;
+        return $this;
     }
 
     public function getId(): ?int

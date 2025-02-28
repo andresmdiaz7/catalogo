@@ -16,20 +16,23 @@ use App\Entity\Articulo;
 use App\Entity\Cliente;
 use App\Service\ArticuloPrecioService;
 use Symfony\Bundle\SecurityBundle\Security;
+use App\Service\MenuService;
 
 
 class CatalogoController extends AbstractController
 {
     private $articuloPrecioService;
 
-    public function __construct(ArticuloPrecioService $articuloPrecioService, private Security $security)
+    public function __construct(ArticuloPrecioService $articuloPrecioService, private Security $security, private MenuService $menuService)
     {
         $this->articuloPrecioService = $articuloPrecioService;
     }
 
-    #[Route('/', name: 'app_catalogo_index')]
+    #[Route('/catalogo', name: 'app_catalogo_index')]
     public function index(Request $request, ArticuloRepository $articuloRepository, PaginatorInterface $paginator): Response
     {
+        
+
         $busqueda = $request->query->get('buscar');
         
         $qb = $articuloRepository->createQueryBuilder('a')

@@ -1,0 +1,61 @@
+{# filepath: /c:/wamp64/www/catalogo/templates/admin/categoria/index.html.twig #}
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Categorías{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Categorías</h1>
+            <a href="{{ path('app_admin_categoria_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Menú</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for categoria in categorias %}
+                        <tr>
+                            <td>{{ categoria.nombre }}</td>
+                            <td>{{ categoria.descripcion }}</td>
+                            <td>{{ categoria.menu ? categoria.menu.nombre : 'Sin menú asignado' }}</td>
+                            <td>{{ categoria.activo ? 'Activo' : 'Inactivo' }}</td>
+                            <td>
+                                <a href="{{ path('app_admin_categoria_edit', {'id': categoria.id}) }}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                
+                                <form method="post" 
+                                      action="{{ path('app_admin_categoria_delete', {'id': categoria.id}) }}" 
+                                      style="display: inline-block"
+                                      onsubmit="return confirm('¿Está seguro que desea eliminar esta categoría?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categoria.id) }}">
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No hay categorías registradas</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
