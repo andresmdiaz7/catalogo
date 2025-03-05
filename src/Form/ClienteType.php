@@ -31,53 +31,81 @@ class ClienteType extends AbstractType
         $builder
             ->add('codigo', TextType::class, [
                 'label' => 'Código',
-                'attr' => ['maxlength' => 50]
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => [
+                    'maxlength' => 50,
+                    
+                ],
+                'disabled' => true,
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('razonSocial', TextType::class, [
                 'label' => 'Razón Social',
-                'attr' => ['class' => 'form-control']
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('categoriaImpositiva', EntityType::class, [
                 'class' => CategoriaImpositiva::class,
                 'choice_label' => 'nombre',
-                'placeholder' => 'Seleccione una categoría impositiva',
+                'placeholder' => 'Categoría impositiva',
                 'required' => true,
                 'label' => 'Categoría Impositiva',
+                'label_attr' => ['class' => 'form-label'],
                 'query_builder' => function (CategoriaImpositivaRepository $er) {
                     return $er->createQueryBuilder('c')
                         ->orderBy('c.nombre', 'ASC');
                 },
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('cuit', TextType::class, [
                 'label' => 'CUIT',
-                'attr' => ['class' => 'form-control']
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('tipoCliente', EntityType::class, [
                 'class' => TipoCliente::class,
                 'choice_label' => 'nombre',
-                'label' => 'Tipo de Cliente'
+                'label' => 'Tipo de Cliente <i class="bi bi-info-circle-fill text-info" data-bs-toggle="tooltip" data-bs-title="Si el tipo de cliente es Mayorista toma la lista de precios 400"></i>',
+                'label_html' => true,
+                'label_attr' => ['class' => 'form-label'],
+                'required' => true,
+                'placeholder' => 'Seleccione un tipo de cliente',
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('direccion', TextType::class, [
                 'label' => 'Dirección',
+                'label_attr' => ['class' => 'form-label'],
                 'required' => false,
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('localidad', EntityType::class, [
                 'class' => Localidad::class,
+                'label' => 'Localidad',
+                'label_attr' => ['class' => 'form-label'],
                 'choice_label' => 'nombre',
                 'placeholder' => 'Seleccione una localidad',
                 'required' => true,
                 'query_builder' => function (LocalidadRepository $lr) {
                     return $lr->createQueryBuilder('l')
                         ->orderBy('l.nombre', 'ASC');
-                }
+                },
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('categoria', EntityType::class, [
                 'class' => Categoria::class,
+                'label' => 'Categoría <i class="bi bi-info-circle-fill text-info" data-bs-toggle="tooltip" data-bs-title="La categoría del cliente define el contenido que se mostrará personalizado en menú, banners, productos destacados, etc."></i>',
+                'label_html' => true,
+                'label_attr' => ['class' => 'form-label'],
                 'choice_label' => 'nombre',
                 'required' => false,
                 'placeholder' => 'Seleccione una categoría',
-                'label' => 'Categoría',
                 'attr' => ['class' => 'form-select'],
                 'query_builder' => function (CategoriaRepository $cr) {
                     return $cr->createQueryBuilder('c')
@@ -85,53 +113,90 @@ class ClienteType extends AbstractType
                         ->setParameter('activo', true)
                         ->orderBy('c.nombre', 'ASC');
                 },
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('telefono', TextType::class, [
                 'label' => 'Teléfono',
+                'label_attr' => ['class' => 'form-label'],
                 'required' => false,
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
+                'label_attr' => ['class' => 'form-label'],
                 'required' => false,
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('web', TextType::class, [
                 'label' => 'Sitio Web',
-                'required' => false
+                'label_attr' => ['class' => 'form-label'],
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('porcentajeDescuento', NumberType::class, [
                 'label' => 'Porcentaje de Descuento',
-                'scale' => 2
+                'label_attr' => ['class' => 'form-label'],
+                'scale' => 2,
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('rentabilidad', NumberType::class, [
                 'label' => 'Rentabilidad',
-                'scale' => 2
+                'label_attr' => ['class' => 'form-label'],
+                'scale' => 2,
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('password', PasswordType::class, [
-                'label' => 'Contraseña',
-                'required' => true,
+                'label' => 'Nueva Contraseña',
+                'label_attr' => ['class' => 'form-label'],
+                'required' => false,
                 'mapped' => false,
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
-            ->add('observaciones', TextareaType::class, [
+            ->add('currentPassword', TextType::class, [
+                'label' => 'Contraseña Actual',
+                'label_attr' => ['class' => 'form-label'],
+                'required' => false,
+                'mapped' => false,
+                'disabled' => true,
+                'data' => 'Contraseña configurada',
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
+            ])
+            ->add('observaciones', TextType::class, [
                 'label' => 'Observaciones',
-                'required' => false
+                'label_attr' => ['class' => 'form-label'],
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('vendedor', EntityType::class, [
+                'label' => 'Vendedor Asignado',
+                'label_attr' => ['class' => 'form-label'],
                 'class' => Vendedor::class,
                 'choice_label' => 'nombre',
                 'placeholder' => 'Ninguno',
                 'required' => false,
-                'attr' => ['class' => 'form-select']
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('responsableLogistica', EntityType::class, [
                 'class' => ResponsableLogistica::class,
+                'label' => 'Responsable de Logística',
+                'label_attr' => ['class' => 'form-label'],
                 'placeholder' => 'Ninguno',
                 'choice_label' => function($responsable) {
                     return $responsable->getApellido() . ', ' . $responsable->getNombre();
                 },
                 'required' => false,
-                'label' => 'Responsable de Logística'
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => ['class' => 'mb-3']
             ])
             ->add('habilitado', CheckboxType::class, [
                 'label' => '¿Cliente habilitado?',
@@ -141,7 +206,8 @@ class ClienteType extends AbstractType
                 ],
                 'label_attr' => [
                     'class' => 'form-check-label'
-                ]
+                ],
+                'row_attr' => ['class' => 'mb-3']
             ])
         ;
     }
@@ -150,6 +216,7 @@ class ClienteType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Cliente::class,
+            'current_password' => null,
         ]);
     }
 }

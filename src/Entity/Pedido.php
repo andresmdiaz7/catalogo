@@ -28,8 +28,8 @@ class Pedido
     private ?\DateTimeInterface $fechaPedido = null;
 
     #[ORM\Column(length: 20)]
-    #[Assert\Choice(choices: ['pendiente', 'confirmado', 'en_proceso', 'enviado', 'entregado', 'cancelado'])]
-    private ?string $estado = 'pendiente';
+    #[Assert\Choice(choices: ['Pendiente', 'Leído'])]
+    private ?string $estado = 'Pendiente';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $observaciones = null;

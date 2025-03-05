@@ -83,15 +83,18 @@ class ClienteController extends AdminController
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher
     ): Response {
-        $form = $this->createForm(ClienteType::class, $cliente);
+        $form = $this->createForm(ClienteType::class, $cliente, [
+            'current_password' => $cliente->getPassword(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Solo actualizar el password si se proporcionó uno nuevo
-            if ($password = $form->get('password')->getData()) {
+            
+            if ($newPassword = $form->get('password')->getData()) {
                 $hashedPassword = $passwordHasher->hashPassword(
                     $cliente,
-                    $password
+                    $newPassword
                 );
                 $cliente->setPassword($hashedPassword);
             }

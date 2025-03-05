@@ -18,76 +18,73 @@
         </div>
     {% endfor %}
 
-    <div class="card">
+    <div class="card bg-body-tertiary shadow-lg">
         <div class="card-body">
             {{ form_start(form) }}
                 <div class="row">
                     <div class="col-md-6">
-                        {{ form_row(form.razonSocial) }}
+                        {{ form_row(form.codigo) }}
                     </div>
-                    <div class="col-md-3">
-                        {{ form_row(form.cuit) }}
+                    <div class="col-md-6">
+                        {{ form_row(form.tipoCliente) }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
+                        {{ form_row(form.razonSocial) }} 
+                    </div>
+                    <div class="col-md-6">
                         {{ form_row(form.categoriaImpositiva) }}
                     </div>
-                </div>
-
-                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.cuit) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.categoria) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.localidad) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.porcentajeDescuento) }}
+                    </div>
                     <div class="col-md-6">
                         {{ form_row(form.direccion) }}
                     </div>
-                    <div class="col-md-3">
-                        {{ form_row(form.localidad) }}
+                    <div class="col-md-6">
+                        {{ form_row(form.rentabilidad) }}
                     </div>
-                    <div class="col-md-3">
-                        {#form_row(form.provincia) #}provincia
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-3">
-                        {# form_row(form.codigoPostal) #}
-                    </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         {{ form_row(form.telefono) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.web) }}
                     </div>
                     <div class="col-md-6">
                         {{ form_row(form.email) }}
                     </div>
-                </div>
-
-                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.observaciones) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.currentPassword) }}
+                    </div>
                     <div class="col-md-6">
                         {{ form_row(form.vendedor) }}
                     </div>
                     <div class="col-md-6">
+                        {{ form_row(form.password) }}
+                    </div>
+                    <div class="col-md-6">
                         {{ form_row(form.responsableLogistica) }}
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        {{ form_row(form.observaciones) }}
+                    <div class="col-md-6">
+                        {{ form_row(form.habilitado) }}
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-check mb-3">
-                            {{ form_widget(form.habilitado) }}
-                            {{ form_label(form.habilitado) }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Guardar Cambios
-                    </button>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             {{ form_end(form) }}
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
