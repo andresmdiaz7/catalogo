@@ -10,6 +10,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ArticuloController extends AbstractController
 {
+    /**
+     * Muestra un articulo en particular
+     * @Route("/articulo/{codigo}", name="app_articulo_show")
+     */
     #[Route('/articulo/{codigo}', name: 'app_articulo_show')]
     public function show(string $codigo, ArticuloRepository $articuloRepository): Response
     {
