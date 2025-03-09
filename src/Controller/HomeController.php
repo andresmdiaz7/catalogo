@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class HomeController extends AbstractController
 {
@@ -39,5 +41,22 @@ class HomeController extends AbstractController
             'articulos' => $articulos,
             'query' => $query
         ]);
+    }
+
+    #[Route('/home/test_email', name: 'test_email')]
+    public function sendTestEmail(MailerInterface $mailer): Response
+    {
+        $email = (new Email())
+            ->from('cables@ciardi.com.ar')
+            ->to('andresmdiaz7@gmail.com')
+            ->subject('Correo de prueba')
+            ->text('Este es un correo de prueba.');
+
+        try {
+            $mailer->send($email);
+            return new Response('Correo enviado correctamente');
+        } catch (\Exception $e) {
+            return new Response('Error al enviar el correo: ' . dump($e), 500);
+        }
     }
 } 

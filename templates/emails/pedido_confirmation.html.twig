@@ -1,9 +1,12 @@
+{# filepath: templates/emails/pedido_confirmation.html.twig #}
 {% extends 'emails/base.html.twig' %}
 
 {% block title %}Confirmación de Pedido{% endblock %}
 
 {% block content %}
-    <h1>¡Gracias por su pedido!</h1>
+    <div class="header">
+        <h1>¡Gracias por su pedido!</h1>
+    </div>
     
     <p>Estimado/a {{ pedido.cliente.razonSocial }},</p>
     
@@ -13,6 +16,7 @@
 
     <p>Nuestro equipo procesará su pedido lo antes posible.</p>
     
+    {% if pedido.cliente.vendedor %}
     <p>Si tiene alguna pregunta, no dude en contactar con su vendedor:</p>
     <p>
         {{ pedido.cliente.vendedor.nombre }} {{ pedido.cliente.vendedor.apellido }}<br>
@@ -21,4 +25,9 @@
         Tel: {{ pedido.cliente.vendedor.telefono }}
         {% endif %}
     </p>
-{% endblock %} 
+    {% endif %}
+    
+    <div>
+        
+    </div>
+{% endblock %}

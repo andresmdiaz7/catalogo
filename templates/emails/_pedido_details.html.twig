@@ -1,33 +1,41 @@
-<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-    <thead>
-        <tr>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Código</th>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Artículo</th>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Cantidad</th>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Precio</th>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for detalle in pedido.detalles %}
-            <tr>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ detalle.articulo.codigo }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ detalle.articulo.detalle }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ detalle.cantidad }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${{ detalle.precio|number_format(2, ',', '.') }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${{ (detalle.precio * detalle.cantidad)|number_format(2, ',', '.') }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: right;"><strong>Total:</strong></td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right;"><strong>${{ pedido.total|number_format(2, ',', '.') }}</strong></td>
-        </tr>
-    </tfoot>
-</table>
+{# filepath: templates/emails/_pedido_details.html.twig #}
+<div class="pedido-details">
+    <p><strong>Pedido #:</strong> {{ pedido.id }}</p>
+    <p><strong>Fecha:</strong> {{ pedido.fecha|date('d/m/Y H:i') }}</p>
+    <p><strong>Estado:</strong> {{ pedido.estado }}</p>
 
-{% if pedido.observaciones %}
-    <h3>Observaciones</h3>
-    <p>{{ pedido.observaciones|nl2br }}</p>
-{% endif %} 
+    <h3>Artículos solicitados:</h3>
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Detalle</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in pedido.detalles %}
+            <tr>
+                <td>{{ item.articulo.codigo }}</td>
+                <td>{{ item.articulo.detalle }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>$ {{ item.precioUnitario|number_format(2, ',', '.') }}</td>
+                <td>$ {{ (item.cantidad * item.precioUnitario)|number_format(2, ',', '.') }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total">
+                <td colspan="4" style="text-align: right;"><strong>Total:</strong></td>
+                <td><strong>$ {{ pedido.total|number_format(2, ',', '.') }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if pedido.observaciones %}
+    <div>
+        <h3>Observaciones:</h3>
+        <p>{{ pedido.observaciones }}</p>
+    </div>
+    {% endif %}
+</div>

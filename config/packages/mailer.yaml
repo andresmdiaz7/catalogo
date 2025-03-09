@@ -1,3 +1,8 @@
 framework:
     mailer:
-        dsn: '%env(MAILER_DSN)%'
+        dsn: '%env(MAILER_DRIVER)%://%env(MAILER_USER)%:%env(MAILER_PASSWORD)%@%env(MAILER_HOST)%:%env(MAILER_PORT)%?encryption=%env(MAILER_ENCRYPTION)%&auth_mode=%env(MAILER_AUTH_MODE)%'
+        envelope:
+            sender: '%env(MAILER_SENDER)%'
+            recipients: []
+        headers:
+            From: '%env(MAILER_FROM)%'

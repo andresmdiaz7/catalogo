@@ -69,19 +69,6 @@ class VendedorType extends AbstractType
                     'class' => 'mb-3'
                 ]
             ])
-            ->add('password', PasswordType::class, [
-                'required' => true,
-                'label' => 'Contraseña',
-                'label_attr' => [
-                    'class' => 'form-label'
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'row_attr' => [
-                    'class' => 'mb-3'
-                ]
-            ])
             ->add('activo', CheckboxType::class, [
                 'label' => 'Activo',
                 'label_attr' => [

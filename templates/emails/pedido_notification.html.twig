@@ -1,25 +1,29 @@
+{# filepath: templates/emails/pedido_notification.html.twig #}
 {% extends 'emails/base.html.twig' %}
 
 {% block title %}Nuevo Pedido{% endblock %}
 
 {% block content %}
-    <h1>Nuevo Pedido #{{ pedido.id }}</h1>
-    
-    <p>Se ha recibido un nuevo pedido con los siguientes detalles:</p>
+    <div class="header">
+        <h2>Nuevo Pedido #{{ pedido.id }}</h2>
+        
+        {% if recipient == 'vendedor' %}
+            <p>Estimado vendedor, se ha registrado un nuevo pedido de tu cliente:</p>
+        {% elseif recipient == 'logistica' %}
+            <p>Estimado responsable de logística, se ha registrado un nuevo pedido que requiere procesamiento:</p>
+        {% endif %}
+    </div>
 
-    <h3>Cliente</h3>
-    <p>
-        <strong>Razón Social:</strong> {{ pedido.cliente.razonSocial }}<br>
-        <strong>CUIT:</strong> {{ pedido.cliente.cuit }}<br>
-        <strong>Email:</strong> {{ pedido.cliente.email }}<br>
-        <strong>Teléfono:</strong> {{ pedido.cliente.telefono }}
-    </p>
+    <div>
+        <h3>Datos del cliente:</h3>
+        <p><strong>Cliente:</strong> {{ pedido.cliente.razonSocial }}</p>
+        <p><strong>Email:</strong> {{ pedido.cliente.email }}</p>
+        <p><strong>Teléfono:</strong> {{ pedido.cliente.telefono|default('No disponible') }}</p>
+    </div>
 
     {% include 'emails/_pedido_details.html.twig' %}
 
-    {% if recipient == 'logistica' %}
-        <p>Por favor, procese este pedido según los procedimientos establecidos.</p>
-    {% else %}
-        <p>Por favor, revise el pedido y contacte al cliente si es necesario.</p>
-    {% endif %}
-{% endblock %} 
+    <div>
+        
+    </div>
+{% endblock %}

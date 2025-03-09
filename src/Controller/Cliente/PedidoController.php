@@ -5,6 +5,7 @@ namespace App\Controller\Cliente;
 use App\Entity\Pedido;
 use App\Entity\PedidoDetalle;
 use App\Service\CartService;
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,7 @@ class PedidoController extends AbstractController
     #[Route('/create', name: 'app_cliente_pedido_create', methods: ['POST'])]
     public function create(
         CartService $cartService,
+        EmailService $emailService,
         EntityManagerInterface $entityManager
     ): Response {
         try {
@@ -57,8 +59,16 @@ class PedidoController extends AbstractController
 
             $entityManager->persist($pedido);
             $entityManager->flush();
-            $cartService->clear();
 
+            
+            // En tu método que confirma el pedido (después de persistirlo)
+            $emailService->sendPedidoConfirmation($pedido); // Para notificar al cliente
+            $emailService->sendPedidoNotification($pedido); // Para notificar al vendedor y logística
+            
+
+            
+            //$entityManager->flush();
+            //$cartService->clear();
             $this->addFlash('success', 'Pedido creado correctamente');
             return $this->redirectToRoute('app_cliente_pedidos');
         } catch (\Exception $e) {
