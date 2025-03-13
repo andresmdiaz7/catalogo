@@ -47,20 +47,19 @@
                     </form>
                 </div>
                 
+                
                 <!-- Botones de usuario - Columna derecha -->
                 <div class="col-12 col-lg-4 text-center text-lg-end">
                     <div class="btn-group" role="group" aria-label="User actions">
+
                         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <a class="btn btn-outline-primary" href="{{ path('app_admin_dashboard') }}">Panel de Admin</a>
-                            {% else %}
-                                <a class="btn btn-outline-primary position-relative" href="{{ path('app_cliente_cart_index') }}">
-                                    <i class="bi bi-cart"></i> 
-                                    <span class="badge text-bg-secondary">{{ carrito_articulos_totales }}</span>    
-                                    </span>
-                                </a>
-                                <a class="btn btn-outline-primary" href="{{ path('app_cliente_dashboard') }}">Mi Cuenta</a>
-                            {% endif %}
+                            
+                            {% if is_granted('ROLE_ADMIN') %} {% include 'partials/_menu_admin.html.twig' %} {% endif %}
+
+                            {% if is_granted('ROLE_VENDEDOR') %} {% include 'partials/_menu_vendedor.html.twig' %} {% endif %}
+
+                            {% if is_granted('ROLE_CLIENTE') %} {% include 'partials/_menu_cliente.html.twig' %} {% endif %}
+
                             <a class="btn btn-outline-primary" href="{{ path('app_logout') }}">Cerrar Sesión</a>
                         {% else %}
                             <a class="btn btn-primary" href="{{ path('app_login') }}">Iniciar Sesión</a>

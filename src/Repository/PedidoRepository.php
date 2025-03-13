@@ -56,4 +56,16 @@ class PedidoRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-} 
+
+    public function findByVendedorClientes($vendedor)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.cliente', 'c')
+            ->where('c.vendedor = :vendedor')
+            ->setParameter('vendedor', $vendedor)
+            ->orderBy('p.fecha', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+}

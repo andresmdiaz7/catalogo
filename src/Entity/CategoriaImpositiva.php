@@ -79,4 +79,4 @@ class CategoriaImpositiva
     {
         return $this->nombre;
     }
-} 
+}

@@ -36,14 +36,15 @@ class Articulo
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $descripcion = null;
 
+    
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private ?float $impuesto = null;
+    private ?string $impuesto = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private ?float $precioLista = null;
+    private ?string $precioLista = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private ?float $precio400 = null;
+    private ?string $precio400 = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $destacado = false;

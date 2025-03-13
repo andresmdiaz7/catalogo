@@ -27,21 +27,21 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $razonSocial = null;
 
-    #[ORM\ManyToOne(targetEntity: CategoriaImpositiva::class)]
+    #[ORM\ManyToOne(targetEntity: CategoriaImpositiva::class, inversedBy: "clientes")]
     #[ORM\JoinColumn(nullable: false)]
     private ?CategoriaImpositiva $categoriaImpositiva = null;
 
     #[ORM\Column(length: 20)]
     private ?string $cuit = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: TipoCliente::class, inversedBy: "clientes")]
     #[ORM\JoinColumn(nullable: false)]
     private ?TipoCliente $tipoCliente = null;
 
     #[ORM\Column(length: 255)]
     private ?string $direccion = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Localidad::class, inversedBy: "clientes")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Localidad $localidad = null;
 
@@ -55,10 +55,10 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $web = null;
 
     #[ORM\Column(type: 'decimal', precision: 5, scale: 2)]
-    private ?float $porcentajeDescuento = null;
+    private ?string $porcentajeDescuento = null;
 
     #[ORM\Column(type: 'decimal', precision: 5, scale: 2)]
-    private ?float $rentabilidad = null;
+    private ?string $rentabilidad = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
@@ -69,11 +69,11 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $ultimaVisita = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Vendedor::class, inversedBy: "clientes")]
     #[ORM\JoinColumn(nullable: true)]  // Cambiado a true para permitir valores nulos
     private ?Vendedor $vendedor = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: ResponsableLogistica::class, inversedBy: "clientes")]
     #[ORM\JoinColumn(nullable: true)]  // Cambiado a true para permitir valores nulos
     private ?ResponsableLogistica $responsableLogistica = null;
 

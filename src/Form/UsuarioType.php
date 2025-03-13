@@ -32,7 +32,6 @@ class UsuarioType extends AbstractType
                     'class' => 'mb-3'
                 ]
             ])
-
             
             ->add('email', EmailType::class, [
                 'label' => 'Email',
