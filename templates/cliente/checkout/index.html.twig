@@ -27,8 +27,8 @@
                                 {% for codigo, item in cart %}
                                     <tr>
                                         <td>
-                                            <strong>{{ item.articulo.codigo }}</strong><br>
-                                            {{ item.articulo.detalle }}
+                                            <strong>{{ item.codigo }}</strong><br>
+                                            {{ item.detalle }}
                                         </td>
                                         <td class="text-center">{{ item.cantidad }}</td>
                                         <td class="text-end">${{ item.precio|number_format(2, ',', '.') }}</td>

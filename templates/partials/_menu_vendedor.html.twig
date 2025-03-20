@@ -1,3 +1,8 @@
+{# _menu_cliente.html.twig #}
+{% extends 'partials/_menu_base.html.twig' %}
 
-        <a class="btn btn-outline-primary" href="{{ path('app_vendedor_dashboard') }}">Dashboard</a>
-        <a class="btn btn-outline-primary" href="{{ path('app_vendedor_clientes_pedido_index') }}">Pedidos</a>
+{% block menu_items %}
+    <li><a class="dropdown-item" href="{{ path('app_vendedor_dashboard') }}">Dashboard</a></li>
+    <li><a class="dropdown-item" href="{{ path('app_vendedor_clientes_pedido_index') }}">Mis Pedidos</a></li>
+    <li><a class="dropdown-item" href="#">Favoritos</a></li>
+{% endblock %}

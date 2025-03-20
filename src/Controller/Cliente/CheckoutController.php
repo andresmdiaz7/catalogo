@@ -26,7 +26,8 @@ class CheckoutController extends AbstractController
     #[Route('', name: 'app_cliente_checkout')]
     public function index(): Response
     {
-        $cart = $this->cartService->getCart();
+        $cart = $this->cartService->getItems();
+        
         if (empty($cart)) {
             $this->addFlash('warning', 'El carrito está vacío');
             return $this->redirectToRoute('app_cliente_cart_index');

@@ -1,6 +1,7 @@
-<a class="btn btn-outline-primary position-relative" href="{{ path('app_cliente_cart_index') }}">
-    <i class="bi bi-cart"></i> 
-        <span class="badge text-bg-secondary">{{ carrito_articulos_totales }}</span>    
-    
-</a>
-<a class="btn btn-outline-primary" href="{{ path('app_cliente_dashboard') }}">Mi Cuenta</a>
+{% extends 'partials/_menu_base.html.twig' %}
+
+{% block menu_items %}
+    <li><a class="dropdown-item" href="{{ path('app_cliente_checkout') }}">Checkout</a></li>
+    <li><a class="dropdown-item" href="{{ path('app_vendedor_clientes_pedido_index') }}">Mis Pedidos</a></li>
+    <li><a class="dropdown-item" href="#">Favoritos</a></li>
+{% endblock %}

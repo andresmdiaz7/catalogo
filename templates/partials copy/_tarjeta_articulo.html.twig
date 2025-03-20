@@ -1,0 +1,73 @@
+<div class="card h-100 shadow">
+    <div class="card-header text-center">
+        {{ articulo.marca }}
+    </div>
+    {% set imagen_principal = null %}
+
+    {% for archivo in articulo.archivos %}
+        {% if archivo.tipoArchivo == 'imagen' and archivo.esPrincipal %}
+            {% set imagen_principal = archivo %}
+        {% endif %}
+    {% endfor %}
+    
+    {# Badge #}
+    {% if articulo.destacado %}
+        <img src="/badge.png" 
+            class="position-absolute top-0 end-0 m-2 mt-5" 
+            alt="Badge"
+            style="width: 60px; z-index: 1;">
+    {% endif %}
+    
+    {% if imagen_principal %}
+        <img src="{{ asset(directorio_archivos ~  imagen_principal.rutaArchivo) }}" 
+            class="card-img-top" 
+            alt="{{ articulo.detalle }}"
+            width="400">
+    {% else %}
+        <img src="{{ asset('images/no-image.jpg') }}" 
+            class="card-img-top" 
+            alt="Sin imagen"
+            width="400">
+    {% endif %}
+
+    <div class="card-body">
+        <h5 class="card-title fs-6 fw-normal">{{ articulo.detalle }}</h5>
+        <p class="card-text fs-5 text-end">
+            ${{ articulo.precioLista|number_format(0, ',', '.') }}
+        </p>
+        
+        {% if articulo.destacado %}
+            <span class="badge bg-warning">Destacado</span>
+        {% endif %}
+        {% if articulo.novedad %}
+            <span class="badge bg-info">Novedad</span>
+        {% endif %}
+    </div>
+
+    <div class="card-footer">
+        {% if is_granted('ROLE_CLIENTE') %}
+            {# Si existe en el carrito, mostrar la cantidad #}
+            {% if carrito_articulos[articulo.codigo] is defined %}
+                <p class="fw-bold mb-1 text-center text-danger" style="font-size:12px">
+                    Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
+                </p>
+            {% endif %}
+            <form action="{{ path('app_cliente_cart_add') }}" method="POST" style="display: inline;">
+                <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
+                <div class="input-group">
+                    <input type="text" name="cantidad" value="1" class="form-control border border-primary border-end-0" placeholder="Cantidad" aria-label="Cantidad" aria-describedby="button-addon2"/>
+                    <button class="btn btn-outline-primary" type="submit" id="button-addon2">
+                        <i class="bi bi-cart-plus"></i> Agregar
+                    </button>
+                    <a href="{{ path('app_catalogo_show', {codigo: articulo.codigo}) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-eye"></i> Ver
+                    </a>
+                </div>
+            </form>
+        {% else %}
+            <a href="{{ path('app_catalogo_show', {codigo: articulo.codigo}) }}" class="btn btn-outline-primary">
+                <i class="bi bi-eye"></i> Ver
+            </a>
+        {% endif %}
+    </div>
+</div> 
