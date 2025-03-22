@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Entity\Articulo;
-use App\Entity\Marca;
 use App\Entity\Rubro;
 use App\Entity\Subrubro;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,7 +28,6 @@ class ImportarArticulosCommand extends Command
     private const LOTE_TAMANIO = 5000;
     private array $rubrosCache = [];
     private array $subrubrosCache = [];
-    private array $marcasCache = []; // Caché para marcas
 
     public function __construct(ManagerRegistry $doctrine, string $projectDir)
     {
@@ -78,17 +76,10 @@ class ImportarArticulosCommand extends Command
         foreach ($subrubros as $subrubro) {
             $this->subrubrosCache[$subrubro->getCodigo()] = $subrubro;
         }
-        
-        // Cargar todas las marcas existentes
-        $marcas = $em->getRepository(Marca::class)->findAll();
-        foreach ($marcas as $marca) {
-            $this->marcasCache[$marca->getCodigo()] = $marca;
-        }
 
-        $io->info(sprintf('Precargados %d rubros, %d subrubros y %d marcas', 
+        $io->info(sprintf('Precargados %d rubros y %d subrubros', 
             count($this->rubrosCache), 
-            count($this->subrubrosCache),
-            count($this->marcasCache)
+            count($this->subrubrosCache)
         ));
     }
 
@@ -136,22 +127,15 @@ class ImportarArticulosCommand extends Command
         $em = $this->doctrine->getManager();
 
         try {
-            // Obtener códigos únicos de rubros, subrubros y marcas del lote actual
+            // Obtener códigos únicos de rubros y subrubros del lote actual
             $rubrosCodigos = [];
             $subrubrosCodigos = [];
-            $marcasCodigos = [];
-            
             foreach ($articulos as $articulo) {
                 $rubrosCodigos[] = $articulo->getSubrubro()->getRubro()->getCodigo();
                 $subrubrosCodigos[] = $articulo->getSubrubro()->getCodigo();
-                if ($articulo->getMarca()) {
-                    $marcasCodigos[] = $articulo->getMarca()->getCodigo();
-                }
             }
-            
             $rubrosCodigos = array_unique($rubrosCodigos);
             $subrubrosCodigos = array_unique($subrubrosCodigos);
-            $marcasCodigos = array_unique($marcasCodigos);
 
             // Verificar rubros existentes
             $rubrosExistentes = $em->createQueryBuilder()
@@ -180,28 +164,11 @@ class ImportarArticulosCommand extends Command
             foreach ($subrubrosExistentes as $subrubro) {
                 $this->subrubrosCache[$subrubro->getCodigo()] = $subrubro;
             }
-            
-            // Verificar marcas existentes
-            if (!empty($marcasCodigos)) {
-                $marcasExistentes = $em->createQueryBuilder()
-                    ->select('m')
-                    ->from(Marca::class, 'm')
-                    ->where('m.codigo IN (:codigos)')
-                    ->setParameter('codigos', $marcasCodigos)
-                    ->getQuery()
-                    ->getResult();
 
-                // Actualizar caché de marcas con las existentes
-                foreach ($marcasExistentes as $marca) {
-                    $this->marcasCache[$marca->getCodigo()] = $marca;
-                }
-            }
-
-            // Persistir solo los rubros, subrubros y marcas nuevos
+            // Persistir solo los rubros y subrubros nuevos
             foreach ($articulos as $articulo) {
                 $rubro = $articulo->getSubrubro()->getRubro();
                 $subrubro = $articulo->getSubrubro();
-                $marca = $articulo->getMarca();
 
                 // Solo persistir rubros nuevos
                 if (!$em->contains($rubro)) {
@@ -211,11 +178,6 @@ class ImportarArticulosCommand extends Command
                 // Solo persistir subrubros nuevos
                 if (!$em->contains($subrubro)) {
                     $em->persist($subrubro);
-                }
-                
-                // Solo persistir marcas nuevas
-                if ($marca && !$em->contains($marca)) {
-                    $em->persist($marca);
                 }
 
                 $em->persist($articulo);
@@ -270,30 +232,12 @@ class ImportarArticulosCommand extends Command
         foreach ($subrubros as $subrubro) {
             $this->subrubrosCache[$subrubro->getCodigo()] = $subrubro;
         }
-        
-        // Recargar marcas
-        if (!empty($this->marcasCache)) {
-            $marcas = $em->createQueryBuilder()
-                ->select('m')
-                ->from(Marca::class, 'm')
-                ->where('m.codigo IN (:codigos)')
-                ->setParameter('codigos', array_keys($this->marcasCache))
-                ->getQuery()
-                ->getResult();
-
-            $this->marcasCache = [];
-            foreach ($marcas as $marca) {
-                $this->marcasCache[$marca->getCodigo()] = $marca;
-            }
-        }
     }
 
     private function crearArticulo(array $linea): Articulo
     {
         $rubroCodigo = $linea[2];
         $subrubroCodigo = $linea[4];
-        $marcaCodigo = $linea[6]; // Usar el código de marca directamente del archivo
-        $marcaNombre = $linea[7]; // Asumo que en $linea[6] está el nombre de la marca
 
         // Obtener o crear rubro
         if (!isset($this->rubrosCache[$rubroCodigo])) {
@@ -311,25 +255,11 @@ class ImportarArticulosCommand extends Command
             $subrubro->setRubro($this->rubrosCache[$rubroCodigo]);
             $this->subrubrosCache[$subrubroCodigo] = $subrubro;
         }
-        
-        // Obtener o crear marca si existe el código
-        $marca = null;
-        if (!empty($marcaCodigo)) {
-            if (!isset($this->marcasCache[$marcaCodigo])) {
-                $marca = new Marca();
-                $marca->setCodigo($marcaCodigo);
-                $marca->setNombre($marcaNombre ?: $marcaCodigo); // Usar el nombre o el código si no hay nombre
-                $marca->setHabilitado(true);
-                $this->marcasCache[$marcaCodigo] = $marca;
-            } else {
-                $marca = $this->marcasCache[$marcaCodigo];
-            }
-        }
 
         $articulo = new Articulo();
         $articulo->setCodigo($linea[0]);
         $articulo->setDetalle($linea[1]);
-        $articulo->setMarca($marca); // Ahora asignamos el objeto Marca
+        $articulo->setMarca($linea[7]);
         $articulo->setModelo($linea[12]);
         $articulo->setDetalleWeb($linea[13]);
         $articulo->setImpuesto($linea[8]);
@@ -343,4 +273,4 @@ class ImportarArticulosCommand extends Command
 
         return $articulo;
     }
-}
+} 

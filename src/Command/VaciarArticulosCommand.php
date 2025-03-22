@@ -38,15 +38,21 @@ class VaciarArticulosCommand extends Command
 
         try {
             $em = $this->doctrine->getManager();
+            $conn = $em->getConnection();
 
             // Preguntar si también quiere borrar rubros y subrubros
             $borrarTodo = $io->confirm(
-                '¿Desea borrar también los rubros y subrubros?',
+                '¿Desea borrar también los rubros, subrubros y marcas?',
                 false
             );
 
+            // Establecer las claves foráneas en articulo_archivo como NULL
+            $conn->executeStatement('UPDATE articulo_archivo SET codigo = NULL');
+            $conn->executeStatement('UPDATE pedido_detalle SET codigo = NULL');
+            $io->info('Se han desvinculado los archivos de los artículos.');
+
             if ($borrarTodo) {
-                // Borrar artículos primero debido a las restricciones de clave foránea
+                // Borrar artículos 
                 $articulosEliminados = $em->createQuery('DELETE FROM App\Entity\Articulo a')
                     ->execute();
 
@@ -57,12 +63,17 @@ class VaciarArticulosCommand extends Command
                 // Borrar rubros
                 $rubrosEliminados = $em->createQuery('DELETE FROM App\Entity\Rubro r')
                     ->execute();
+                
+                // Borrar marcas
+                $marcasEliminadas = $em->createQuery('DELETE FROM App\Entity\Marca m')
+                    ->execute();
 
                 $io->success(sprintf(
-                    'Se han eliminado: %d artículos, %d subrubros y %d rubros',
+                    'Se han eliminado: %d artículos, %d subrubros, %d rubros y %d marcas',
                     $articulosEliminados,
                     $subrubrosEliminados,
-                    $rubrosEliminados
+                    $rubrosEliminados,
+                    $marcasEliminadas
                 ));
             } else {
                 // Solo borrar artículos
@@ -78,4 +89,4 @@ class VaciarArticulosCommand extends Command
             return Command::FAILURE;
         }
     }
-} 
+}

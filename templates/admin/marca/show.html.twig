@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Detalles de Marca{% endblock %}
+
+{% block body %}
+    <h1>Detalles de Marca</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Código</th>
+                <td>{{ marca.codigo }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ marca.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Habilitado</th>
+                <td>{{ marca.habilitado ? 'Sí' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_marca_index') }}" class="btn btn-secondary">Volver al listado</a>
+    <a href="{{ path('app_admin_marca_edit', {'codigo': marca.codigo}) }}" class="btn btn-primary">Editar</a>
+
+    {{ include('admin/marca/_delete_form.html.twig') }}
+{% endblock %}

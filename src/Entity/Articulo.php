@@ -24,8 +24,9 @@ class Articulo
     private ?Subrubro $subrubro = null;
 
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $marca = null;
+    #[ORM\ManyToOne(inversedBy: 'articulos')]
+    #[ORM\JoinColumn(name: 'marca_codigo', referencedColumnName: 'codigo', nullable: true)]
+    private ?Marca $marca = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $modelo = null;
@@ -102,12 +103,12 @@ class Articulo
         return $this;
     }
 
-    public function getMarca(): ?string
+    public function getMarca(): ?Marca
     {
         return $this->marca;
     }
 
-    public function setMarca(?string $marca): self
+    public function setMarca(?Marca $marca): self
     {
         $this->marca = $marca;
         return $this;

@@ -20,8 +20,23 @@ class PedidoDetalle
     private ?Pedido $pedido = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(name: 'codigo', referencedColumnName: 'codigo')]
+    #[ORM\JoinColumn(name: 'articulo_codigo', referencedColumnName: 'codigo', nullable: true)]
     private ?Articulo $articulo = null;
+    
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $articuloCodigo = null;
+    
+    #[ORM\Column(length: 255)]
+    private ?string $articuloDetalle = null;
+    
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $articuloModelo = null;
+    
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $articuloMarca = null;
+    
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
+    private ?string $articuloImpuesto = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Assert\NotBlank]
@@ -32,7 +47,7 @@ class PedidoDetalle
     private ?string $precioUnitario = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
-    private ?string $porcentajeDescuento = '0';
+    private ?string $clienteDescuento = '0';
 
     public function getId(): ?int
     {
@@ -58,11 +73,17 @@ class PedidoDetalle
     public function setArticulo(?Articulo $articulo): static
     {
         $this->articulo = $articulo;
+        
         if ($articulo) {
+            $this->setArticuloCodigo($articulo->getCodigo());
+            $this->setArticuloDetalle($articulo->getDetalle());
+            $this->setArticuloModelo($articulo->getModelo());
+            $this->setArticuloMarca($articulo->getMarca() ? $articulo->getMarca()->getNombre() : null);
+            $this->setArticuloImpuesto($articulo->getImpuesto());
             $this->setPrecioUnitario($articulo->getPrecioLista());
         }
+        
         return $this;
-
     }
 
     public function getCantidad(): ?string
@@ -87,14 +108,14 @@ class PedidoDetalle
         return $this;
     }
 
-    public function getPorcentajeDescuento(): ?string
+    public function getClienteDescuento(): ?string
     {
-        return $this->porcentajeDescuento;
+        return $this->clienteDescuento;
     }
 
-    public function setPorcentajeDescuento(string $porcentajeDescuento): static
+    public function setClienteDescuento(string $clienteDescuento): static
     {
-        $this->porcentajeDescuento = $porcentajeDescuento;
+        $this->clienteDescuento = $clienteDescuento;
         return $this;
     }
 
@@ -105,16 +126,75 @@ class PedidoDetalle
         }
 
         $subtotal = floatval($this->cantidad) * floatval($this->precioUnitario);
-        if ($this->porcentajeDescuento) {
-            $descuento = $subtotal * (floatval($this->porcentajeDescuento) / 100);
-            $subtotal -= $descuento;
-        }
-
+        /**
+         * @todo Revisar si es necesario, porque el descuento se aplicar en el servicio de precios
+         * 
+         */
+        // if ($this->clienteDescuento) {
+        //     $descuento = $subtotal * (floatval($this->clienteDescuento) / 100);
+        //     $subtotal -= $descuento;
+        // }
+        
         return $subtotal;
     }
 
     public function __toString(): string
     {
-        return $this->articulo ? $this->articulo->getDetalle() : '';
+        return $this->articuloDetalle ?: ($this->articulo ? $this->articulo->getDetalle() : '');
     }
-} 
+    
+    public function getArticuloCodigo(): ?string
+    {
+        return $this->articuloCodigo;
+    }
+
+    public function setArticuloCodigo(?string $articuloCodigo): static
+    {
+        $this->articuloCodigo = $articuloCodigo;
+        return $this;
+    }
+
+    public function getArticuloDetalle(): ?string
+    {
+        return $this->articuloDetalle;
+    }
+
+    public function setArticuloDetalle(string $articuloDetalle): static
+    {
+        $this->articuloDetalle = $articuloDetalle;
+        return $this;
+    }
+
+    public function getArticuloModelo(): ?string
+    {
+        return $this->articuloModelo;
+    }
+
+    public function setArticuloModelo(?string $articuloModelo): static
+    {
+        $this->articuloModelo = $articuloModelo;
+        return $this;
+    }
+    
+    public function getArticuloMarca(): ?string
+    {
+        return $this->articuloMarca;
+    }
+
+    public function setArticuloMarca(?string $articuloMarca): static
+    {
+        $this->articuloMarca = $articuloMarca;
+        return $this;
+    }
+    
+    public function getArticuloImpuesto(): ?string
+    {
+        return $this->articuloImpuesto;
+    }
+
+    public function setArticuloImpuesto(?string $articuloImpuesto): static
+    {
+        $this->articuloImpuesto = $articuloImpuesto;
+        return $this;
+    }
+}

@@ -68,15 +68,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for detalle in pedido.detalles %}
-                                    <tr>
-                                        <td>{{ detalle.articulo.codigo }}</td>
-                                        <td>{{ detalle.articulo.detalle }}</td>
-                                        <td class="text-center">{{ detalle.cantidad }}</td>
-                                        <td class="text-end">${{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
-                                        <td class="text-end">${{ detalle.subtotal|number_format(2, ',', '.') }}</td>
-                                    </tr>
-                                {% endfor %}
+                                
                             </tbody>
                             <tfoot>
                                 <tr>

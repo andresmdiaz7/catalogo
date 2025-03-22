@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Marca{% endblock %}
+
+{% block body %}
+    <h1>Editar Marca</h1>
+
+    {{ include('admin/marca/_form.html.twig') }}
+
+    <a href="{{ path('app_admin_marca_index') }}" class="btn btn-secondary">Volver al listado</a>
+
+    {{ include('admin/marca/_delete_form.html.twig') }}
+{% endblock %}

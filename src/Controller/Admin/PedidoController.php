@@ -78,7 +78,7 @@ class PedidoController extends AdminController
                 $entityManager->flush();
                 $this->addSuccessFlash('Pedido eliminado correctamente.');
             } catch (\Exception $e) {
-                $this->addErrorFlash('No se puede eliminar el pedido.');
+                $this->addErrorFlash('No se puede eliminar el pedido.'. $e->getMessage());
             }
         }
 
