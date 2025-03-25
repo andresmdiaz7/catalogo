@@ -46,10 +46,12 @@ class VaciarArticulosCommand extends Command
                 false
             );
 
-            // Establecer las claves foráneas en articulo_archivo como NULL
-            $conn->executeStatement('UPDATE articulo_archivo SET codigo = NULL');
-            $conn->executeStatement('UPDATE pedido_detalle SET codigo = NULL');
-            $io->info('Se han desvinculado los archivos de los artículos.');
+            // Desactivamos temporalmente las restricciones de clave foránea
+            $conn->executeStatement('SET FOREIGN_KEY_CHECKS=0');
+            
+            // Eliminar las relaciones en la tabla pivote
+            $conn->executeStatement('DELETE FROM articulo_archivo');
+            $io->info('Se han eliminado las relaciones entre artículos y archivos.');
 
             if ($borrarTodo) {
                 // Borrar artículos 
@@ -82,6 +84,9 @@ class VaciarArticulosCommand extends Command
 
                 $io->success(sprintf('Se han eliminado %d artículos', $articulosEliminados));
             }
+            
+            // Restauramos las restricciones de clave foránea
+            $conn->executeStatement('SET FOREIGN_KEY_CHECKS=1');
 
             return Command::SUCCESS;
         } catch (\Exception $e) {

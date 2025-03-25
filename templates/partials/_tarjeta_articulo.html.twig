@@ -2,13 +2,6 @@
     <div class="card-header text-center">
         {{ articulo.marca }}
     </div>
-    {% set imagen_principal = null %}
-
-    {% for archivo in articulo.archivos %}
-        {% if archivo.tipoArchivo == 'imagen' and archivo.esPrincipal %}
-            {% set imagen_principal = archivo %}
-        {% endif %}
-    {% endfor %}
     
     {# Badge #}
     {% if articulo.destacado %}
@@ -18,8 +11,10 @@
             style="width: 60px; z-index: 1;">
     {% endif %}
     
+    {% set imagen_principal = articulo.imagenPrincipal %}
+
     {% if imagen_principal %}
-        <img src="{{ asset(directorio_archivos ~  imagen_principal.rutaArchivo) }}" 
+        <img src="{{ asset('uploads/archivos/' ~ imagen_principal.rutaArchivo) }}" 
             class="card-img-top" 
             alt="{{ articulo.detalle }}"
             width="400">
@@ -70,4 +65,4 @@
             </a>
         {% endif %}
     </div>
-</div> 
+</div>

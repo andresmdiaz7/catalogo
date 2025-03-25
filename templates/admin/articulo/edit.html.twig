@@ -93,23 +93,23 @@
                 <div class="card-body">
                     {% if articulo.archivos|length > 0 %}
                         <div class="row">
-                            {% for archivo in articulo.archivos %}
-                                {% if archivo.tipoArchivo == 'imagen' %}
+                            {% for articuloArchivo in articulo.archivos %}
+                                {% if articuloArchivo.archivo.tipoArchivo starts with 'image/'%}
                                     <div class="col-6 mb-3">
                                         <div class="card">
-                                            <img src="{{ asset( directorio_archivos ~ archivo.rutaArchivo) }}" 
+                                            <img src="{{ asset( directorio_archivos ~ articuloArchivo.archivo.rutaArchivo) }}" 
                                              class="card-img-top" alt="{{ articulo.detalle }}">
                                             <div class="card-body p-2">
                                                 <div class="btn-group w-100" role="group">
                                                     <form method="post" 
-                                                        action="{{ path('app_admin_articulo_set_imagen_principal', {'id': archivo.id}) }}"
+                                                        action="{{ path('app_admin_articulo_set_imagen_principal', {'id': articuloArchivo.archivo.id}) }}"
                                                         style="display: inline;">
                                                         <input type="hidden" name="_token" 
-                                                            value="{{ csrf_token('principal' ~ archivo.id) }}">
+                                                            value="{{ csrf_token('principal' ~ articuloArchivo.archivo.id) }}">
                                                         <button type="submit" 
                                                                 class="btn btn-sm btn-outline-primary"
-                                                                {{ archivo.esPrincipal ? 'disabled' : '' }}>
-                                                            {% if archivo.esPrincipal %}
+                                                                {{ articuloArchivo.esPrincipal ? 'disabled' : '' }}>
+                                                            {% if articuloArchivo.esPrincipal %}
                                                                 <i class="bi bi-star-fill"></i>
                                                             {% else %}
                                                                 <i class="bi bi-star"></i>
@@ -117,11 +117,11 @@
                                                         </button>
                                                     </form>
                                                     <form method="post" 
-                                                        action="{{ path('app_admin_articulo_delete_imagen', {'id': archivo.id}) }}"
+                                                        action="{{ path('app_admin_articulo_delete_imagen', {'id': articuloArchivo.archivo.id}) }}"
                                                         onsubmit="return confirm('¿Está seguro que desea eliminar esta imagen?');"
                                                         style="display: inline;">
                                                         <input type="hidden" name="_token" 
-                                                            value="{{ csrf_token('delete' ~ archivo.id) }}">
+                                                            value="{{ csrf_token('delete' ~ articuloArchivo.archivo.id) }}">
                                                         <button type="submit" class="btn btn-sm btn-outline-danger">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
@@ -140,23 +140,27 @@
                 </div>
 
                 
-                    <ul class="list-group list-group-flush">
-                        {% for archivo in articulo.archivos %}
-                            {% if archivo.tipoArchivo == 'documento' %}
-                                <li class="list-group-item">
-                                    <a href="{{ asset(directorio_archivos ~ archivo.rutaArchivo) }}" 
-                                        target="_blank" 
-                                        class="text-decoration-none">
-                                        <i class="bi bi-file-text pe-1"></i>
-                                        {{ archivo.nombreArchivo }}
-                                    </a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                        {% if articulo.archivos|filter(a => a.tipoArchivo == 'documento')|length == 0 %}
-                            <li class="list-group-item text-muted">No hay documentos adjuntos</li>
-                        {% endif %}
-                    </ul>
+                    {# Lista de documentos adjuntos #}
+            <ul class="list-group list-group-flush mt-3">
+                <h5>Documentos adjuntos</h5>
+                {% set tiene_documentos = false %}
+                {% for articuloArchivo in articulo.archivos %}
+                    {% if articuloArchivo.archivo.tipoArchivo == 'application/pdf' %}
+                        {% set tiene_documentos = true %}
+                        <li class="list-group-item">
+                            <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.rutaArchivo) }}" 
+                                target="_blank" 
+                                class="text-decoration-none">
+                                <i class="bi bi-file-text pe-1"></i>
+                                {{ articuloArchivo.archivo.nombreArchivo }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if not tiene_documentos %}
+                    <li class="list-group-item text-muted">No hay documentos adjuntos</li>
+                {% endif %}
+            </ul>
                 
             </div>
         </div>

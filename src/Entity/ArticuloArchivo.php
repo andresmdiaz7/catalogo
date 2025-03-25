@@ -14,20 +14,18 @@ class ArticuloArchivo
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'archivos')]
-    #[ORM\JoinColumn(name: 'codigo', referencedColumnName: 'codigo')]
+    #[ORM\JoinColumn(name: 'articulo_codigo', referencedColumnName: 'codigo', nullable: false)]
     private ?Articulo $articulo = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nombreArchivo = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $rutaArchivo = null;
-
-    #[ORM\Column(length: 100)]
-    private ?string $tipoArchivo = null;
+    #[ORM\ManyToOne(inversedBy: 'articuloArchivos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Archivo $archivo = null;
 
     #[ORM\Column]
     private ?bool $esPrincipal = false;
+    
+    #[ORM\Column(nullable: true)]
+    private ?int $posicion = null;
 
     public function getId(): ?int
     {
@@ -45,36 +43,14 @@ class ArticuloArchivo
         return $this;
     }
 
-    public function getNombreArchivo(): ?string
+    public function getArchivo(): ?Archivo
     {
-        return $this->nombreArchivo;
+        return $this->archivo;
     }
 
-    public function setNombreArchivo(string $nombreArchivo): static
+    public function setArchivo(?Archivo $archivo): static
     {
-        $this->nombreArchivo = $nombreArchivo;
-        return $this;
-    }
-
-    public function getRutaArchivo(): ?string
-    {
-        return $this->rutaArchivo;
-    }
-
-    public function setRutaArchivo(string $rutaArchivo): static
-    {
-        $this->rutaArchivo = $rutaArchivo;
-        return $this;
-    }
-
-    public function getTipoArchivo(): ?string
-    {
-        return $this->tipoArchivo;
-    }
-
-    public function setTipoArchivo(string $tipoArchivo): static
-    {
-        $this->tipoArchivo = $tipoArchivo;
+        $this->archivo = $archivo;
         return $this;
     }
 
@@ -88,4 +64,15 @@ class ArticuloArchivo
         $this->esPrincipal = $esPrincipal;
         return $this;
     }
-} 
+    
+    public function getPosicion(): ?int
+    {
+        return $this->posicion;
+    }
+    
+    public function setPosicion(?int $posicion): static
+    {
+        $this->posicion = $posicion;
+        return $this;
+    }
+}

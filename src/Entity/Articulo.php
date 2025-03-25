@@ -60,7 +60,7 @@ class Articulo
     private bool $novedad = false;
 
     
-    #[ORM\OneToMany(mappedBy: 'articulo', targetEntity: ArticuloArchivo::class)]
+    #[ORM\OneToMany(mappedBy: 'articulo', targetEntity: ArticuloArchivo::class, orphanRemoval: true)]
     private Collection $archivos;
 
     private $precios;
@@ -251,14 +251,23 @@ class Articulo
         return $this;
     }
 
-    public function getImagenPrincipal(): ?ArticuloArchivo
+    public function getImagenPrincipal(): ?Archivo
     {
-        foreach ($this->archivos as $archivo) {
-            if ($archivo->isEsPrincipal()) {
-                return $archivo;
+        foreach ($this->archivos as $articuloArchivo) {
+            if ($articuloArchivo->isEsPrincipal() && 
+                strpos($articuloArchivo->getArchivo()->getTipoArchivo(), 'image/') === 0) {
+                return $articuloArchivo->getArchivo();
             }
         }
-        return $this->archivos->first() ?: null;
+        
+        // Si no hay imagen principal, buscar primera imagen
+        foreach ($this->archivos as $articuloArchivo) {
+            if (strpos($articuloArchivo->getArchivo()->getTipoArchivo(), 'image/') === 0) {
+                return $articuloArchivo->getArchivo();
+            }
+        }
+        
+        return null;
     }
 
     public function setPrecios(array $precios): self

@@ -4,56 +4,54 @@
 
 {% block body %}
 <div class="container">
-        {#
-            Breadcrumb
-        #}
-        <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                {% if articulo.subrubro.rubro.seccion is not null %}
+    {# Breadcrumb - Sin cambios #}
+    <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {% if articulo.subrubro.rubro.seccion is not null %}
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_catalogo_seccion', {'id': articulo.subrubro.rubro.seccion.id}) }}" class="text-decoration-none">
+                    <i class="bi bi-house pe-2 text-decoration-none"></i> {{ articulo.subrubro.rubro.seccion.nombre }}
+                </a>
+            </li>
+            {% endif %}
+            {% if articulo.subrubro.rubro is not null and articulo.subrubro.rubro.seccion is not null %}
                 <li class="breadcrumb-item">
-                    <a href="{{ path('app_catalogo_seccion', {'id': articulo.subrubro.rubro.seccion.id}) }}" class="text-decoration-none">
-                        <i class="bi bi-house pe-2 text-decoration-none"></i> {{ articulo.subrubro.rubro.seccion.nombre }}
+                    <a href="{{ path('app_catalogo_seccion', { 'id': articulo.subrubro.rubro.seccion.id, 'rubro': articulo.subrubro.rubro.codigo }) }}" class="text-decoration-none">
+                        {{ articulo.subrubro.rubro.nombre }}
                     </a>
                 </li>
-                {% endif %}
-                {% if articulo.subrubro.rubro is not null and articulo.subrubro.rubro.seccion is not null %}
-                    <li class="breadcrumb-item">
-                        <a href="{{ path('app_catalogo_seccion', { 'id': articulo.subrubro.rubro.seccion.id, 'rubro': articulo.subrubro.rubro.codigo }) }}" class="text-decoration-none">
-                            {{ articulo.subrubro.rubro.nombre }}
-                        </a>
-                    </li>
-                {% endif %}
-                {% if articulo.subrubro is not null %}
-                    <li class="breadcrumb-item active class="text-decoration-none"" aria-current="page">
-                        {{ articulo.subrubro.nombre }}
-                    </li>
-                {% endif %}
-            </ol>
-        </nav>
+            {% endif %}
+            {% if articulo.subrubro is not null %}
+                <li class="breadcrumb-item active class="text-decoration-none"" aria-current="page">
+                    {{ articulo.subrubro.nombre }}
+                </li>
+            {% endif %}
+        </ol>
+    </nav>
 
     <div class="row">
         <div class="col-md-6">
             {% set tiene_imagenes = false %}
             {% set imagenes = [] %}
-            {% set imagen_principal = null %}
+            {% set imagen_principal = articulo.imagenPrincipal %}
             
-            {% for archivo in articulo.archivos %}
-                {% if archivo.tipoArchivo == 'imagen' %}
+            {# Recorrer articuloArchivos para encontrar imágenes no principales #}
+            {% for articuloArchivo in articulo.archivos %}
+                {% if articuloArchivo.archivo.tipoArchivo starts with 'image/' %}
                     {% set tiene_imagenes = true %}
-                    {% if archivo.esPrincipal %}
-                        {% set imagen_principal = archivo %}
-                    {% else %}
-                        {% set imagenes = imagenes|merge([archivo]) %}
+                    {% if not articuloArchivo.esPrincipal %}
+                        {% set imagenes = imagenes|merge([articuloArchivo.archivo]) %}
                     {% endif %}
                 {% endif %}
             {% endfor %}
 
-            {% if tiene_imagenes %}
+            {% if imagen_principal or imagenes|length > 0 %}
+                {% set tiene_imagenes = true %}
                 <div id="carouselArticulo" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         {% if imagen_principal %}
                             <div class="carousel-item active">
-                               <img src="{{ asset(directorio_archivos ~  imagen_principal.rutaArchivo) }}" 
+                               <img src="{{ asset(directorio_archivos ~ imagen_principal.rutaArchivo) }}" 
                                      class="d-block w-100 rounded shadow img-thumbnail" 
                                      alt="{{ articulo.detalle }}"
                                      style="max-height: 500px; object-fit: contain;">
@@ -62,7 +60,7 @@
                         
                         {% for imagen in imagenes %}
                             <div class="carousel-item {% if not imagen_principal and loop.first %}active{% endif %}">
-                                <img src="{{ asset(directorio_archivos ~  imagen.rutaArchivo) }}" 
+                                <img src="{{ asset(directorio_archivos ~ imagen.rutaArchivo) }}" 
                                      class="d-block w-100 rounded shadow img-thumbnail" 
                                      alt="{{ articulo.detalle }}"
                                      style="max-height: 500px; object-fit: contain;">
@@ -80,27 +78,31 @@
                         </button>
                     {% endif %}
                 </div>
-
             {% else %}
                 <div class="bg-light p-5 text-center rounded">
                     <i class="bi bi-image fs-1 text-muted"></i>
                     <p class="text-muted mt-2">No hay imágenes disponibles</p>
                 </div>
             {% endif %}
-            <ul class="list-group list-group-flush">
-                {% for archivo in articulo.archivos %}
-                    {% if archivo.tipoArchivo == 'documento' %}
+            
+            {# Lista de documentos adjuntos #}
+            <ul class="list-group list-group-flush mt-3">
+                <h5>Documentos adjuntos</h5>
+                {% set tiene_documentos = false %}
+                {% for articuloArchivo in articulo.archivos %}
+                    {% if articuloArchivo.archivo.tipoArchivo == 'application/pdf' %}
+                        {% set tiene_documentos = true %}
                         <li class="list-group-item">
-                            <a href="{{ asset(directorio_archivos ~ archivo.rutaArchivo) }}" 
+                            <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.rutaArchivo) }}" 
                                 target="_blank" 
                                 class="text-decoration-none">
                                 <i class="bi bi-file-text pe-1"></i>
-                                {{ archivo.nombreArchivo }}
+                                {{ articuloArchivo.archivo.nombreArchivo }}
                             </a>
                         </li>
                     {% endif %}
                 {% endfor %}
-                {% if articulo.archivos|filter(a => a.tipoArchivo == 'documento')|length == 0 %}
+                {% if not tiene_documentos %}
                     <li class="list-group-item text-muted">No hay documentos adjuntos</li>
                 {% endif %}
             </ul>
@@ -116,14 +118,11 @@
             <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioConDescuentoRecargo }}</p>
             <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioFinal }}</p>
 
-
-
             {% if carrito_articulos[articulo.codigo] is defined %}
                 <p class="fw-bold mb-1 text-center text-danger" style="font-size:12px">
                     Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
                 </p>
             {% endif %}
-            
             
             {% if articulo.descripcion %}
                 <div class="mb-4">
@@ -154,7 +153,6 @@
                     </div>
                 </div>
             </div>
-
             
             <a href="{{ path('app_catalogo_index') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Volver al catálogo
@@ -162,4 +160,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

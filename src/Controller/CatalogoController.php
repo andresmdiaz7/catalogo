@@ -28,22 +28,28 @@ class CatalogoController extends AbstractController
         $this->articuloPrecioService = $articuloPrecioService;
     }
 
-    #[Route('/catalogo', name: 'app_catalogo_index')]
+    #[Route('/', name: 'app_catalogo_index')]
     public function index(Request $request, ArticuloRepository $articuloRepository, PaginatorInterface $paginator): Response
     {
-        
-
         $busqueda = $request->query->get('buscar');
         
         $qb = $articuloRepository->createQueryBuilder('a')
+            ->leftJoin('a.marca', 'm')
+            ->join('a.archivos', 'aa')  // Unir con ArticuloArchivo
+            ->join('aa.archivo', 'ar')  // Unir con Archivo
             ->where('a.habilitadoWeb = :habilitadoWeb')
             ->andWhere('a.habilitadoGestion = :habilitadoGestion')
             ->andWhere('a.precioLista > :precio')
+            ->andWhere('(m.habilitado = :marcaHabilitada OR a.marca IS NULL)')
+            ->andWhere('ar.tipoArchivo LIKE :tipoImagen')  // Filtrar por tipo de archivo
             ->setParameter('habilitadoWeb', true)
             ->setParameter('habilitadoGestion', true)
             ->setParameter('precio', 0)
+            ->setParameter('marcaHabilitada', true)
+            ->setParameter('tipoImagen', 'image/%')  // Cualquier tipo de imagen
             ->orderBy('a.destacado', 'DESC')
-            ->addOrderBy('a.codigo', 'DESC');
+            ->addOrderBy('a.codigo', 'DESC')
+            ->distinct();  // Evitar duplicados
 
         if ($busqueda) {
             // Separar los términos de búsqueda y eliminar espacios en blanco
@@ -58,7 +64,7 @@ class CatalogoController extends AbstractController
                     $whereConditions[] = "(a.codigo LIKE :$paramName OR 
                                          a.detalle LIKE :$paramName OR 
                                          a.modelo LIKE :$paramName OR 
-                                         a.marca LIKE :$paramName)";
+                                         m.nombre LIKE :$paramName)";
                     $parameters[$paramName] = '%' . $termino . '%';
                 }
                 
@@ -130,12 +136,22 @@ class CatalogoController extends AbstractController
         $queryBuilder = $articuloRepository->createQueryBuilder('a')
             ->leftJoin('a.subrubro', 's')
             ->leftJoin('s.rubro', 'r')
+            ->leftJoin('a.marca', 'm')
+            ->join('a.archivos', 'aa')  // Añadir esto
+            ->join('aa.archivo', 'ar')  // Añadir esto
             ->where('r.seccion = :seccion')
             ->andWhere('a.habilitadoWeb = :habilitado')
+            ->andWhere('a.habilitadoGestion = :habilitadoGestion')
             ->andWhere('a.precioLista > :precio')
+            ->andWhere('(m.habilitado = :marcaHabilitada OR a.marca IS NULL)')
+            ->andWhere('ar.tipoArchivo LIKE :tipoImagen')  // Añadir esto
             ->setParameter('seccion', $seccion)
             ->setParameter('habilitado', true)
-            ->setParameter('precio', 0);
+            ->setParameter('habilitadoGestion', true)
+            ->setParameter('precio', 0)
+            ->setParameter('marcaHabilitada', true)
+            ->setParameter('tipoImagen', 'image/%')  // Añadir esto
+            ->distinct();  // Añadir esto
 
         // Obtener rubro y subrubro activos si existen
         $rubroActual = null;
@@ -158,7 +174,6 @@ class CatalogoController extends AbstractController
         $queryBuilder
             ->orderBy('a.destacado', 'DESC')
             ->addOrderBy('a.codigo', 'DESC');
-            //->addOrderBy('a.detalle', 'ASC');
 
         $articulos = $paginator->paginate(
             $queryBuilder->getQuery(),
