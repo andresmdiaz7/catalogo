@@ -40,14 +40,21 @@ class PedidoController extends AbstractController
                 return $this->redirectToRoute('app_cliente_cart_index');
             }
 
+            // Crear el pedido
+            // $retVal = ($this->getUser()->getTipoCliente()->getNombre())=='Mayorista' ? 'Lista 400' : 'Lista Venta';
+            $NombreListaPrecio = ($this->getUser()->getTipoCliente()->getNombre()) == 'Mayorista' ? 'Lista 400' : 'Lista Venta';
             $pedido = new Pedido();
             $pedido->setCliente($this->getUser());
+            $pedido->setDescuento($this->getUser()->getPorcentajeDescuento());
+            $pedido->setListaPrecio($NombreListaPrecio);
             $pedido->setFecha(new \DateTime());
 
             $totalPedido = 0;
             foreach ($items as $item) {
+                $articulo = $entityManager->getRepository('App\Entity\Articulo')->find($item['codigo']);
+                
                 $detalle = new PedidoDetalle();
-                $detalle->setArticulo($entityManager->getReference('App\Entity\Articulo', $item['codigo']));
+                $detalle->setArticulo($articulo);
                 $detalle->setCantidad($item['cantidad']);
                 $detalle->setPrecioUnitario($item['precio']);
                 $pedido->addDetalle($detalle);
@@ -62,13 +69,13 @@ class PedidoController extends AbstractController
 
             
             // En tu método que confirma el pedido (después de persistirlo)
-            $emailService->sendPedidoConfirmation($pedido); // Para notificar al cliente
-            $emailService->sendPedidoNotification($pedido); // Para notificar al vendedor y logística
+            //$emailService->sendPedidoConfirmation($pedido); // Para notificar al cliente
+            //$emailService->sendPedidoNotification($pedido); // Para notificar al vendedor y logística
             
 
             
-            //$entityManager->flush();
-            //$cartService->clear();
+            $entityManager->flush();
+            $cartService->clear();
             $this->addFlash('success', 'Pedido creado correctamente');
             return $this->redirectToRoute('app_cliente_pedidos');
         } catch (\Exception $e) {

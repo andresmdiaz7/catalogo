@@ -38,6 +38,9 @@ class PedidoDetalle
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $articuloImpuesto = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $articuloPrecioLista = null; // Nuevo campo articuloPrecioLista
+
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Assert\NotBlank]
     #[Assert\Positive]
@@ -45,9 +48,6 @@ class PedidoDetalle
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $precioUnitario = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
-    private ?string $clienteDescuento = '0';
 
     public function getId(): ?int
     {
@@ -80,7 +80,8 @@ class PedidoDetalle
             $this->setArticuloModelo($articulo->getModelo());
             $this->setArticuloMarca($articulo->getMarca() ? $articulo->getMarca()->getNombre() : null);
             $this->setArticuloImpuesto($articulo->getImpuesto());
-            $this->setPrecioUnitario($articulo->getPrecioLista());
+            $this->setArticuloPrecioLista($articulo->getPrecios()['precioBase']); // Asignar el precio de lista
+            $this->setPrecioUnitario($articulo->getPrecios()['precioFinal']); // Asignar el precio despues de todos los calculos
         }
         
         return $this;
@@ -108,41 +109,6 @@ class PedidoDetalle
         return $this;
     }
 
-    public function getClienteDescuento(): ?string
-    {
-        return $this->clienteDescuento;
-    }
-
-    public function setClienteDescuento(string $clienteDescuento): static
-    {
-        $this->clienteDescuento = $clienteDescuento;
-        return $this;
-    }
-
-    public function getSubtotal(): float
-    {
-        if (!$this->cantidad || !$this->precioUnitario) {
-            return 0;
-        }
-
-        $subtotal = floatval($this->cantidad) * floatval($this->precioUnitario);
-        /**
-         * @todo Revisar si es necesario, porque el descuento se aplicar en el servicio de precios
-         * 
-         */
-        // if ($this->clienteDescuento) {
-        //     $descuento = $subtotal * (floatval($this->clienteDescuento) / 100);
-        //     $subtotal -= $descuento;
-        // }
-        
-        return $subtotal;
-    }
-
-    public function __toString(): string
-    {
-        return $this->articuloDetalle ?: ($this->articulo ? $this->articulo->getDetalle() : '');
-    }
-    
     public function getArticuloCodigo(): ?string
     {
         return $this->articuloCodigo;
@@ -195,6 +161,17 @@ class PedidoDetalle
     public function setArticuloImpuesto(?string $articuloImpuesto): static
     {
         $this->articuloImpuesto = $articuloImpuesto;
+        return $this;
+    }
+
+    public function getArticuloPrecioLista(): ?string
+    {
+        return $this->articuloPrecioLista;
+    }
+
+    public function setArticuloPrecioLista(?string $articuloPrecioLista): static
+    {
+        $this->articuloPrecioLista = $articuloPrecioLista;
         return $this;
     }
 }

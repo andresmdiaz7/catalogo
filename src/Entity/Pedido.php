@@ -24,8 +24,8 @@ class Pedido
     #[ORM\JoinColumn(nullable: false)]
     private ?Cliente $cliente = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $fechaPedido = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $fechaLeido = null; // Renombrado de fechaPedido a fechaLeido
 
     #[ORM\Column(length: 20)]
     #[Assert\Choice(choices: ['Pendiente', 'Leído'])]
@@ -40,11 +40,17 @@ class Pedido
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $total = '0';
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
+    private ?string $descuento = null; // Nuevo campo descuento
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $listaPrecio = null; // Nuevo campo listaPrecio
+
     public function __construct()
     {
         $this->detalles = new ArrayCollection();
-        $this->fechaPedido = new \DateTime();
         $this->fecha = new \DateTime();
+        $this->fechaLeido = null;
     }
 
     public function getId(): ?int
@@ -74,14 +80,14 @@ class Pedido
         return $this;
     }
 
-    public function getFechaPedido(): ?\DateTimeInterface
+    public function getFechaLeido(): ?\DateTimeInterface
     {
-        return $this->fechaPedido;
+        return $this->fechaLeido;
     }
 
-    public function setFechaPedido(\DateTimeInterface $fechaPedido): static
+    public function setFechaLeido(?\DateTimeInterface $fechaLeido): static
     {
-        $this->fechaPedido = $fechaPedido;
+        $this->fechaLeido = $fechaLeido;
         return $this;
     }
 
@@ -148,12 +154,41 @@ class Pedido
         return $this;
     }
 
+    public function getDescuento(): ?string
+    {
+        return $this->descuento;
+    }
+
+    public function setDescuento(?string $descuento): static
+    {
+        $this->descuento = $descuento;
+        return $this;
+    }
+
+    public function getListaPrecio(): ?string
+    {
+        return $this->listaPrecio;
+    }
+
+    public function setListaPrecio(?string $listaPrecio): static
+    {
+        $this->listaPrecio = $listaPrecio;
+        return $this;
+    }
+
     public function recalcularTotal(): void
     {
         $total = 0;
         foreach ($this->detalles as $detalle) {
             $total += $detalle->getSubtotal();
         }
+
+        // Aplicar descuento si existe
+        if ($this->descuento) {
+            $descuento = $total * (floatval($this->descuento) / 100);
+            $total -= $descuento;
+        }
+
         $this->total = (string) $total;
     }
-} 
+}

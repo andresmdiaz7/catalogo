@@ -16,10 +16,10 @@
                 <input type="hidden" name="_token" 
                        value="{{ csrf_token('cambiar-estado' ~ pedido.id) }}">
                 <button type="submit" class="btn btn-success">
-                    {% if pedido.estado == 'enviado' %}
+                    {% if pedido.estado == 'leido' %}
                         <i class="bi bi-x-circle"></i> Marcar como Pendiente
                     {% else %}
-                        <i class="bi bi-check-circle"></i> Marcar como Enviado
+                        <i class="bi bi-check-circle"></i> Marcar como Leido
                     {% endif %}
                 </button>
             </form>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Información del Cliente</h5>
@@ -50,7 +50,7 @@
             </div>
         </div>
         
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Detalles del Pedido</h5>
@@ -62,17 +62,31 @@
                                 <tr>
                                     <th>Código</th>
                                     <th>Artículo</th>
+                                    <th>Marca</th>
                                     <th class="text-center">Cantidad</th>
                                     <th class="text-end">Precio</th>
                                     <th class="text-end">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                {% for detalle in pedido.detalles %}
+                                    <tr>
+                                        <td>{{ detalle.articuloCodigo }}</td>
+                                        <td>{{ detalle.articuloDetalle }}</td>
+                                        <td>{{ detalle.articuloMarca }}</td>
+                                        <td class="text-center">{{ detalle.cantidad }}</td>
+                                        <td class="text-end">${{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
+                                        <td class="text-end">${{ (detalle.cantidad * detalle.precioUnitario)|number_format(2, ',', '.') }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No hay detalles para este pedido.</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                    <td colspan="5" class="text-end"><strong>Total:</strong></td>
                                     <td class="text-end"><strong>${{ pedido.total|number_format(2, ',', '.') }}</strong></td>
                                 </tr>
                             </tfoot>
@@ -83,4 +97,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

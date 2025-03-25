@@ -54,8 +54,8 @@
                                 <td>{{ pedido.fecha|date('d/m/Y H:i') }}</td>
                                 <td>${{ pedido.total|number_format(2, ',', '.') }}</td>
                                 <td>
-                                    {% if pedido.estado == 'enviado' %}
-                                        <span class="badge bg-success">Enviado</span>
+                                    {% if pedido.estado == 'leido' %}
+                                        <span class="badge bg-success">Leído</span>
                                     {% else %}
                                         <span class="badge bg-warning">Pendiente</span>
                                     {% endif %}
@@ -66,19 +66,28 @@
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye"></i> Ver
                                         </a>
-                                        <form method="post" 
-                                              action="{{ path('app_admin_pedido_cambiar_estado', {'id': pedido.id, 'estado': pedido.estado == 'enviado' ? 'pendiente' : 'enviado'}) }}" 
+                                        {% if pedido.estado == 'Pendiente' %}
+                                            <form method="post" 
+                                                  action="{{ path('app_admin_pedido_delete', {'id': pedido.id}) }}" 
+                                                  onsubmit="return confirm('¿Está seguro que desea eliminar este pedido?');" 
+                                                  style="display: inline;">
+                                                <input type="hidden" name="_token" 
+                                                       value="{{ csrf_token('delete' ~ pedido.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i> Eliminar
+                                                </button>
+                                            </form>
+                                        
+                                            <form method="post" 
+                                              action="{{ path('app_admin_pedido_cambiar_estado', {'id': pedido.id, 'estado': pedido.estado == 'leido' ? 'pendiente' : 'leido'}) }}" 
                                               style="display: inline;">
                                             <input type="hidden" name="_token" 
                                                    value="{{ csrf_token('cambiar-estado-' ~ pedido.id) }}">
                                             <button type="submit" class="btn btn-sm btn-outline-success">
-                                                {% if pedido.estado == 'Enviado' %}
-                                                    <i class="bi bi-x-circle"></i> Marcar como Pendiente
-                                                {% else %}
-                                                    <i class="bi bi-check-circle"></i> Marcar como Enviado
-                                                {% endif %}
+                                                <i class="bi bi-check-circle"></i> Marcar como leído
                                             </button>
                                         </form>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>

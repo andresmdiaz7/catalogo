@@ -17,7 +17,7 @@ class PedidoController extends AdminController
     public function index(PedidoRepository $pedidoRepository): Response
     {
         return $this->render('admin/pedido/index.html.twig', [
-            'pedidos' => $pedidoRepository->findBy([], ['fechaPedido' => 'DESC'])
+            'pedidos' => $pedidoRepository->findBy([], ['fecha' => 'DESC'])
         ]);
     }
 
@@ -95,6 +95,7 @@ class PedidoController extends AdminController
         
         if ($this->isCsrfTokenValid('cambiar-estado-'.$pedido->getId(), $request->request->get('_token'))) {
             $pedido->setEstado($estado);
+            $pedido->setFechaLeido(new \DateTime());
             $entityManager->flush();
             $this->addSuccessFlash('Estado del pedido actualizado correctamente.');
             
