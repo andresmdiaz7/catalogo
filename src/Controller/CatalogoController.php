@@ -41,7 +41,7 @@ class CatalogoController extends AbstractController
             ->andWhere('a.habilitadoGestion = :habilitadoGestion')
             ->andWhere('a.precioLista > :precio')
             ->andWhere('(m.habilitado = :marcaHabilitada OR a.marca IS NULL)')
-            ->andWhere('ar.tipoArchivo LIKE :tipoImagen')  // Filtrar por tipo de archivo
+            ->andWhere('ar.tipoMime LIKE :tipoImagen')  // Filtrar por tipo de archivo
             ->setParameter('habilitadoWeb', true)
             ->setParameter('habilitadoGestion', true)
             ->setParameter('precio', 0)
@@ -144,7 +144,7 @@ class CatalogoController extends AbstractController
             ->andWhere('a.habilitadoGestion = :habilitadoGestion')
             ->andWhere('a.precioLista > :precio')
             ->andWhere('(m.habilitado = :marcaHabilitada OR a.marca IS NULL)')
-            ->andWhere('ar.tipoArchivo LIKE :tipoImagen')  // Añadir esto
+            ->andWhere('ar.tipoMime LIKE :tipoImagen')  // Añadir esto
             ->setParameter('seccion', $seccion)
             ->setParameter('habilitado', true)
             ->setParameter('habilitadoGestion', true)

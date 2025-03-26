@@ -1,0 +1,86 @@
+{# templates/admin/articulo/_modal_asociar_archivos.html.twig #}
+
+<div class="modal fade" id="modalAsociarArchivos" tabindex="-1" aria-labelledby="modalAsociarArchivosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAsociarArchivosLabel">Asociar archivos existentes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                {# Añadir el input hidden para el token CSRF #}
+                <input type="hidden" name="_token" id="token_asociar_archivos" value="{{ csrf_token('asociar_archivos' ~ articulo.codigo) }}">
+                
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="buscarArchivo" placeholder="Buscar archivos...">
+                        <button class="btn btn-outline-secondary" type="button" id="btnBuscarArchivo">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="accordion mb-3">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="filtrosHeader">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse">
+                                Filtros avanzados
+                            </button>
+                        </h2>
+                        <div id="filtrosCollapse" class="accordion-collapse collapse" aria-labelledby="filtrosHeader">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Tipo de archivo</label>
+                                        <select class="form-select" id="filtroTipo">
+                                            <option value="">Todos los tipos</option>
+                                            <option value="imagen">Imágenes</option>
+                                            <option value="documento">Documentos</option>
+                                            <option value="video">Videos</option>
+                                            <option value="otro">Otros</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Fecha desde</label>
+                                        <input type="date" class="form-control" id="filtroFechaDesde">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Fecha hasta</label>
+                                        <input type="date" class="form-control" id="filtroFechaHasta">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="archivos-resultados">
+                    <div class="row" id="resultadosArchivos">
+                        <!-- Aquí se cargarán los resultados de la búsqueda -->
+                        <div class="col-12 text-center py-5" id="archivosMensaje">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Realice una búsqueda para ver los archivos disponibles.</p>
+                        </div>
+                    </div>
+                    
+                    <nav aria-label="Paginación de archivos" class="mt-3 d-none" id="paginacionArchivos">
+                        <ul class="pagination justify-content-center">
+                            <!-- Paginación generada por JS -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <span class="selected-count">0</span> archivos seleccionados
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnAsociarSeleccionados" disabled>
+                        Asociar seleccionados
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

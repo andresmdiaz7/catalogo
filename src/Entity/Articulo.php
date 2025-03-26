@@ -63,11 +63,15 @@ class Articulo
     #[ORM\OneToMany(mappedBy: 'articulo', targetEntity: ArticuloArchivo::class, orphanRemoval: true)]
     private Collection $archivos;
 
+    #[ORM\OneToMany(mappedBy: 'articulo', targetEntity: ArticuloArchivo::class, orphanRemoval: true)]
+    private Collection $articuloArchivos;
+
     private $precios;
 
     public function __construct()
     {
         $this->archivos = new ArrayCollection();
+        $this->articuloArchivos = new ArrayCollection();
     }
 
     public function getCodigo(): ?string
@@ -268,6 +272,36 @@ class Articulo
         }
         
         return null;
+    }
+
+    /**
+     * @return Collection<int, ArticuloArchivo>
+     */
+    public function getArticuloArchivos(): Collection
+    {
+        return $this->articuloArchivos;
+    }
+    
+    public function addArticuloArchivo(ArticuloArchivo $articuloArchivo): self
+    {
+        if (!$this->articuloArchivos->contains($articuloArchivo)) {
+            $this->articuloArchivos->add($articuloArchivo);
+            $articuloArchivo->setArticulo($this);
+        }
+        
+        return $this;
+    }
+    
+    public function removeArticuloArchivo(ArticuloArchivo $articuloArchivo): self
+    {
+        if ($this->articuloArchivos->removeElement($articuloArchivo)) {
+            // set the owning side to null (unless already changed)
+            if ($articuloArchivo->getArticulo() === $this) {
+                $articuloArchivo->setArticulo(null);
+            }
+        }
+        
+        return $this;
     }
 
     public function setPrecios(array $precios): self

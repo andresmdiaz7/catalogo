@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArchivoRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Archivo
 {
     #[ORM\Id]
@@ -16,13 +17,16 @@ class Archivo
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nombreArchivo = null;
+    private ?string $file_name = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $rutaArchivo = null;
+    private ?string $file_path = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $tipoArchivo = null;
+    private ?string $tipoMime = null;
+    
+    #[ORM\Column]
+    private ?int $tamanio = null;
     
     #[ORM\OneToMany(mappedBy: 'archivo', targetEntity: ArticuloArchivo::class, orphanRemoval: true)]
     private Collection $articuloArchivos;
@@ -30,9 +34,19 @@ class Archivo
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $hash = null;
 
+    #[ORM\Column(type: "datetime")]
+    private ?\DateTimeInterface $fechaCreacion = null;
+
     public function __construct()
     {
         $this->articuloArchivos = new ArrayCollection();
+        $this->fechaCreacion = new \DateTime();
+    }
+
+    #[ORM\PrePersist]
+    public function setFechaCreacionValue(): void
+    {
+        $this->fechaCreacion = new \DateTime();
     }
 
     public function getId(): ?int
@@ -40,36 +54,61 @@ class Archivo
         return $this->id;
     }
 
-    public function getNombreArchivo(): ?string
+    /**
+     * @return string|null
+     */
+    public function getFileName(): ?string
     {
-        return $this->nombreArchivo;
+        return $this->file_name;
     }
 
-    public function setNombreArchivo(string $nombreArchivo): static
+    /**
+     * @param string $fileName
+     * @return self
+     */
+    public function setFileName(string $fileName): self
     {
-        $this->nombreArchivo = $nombreArchivo;
+        $this->file_name = $fileName;
         return $this;
     }
 
-    public function getRutaArchivo(): ?string
+    /**
+     * @return string|null
+     */
+    public function getFilePath(): ?string
     {
-        return $this->rutaArchivo;
+        return $this->file_path;
     }
 
-    public function setRutaArchivo(string $rutaArchivo): static
+    /**
+     * @param string $filePath
+     * @return self
+     */
+    public function setFilePath(string $filePath): self
     {
-        $this->rutaArchivo = $rutaArchivo;
+        $this->file_path = $filePath;
         return $this;
     }
 
-    public function getTipoArchivo(): ?string
+    public function getTipoMime(): ?string
     {
-        return $this->tipoArchivo;
+        return $this->tipoMime;
     }
 
-    public function setTipoArchivo(string $tipoArchivo): static
+    public function setTipoMime(string $tipoMime): self
     {
-        $this->tipoArchivo = $tipoArchivo;
+        $this->tipoMime = $tipoMime;
+        return $this;
+    }
+    
+    public function getTamanio(): ?int
+    {
+        return $this->tamanio;
+    }
+    
+    public function setTamanio(int $tamanio): self
+    {
+        $this->tamanio = $tamanio;
         return $this;
     }
     
@@ -78,10 +117,29 @@ class Archivo
         return $this->hash;
     }
     
-    public function setHash(?string $hash): static
+    public function setHash(?string $hash): self
     {
         $this->hash = $hash;
         return $this;
+    }
+
+    public function getFechaCreacion(): ?\DateTimeInterface
+    {
+        return $this->fechaCreacion;
+    }
+
+    public function setFechaCreacion(\DateTimeInterface $fechaCreacion): self
+    {
+        $this->fechaCreacion = $fechaCreacion;
+        return $this;
+    }
+
+    /**
+     * Obtiene la fecha de creación formateada
+     */
+    public function getFechaCreacionFormateada(string $formato = 'd/m/Y H:i'): string
+    {
+        return $this->fechaCreacion ? $this->fechaCreacion->format($formato) : '';
     }
 
     /**
@@ -92,7 +150,7 @@ class Archivo
         return $this->articuloArchivos;
     }
 
-    public function addArticuloArchivo(ArticuloArchivo $articuloArchivo): static
+    public function addArticuloArchivo(ArticuloArchivo $articuloArchivo): self
     {
         if (!$this->articuloArchivos->contains($articuloArchivo)) {
             $this->articuloArchivos->add($articuloArchivo);
@@ -102,7 +160,7 @@ class Archivo
         return $this;
     }
 
-    public function removeArticuloArchivo(ArticuloArchivo $articuloArchivo): static
+    public function removeArticuloArchivo(ArticuloArchivo $articuloArchivo): self
     {
         if ($this->articuloArchivos->removeElement($articuloArchivo)) {
             // set the owning side to null (unless already changed)
@@ -112,5 +170,49 @@ class Archivo
         }
 
         return $this;
+    }
+
+    public function esImagen(): bool
+    {
+        return str_starts_with($this->tipoMime, 'image/');
+    }
+
+    public function getTamanioFormateado(): string
+    {
+        if ($this->tamanio >= 1048576) {
+            return round($this->tamanio / 1048576, 2) . ' MB';
+        } elseif ($this->tamanio >= 1024) {
+            return round($this->tamanio / 1024, 2) . ' KB';
+        } else {
+            return $this->tamanio . ' bytes';
+        }
+    }
+    
+    /**
+     * Obtiene el tipo de icono según el tipo MIME
+     */
+    public function getTipoIcono(): string
+    {
+        if (str_starts_with($this->tipoMime, 'image/')) {
+            return 'image';
+        } elseif (str_starts_with($this->tipoMime, 'application/pdf')) {
+            return 'pdf';
+        } elseif (str_starts_with($this->tipoMime, 'application/msword') || 
+                  str_starts_with($this->tipoMime, 'application/vnd.openxmlformats-officedocument.wordprocessingml')) {
+            return 'word';
+        } elseif (str_starts_with($this->tipoMime, 'application/vnd.ms-excel') || 
+                  str_starts_with($this->tipoMime, 'application/vnd.openxmlformats-officedocument.spreadsheetml')) {
+            return 'excel';
+        } else {
+            return 'alt';
+        }
+    }
+    
+    /**
+     * Obtiene la URL completa del archivo
+     */
+    public function getUrlArchivo(): string
+    {
+        return '/uploads/archivos/' . $this->file_path;
     }
 }

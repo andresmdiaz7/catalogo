@@ -1,0 +1,42 @@
+{# templates/admin/articulo/_modal_subir_archivos.html.twig #}
+
+<div class="modal fade" id="modalSubirArchivos" tabindex="-1" aria-labelledby="modalSubirArchivosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSubirArchivosLabel">Subir nuevos archivos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+
+                {# Añadir el input hidden para el token CSRF #}
+                <input type="hidden" name="_token" id="token_subir_archivos" value="{{ csrf_token('subir_archivos' ~ articulo.codigo) }}">
+
+                <div id="drop-area" class="mb-4 rounded">
+                    <div class="text-center">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                        <p>Arrastra archivos aquí o <span class="text-primary">explora</span></p>
+                        <p class="small text-muted">Formatos permitidos: JPG, PNG, GIF, PDF, DOC, DOCX (máx. 10MB)</p>
+                    </div>
+                    <input type="file" id="archivos-input" class="d-none" multiple>
+                </div>
+                
+                <div id="vista-previa" class="row row-cols-1 row-cols-md-4 g-4">
+                    <!-- Aquí se mostrarán las previsualizaciones -->
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <button type="button" id="btn-cancelar-subida" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                </div>
+                <div>
+                    <button type="button" id="btn-confirmar-subida" class="btn btn-primary" disabled>
+                        Subir y asociar archivos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

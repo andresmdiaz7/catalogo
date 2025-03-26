@@ -10,11 +10,20 @@
             alt="Badge"
             style="width: 60px; z-index: 1;">
     {% endif %}
+ 
     
-    {% set imagen_principal = articulo.imagenPrincipal %}
+    {# Buscar imagen principal entre todos los articuloArchivos #}
+    {% set imagen_principal = null %}
+    {% for articuloArchivo in articulo.articuloArchivos %}
+        {% if articuloArchivo.esPrincipal and articuloArchivo.archivo.esImagen %}
+            {% set imagen_principal = articuloArchivo.archivo %}
+        {% endif %}
+    {% endfor %}
+        
+    {# Si existe la imagen principal, mostrarla, sino mostrar una imagen por defecto #}
 
     {% if imagen_principal %}
-        <img src="{{ asset('uploads/archivos/' ~ imagen_principal.rutaArchivo) }}" 
+        <img src="{{ asset('uploads/archivos/' ~ imagen_principal.filePath) }}" 
             class="card-img-top" 
             alt="{{ articulo.detalle }}"
             width="400">

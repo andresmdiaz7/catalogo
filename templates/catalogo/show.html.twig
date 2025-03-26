@@ -33,11 +33,18 @@
         <div class="col-md-6">
             {% set tiene_imagenes = false %}
             {% set imagenes = [] %}
-            {% set imagen_principal = articulo.imagenPrincipal %}
+
+            {# Buscar imagen principal entre todos los articuloArchivos #}
+            {% set imagen_principal = null %}
+            {% for articuloArchivo in articulo.articuloArchivos %}
+                {% if articuloArchivo.esPrincipal and articuloArchivo.archivo.esImagen %}
+                    {% set imagen_principal = articuloArchivo.archivo %}
+                {% endif %}
+            {% endfor %}
             
             {# Recorrer articuloArchivos para encontrar imágenes no principales #}
             {% for articuloArchivo in articulo.archivos %}
-                {% if articuloArchivo.archivo.tipoArchivo starts with 'image/' %}
+                {% if articuloArchivo.archivo.tipoMime starts with 'image/' %}
                     {% set tiene_imagenes = true %}
                     {% if not articuloArchivo.esPrincipal %}
                         {% set imagenes = imagenes|merge([articuloArchivo.archivo]) %}
@@ -51,7 +58,7 @@
                     <div class="carousel-inner">
                         {% if imagen_principal %}
                             <div class="carousel-item active">
-                               <img src="{{ asset(directorio_archivos ~ imagen_principal.rutaArchivo) }}" 
+                               <img src="{{ asset(directorio_archivos ~ imagen_principal.filePath) }}" 
                                      class="d-block w-100 rounded shadow img-thumbnail" 
                                      alt="{{ articulo.detalle }}"
                                      style="max-height: 500px; object-fit: contain;">
@@ -60,7 +67,7 @@
                         
                         {% for imagen in imagenes %}
                             <div class="carousel-item {% if not imagen_principal and loop.first %}active{% endif %}">
-                                <img src="{{ asset(directorio_archivos ~ imagen.rutaArchivo) }}" 
+                                <img src="{{ asset(directorio_archivos ~ imagen.filePath) }}" 
                                      class="d-block w-100 rounded shadow img-thumbnail" 
                                      alt="{{ articulo.detalle }}"
                                      style="max-height: 500px; object-fit: contain;">
@@ -90,7 +97,7 @@
                 <h5>Documentos adjuntos</h5>
                 {% set tiene_documentos = false %}
                 {% for articuloArchivo in articulo.archivos %}
-                    {% if articuloArchivo.archivo.tipoArchivo == 'application/pdf' %}
+                    {% if articuloArchivo.archivo.tipoMime == 'application/pdf' %}
                         {% set tiene_documentos = true %}
                         <li class="list-group-item">
                             <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.rutaArchivo) }}" 

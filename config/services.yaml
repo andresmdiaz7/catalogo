@@ -33,3 +33,7 @@ services:
     App\EventListener\ArticuloPreciosListener:
         tags:
             - { name: 'doctrine.orm.entity_listener' }
+
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%directorio_archivos%'

@@ -108,15 +108,22 @@ class ImportarImagenesCommand extends Command
                     $mimeType = $this->mimeTypes->getMimeTypes($extension)[0] ?? 'application/octet-stream';
                     
                     $archivo = new Archivo();
-                    $archivo->setNombreArchivo(basename($rutaArchivo));
-                    $archivo->setRutaArchivo($rutaArchivo);
-                    $archivo->setTipoArchivo($mimeType);
+                    $archivo->setFileName(basename($rutaArchivo));
+                    $archivo->setFilePath($rutaArchivo);
+                    $archivo->setTipoMime($mimeType);
+                    $archivo->setTamanio(filesize($rutaCompleta) );;  
                     $archivo->setHash($hash);
                     
                     $this->entityManager->persist($archivo);
                     $archivosCreados++;
                 } else {
+                    $extension = pathinfo($rutaArchivo, PATHINFO_EXTENSION);
+                    $mimeType = $this->mimeTypes->getMimeTypes($extension)[0] ?? 'application/octet-stream';
                     $archivo = $archivoExistente;
+                    $archivo->setFileName(basename($rutaArchivo));
+                    $archivo->setFilePath($rutaArchivo);
+                    $archivo->setTamanio(filesize($rutaCompleta) );;  
+                    
                     $archivosReutilizados++;
                 }
                 
@@ -151,7 +158,7 @@ class ImportarImagenesCommand extends Command
             $count++;
 
             // Flush cada cierto número de registros para liberar memoria
-            if ($count % 100 === 0) {
+            if ($count % 1000 === 0) {
                 $this->entityManager->flush();
                 $this->entityManager->clear(); // Limpiar el gestor de entidades
                 
