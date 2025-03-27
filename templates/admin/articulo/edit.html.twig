@@ -65,10 +65,9 @@
                                             {{ articuloArchivo.archivo.fileName }}
                                         </h6>
                                         <p class="card-text small text-muted mb-2">
-                                            {{ articuloArchivo.archivo.tipoMime }}
-                                            <br>
                                             {{ articuloArchivo.archivo.tamanioFormateado }}
                                         </p>
+                                        {% if articuloArchivo.archivo.esImagen %}
                                         <div class="form-check mb-2">
                                             <input class="form-check-input archivo-principal" 
                                                 type="radio" 
@@ -76,9 +75,10 @@
                                                 value="{{ articuloArchivo.id }}"
                                                 {% if articuloArchivo.esPrincipal %}checked{% endif %}>
                                             <label class="form-check-label" for="archivoPrincipal_{{ articuloArchivo.id }}">
-                                                Archivo principal
+                                                Imagen principal
                                             </label>
                                         </div>
+                                        {% endif %}
                                     </div>
                                     <div class="card-footer">
                                         <div class="d-flex justify-content-between">
@@ -134,7 +134,7 @@
 
         /* Estilos para thumbnails y previsualizaciones */
         .archivo-thumbnail {
-            height: 150px;
+            height: 200px;
             object-fit: cover;
             width: 100%;
         }
@@ -148,7 +148,8 @@
         }
         
         .card-archivo {
-            height: 150px;
+            height: 200px;
+            
             overflow: hidden;
         }
     </style>

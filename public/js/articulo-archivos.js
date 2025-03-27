@@ -526,6 +526,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch(`/admin/articulo-archivo/${articuloId}/asociar-archivos`, {
             method: 'POST',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
             body: formData
         })
         .then(response => {
@@ -597,6 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch(`/admin/articulo-archivo/${articuloId}/subir-archivos`, {
             method: 'POST',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
             body: formData
         })
         .then(response => {
@@ -653,6 +655,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch(`/admin/articulo-archivo/${id}/desasociar`, {
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             body: formData
         })
         .then(response => {
@@ -663,25 +668,44 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (data.success) {
-                // Eliminar elemento de la galería
-                const archivoItem = document.querySelector(`.archivo-item[data-id="${id}"]`);
-                if (archivoItem) {
-                    archivoItem.remove();
-                    
-                    // Verificar si hay archivos
-                    const galeria = document.getElementById('archivos-galeria');
-                    if (galeria && galeria.querySelectorAll('.archivo-item').length === 0) {
-                        galeria.innerHTML = `
-                            <div class="alert alert-info">
-                                Este artículo no tiene archivos asociados.
-                            </div>
-                        `;
-                    }
+                // Eliminar la tarjeta del archivo
+                const card = document.querySelector(`.archivo-item[data-id="${id}"]`);
+                if (card) {
+                    card.remove();
                 }
                 
-                mostrarNotificacion('Archivo desasociado correctamente', 'success');
+                // Si se asignó una nueva imagen principal, actualizar la UI
+                if (data.asignadaNuevaPrincipal && data.idImagenPrincipal) {
+                    
+                    // Desmarcar todos los radio buttons primero
+                    document.querySelectorAll('.archivo-principal').forEach(radio => {
+                        radio.checked = false;
+                    });
+                    
+                    // Marcar el nuevo principal (convertir a string si es necesario para comparación)
+                    const idNuevaPrincipal = String(data.idImagenPrincipal);
+                    document.querySelectorAll('.archivo-principal').forEach(radio => {
+                        if (String(radio.value) === idNuevaPrincipal) {
+                            radio.checked = true;
+                        }
+                    });
+                    
+                    // Actualizar cualquier otro elemento visual que indique el archivo principal
+                    const contenedoresArchivos = document.querySelectorAll('.archivo-item');
+                    contenedoresArchivos.forEach(item => {
+                        // Remover indicador visual de principal de todos los items
+                        item.classList.remove('archivo-principal-activo');
+                        
+                        // Añadir indicador visual al nuevo principal
+                        if (item.dataset.id === idNuevaPrincipal) {
+                            item.classList.add('archivo-principal-activo');
+                        }
+                    });
+                }
+                
+                mostrarNotificacion(data.message, 'success');
             } else {
-                mostrarError('Error al desasociar el archivo: ' + (data.message || 'Error desconocido'));
+                mostrarError(data.message || 'Error desconocido');
             }
         })
         .catch(error => {
@@ -697,6 +721,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch(`/admin/articulo-archivo/${id}/establecer-principal`, {
             method: 'POST',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
             body: formData
         })
         .then(response => {

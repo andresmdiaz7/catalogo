@@ -4,17 +4,16 @@ namespace App\Form;
 
 use App\Entity\Articulo;
 use App\Entity\Subrubro;
+use App\Entity\Marca;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Constraints\All;
 
 class ArticuloType extends AbstractType
 {
@@ -23,21 +22,27 @@ class ArticuloType extends AbstractType
         $builder
             ->add('codigo', TextType::class, [
                 'label' => 'Código',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control', 'disabled' => true]
             ])
             ->add('detalle', TextType::class, [
                 'label' => 'Detalle',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control', 'disabled' => true]
             ])
-            ->add('marca', TextType::class, [
-                'label' => 'Marca',
+            ->add('marca', EntityType::class, [
+                'class' => Marca::class,
+                'choice_label' => 'nombre',
+                'placeholder' => 'Seleccione una marca',
                 'required' => false,
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-select', 'disabled' => true],
+                'query_builder' => function (\App\Repository\MarcaRepository $er) {
+                    return $er->createQueryBuilder('m')
+                        ->orderBy('m.nombre', 'ASC');
+                },
             ])
             ->add('modelo', TextType::class, [
                 'label' => 'Modelo',
                 'required' => false,
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control', 'disabled' => true]
             ])
             ->add('descripcion', TextareaType::class, [
                 'label' => 'Descripción',
@@ -47,17 +52,17 @@ class ArticuloType extends AbstractType
             ->add('precioLista', MoneyType::class, [
                 'label' => 'Precio de Lista',
                 'currency' => 'ARS',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control', 'disabled' => true]
             ])
             ->add('precio400', MoneyType::class, [
                 'label' => 'Precio 400',
                 'currency' => 'ARS',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control', 'disabled' => true]
             ])
             ->add('impuesto', MoneyType::class, [
                 'label' => 'Impuesto',
                 'currency' => 'ARS',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control', 'disabled' => true]
             ])
             ->add('subrubro', EntityType::class, [
                 'class' => Subrubro::class,
@@ -68,7 +73,7 @@ class ArticuloType extends AbstractType
                     return $subrubro->getRubro()->getNombre();
                 },
                 'label' => 'Subrubro',
-                'attr' => ['class' => 'form-select']
+                'attr' => ['class' => 'form-select', 'disabled' => true]
             ])
             ->add('destacado', CheckboxType::class, [
                 'label' => 'Destacado',
@@ -87,32 +92,7 @@ class ArticuloType extends AbstractType
             ])->add('habilitadoGestion', CheckboxType::class, [
                 'label' => 'Habilitado en Gestión',
                 'required' => false,
-                'attr' => ['class' => 'form-check-input']
-            ])
-
-            ->add('archivos', FileType::class, [
-                'label' => 'Imágenes o archivos',
-                'multiple' => true,
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new All([
-                        'constraints' => [
-                            new File([
-                                'maxSize' => '5M', // Tamaño máximo de 5MB
-                                'mimeTypes' => [
-                                    'image/jpeg',
-                                    'image/jpg',
-                                    'image/png',
-                                    'application/pdf',
-                                ],
-                                'mimeTypesMessage' => 'Solo se permiten archivos en formato JPG, JPEG, PNG o PDF.',
-                                'maxSizeMessage' => 'El archivo no puede superar los 5MB.',
-                            ])
-                        ],
-                    ]),
-                ],
-                
+                'attr' => ['class' => 'form-check-input', 'disabled' => true]
             ])
         ;
     }

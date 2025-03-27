@@ -194,17 +194,17 @@ class Archivo
     public function getTipoIcono(): string
     {
         if (str_starts_with($this->tipoMime, 'image/')) {
-            return 'image';
+            return 'bi-file-image';
         } elseif (str_starts_with($this->tipoMime, 'application/pdf')) {
-            return 'pdf';
+            return 'bi-file-pdf';
         } elseif (str_starts_with($this->tipoMime, 'application/msword') || 
                   str_starts_with($this->tipoMime, 'application/vnd.openxmlformats-officedocument.wordprocessingml')) {
-            return 'word';
+            return 'bi-file-word';
         } elseif (str_starts_with($this->tipoMime, 'application/vnd.ms-excel') || 
                   str_starts_with($this->tipoMime, 'application/vnd.openxmlformats-officedocument.spreadsheetml')) {
-            return 'excel';
+            return 'bi-file-excel';
         } else {
-            return 'alt';
+            return 'bi-file';
         }
     }
     

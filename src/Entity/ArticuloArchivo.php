@@ -54,7 +54,7 @@ class ArticuloArchivo
         return $this;
     }
 
-    public function isEsPrincipal(): ?bool
+    public function getEsPrincipal(): ?bool
     {
         return $this->esPrincipal;
     }

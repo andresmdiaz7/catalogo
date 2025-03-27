@@ -100,11 +100,12 @@
                     {% if articuloArchivo.archivo.tipoMime == 'application/pdf' %}
                         {% set tiene_documentos = true %}
                         <li class="list-group-item">
-                            <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.rutaArchivo) }}" 
+                            <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.filePath) }}" 
                                 target="_blank" 
                                 class="text-decoration-none">
-                                <i class="bi bi-file-text pe-1"></i>
-                                {{ articuloArchivo.archivo.nombreArchivo }}
+                                <i class="bi {{ articuloArchivo.archivo.tipoIcono }} pe-1"></i>
+                                
+                                {{ articuloArchivo.archivo.fileName }}
                             </a>
                         </li>
                     {% endif %}
