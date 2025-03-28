@@ -6,103 +6,208 @@
     <div class="container-fluid px-4">
         <h1 class="mt-4">Editar Artículo</h1>
         
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-edit me-1"></i>
-                Información del Artículo
-            </div>
-            <div class="card-body">
-                {{ form_start(form) }}
-                    {# Campos del formulario #}
-                    {{ form_row(form.codigo) }}
-                    {{ form_row(form.detalle) }}
-                    {# Otros campos del artículo... #}
-                    
-                    <div class="form-group">
-                        <button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
-                        <a href="{{ path('app_admin_articulo_index') }}" class="btn btn-secondary">Volver al listado</a>
-                    </div>
-                {{ form_end(form) }}
-                    
-                {# Campo oculto para almacenar el ID del artículo #}
-                <input type="hidden" id="articulo-id" value="{{ articulo.codigo }}"/>
-            </div>
-        </div>
+        {# Sistema de pestañas #}
+        <ul class="nav nav-tabs" id="articuloTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">
+                    <i class="fas fa-info-circle me-1"></i> Información del Artículo
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="archivos-tab" data-bs-toggle="tab" data-bs-target="#archivos" type="button" role="tab" aria-controls="archivos" aria-selected="false">
+                    <i class="fas fa-images me-1"></i> Archivos del Artículo
+                </button>
+            </li>
+        </ul>
         
-        {# SECCIÓN DE ARCHIVOS #}
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-images me-1"></i>
-                Archivos del Artículo
-                <div class="float-end">
-                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalSubirArchivos">
-                        <i class="fas fa-upload"></i> Subir nuevos
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAsociarArchivos">
-                        <i class="fas fa-link"></i> Asociar existentes
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="archivos-galeria" class="row row-cols-1 row-cols-md-4 g-4">
-                    {% if articulo.articuloArchivos|length > 0 %}
-                        {% for articuloArchivo in articulo.articuloArchivos %}
-                            <div class="col archivo-item" data-id="{{ articuloArchivo.id }}">
-                                <div class="card h-100">
-                                    <div class="card-archivo">
-                                        {% if articuloArchivo.archivo.esImagen %}
-                                            <img src="/uploads/archivos/{{ articuloArchivo.archivo.filePath }}" 
-                                                class="archivo-thumbnail" 
-                                                alt="{{ articuloArchivo.archivo.fileName }}">
-                                        {% else %}
-                                            <div class="archivo-icon">
-                                                <i class="fas fa-file fa-4x text-secondary"></i>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title text-truncate mb-2" title="{{ articuloArchivo.archivo.fileName }}">
-                                            {{ articuloArchivo.archivo.fileName }}
-                                        </h6>
-                                        <p class="card-text small text-muted mb-2">
-                                            {{ articuloArchivo.archivo.tamanioFormateado }}
-                                        </p>
-                                        {% if articuloArchivo.archivo.esImagen %}
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input archivo-principal" 
-                                                type="radio" 
-                                                name="archivoPrincipal" 
-                                                value="{{ articuloArchivo.id }}"
-                                                {% if articuloArchivo.esPrincipal %}checked{% endif %}>
-                                            <label class="form-check-label" for="archivoPrincipal_{{ articuloArchivo.id }}">
-                                                Imagen principal
-                                            </label>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="card-footer">
-                                        <div class="d-flex justify-content-between">
-                                            <a href="/uploads/archivos/{{ articuloArchivo.archivo.filePath }}" 
-                                                class="btn btn-sm btn-outline-primary" 
-                                                target="_blank">
-                                                <i class="fas fa-eye"></i> Ver
-                                            </a>
-                                            <button type="button" class="btn btn-sm btn-outline-danger btn-desasociar" data-id="{{ articuloArchivo.id }}">
-                                                <i class="fas fa-unlink"></i> Desasociar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+        {# Contenido de las pestañas #}
+        <div class="tab-content border border-light-subtle border-top-0 rounded-bottom-3 p-3" id="articuloTabContent">
+            {# Pestaña de Información #}
+            <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+                
+                <h3>Datos del Artículo</h3>
+                    {{ form_start(form) }}    
+                    <div class="row">
+                        {# Columna izquierda #}
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.codigo) }}
+                                {{ form_widget(form.codigo) }}
+                                {{ form_errors(form.codigo) }}
                             </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="col-12">
-                            <div class="alert alert-info">
-                                Este artículo no tiene archivos asociados.
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.detalle) }}
+                                {{ form_widget(form.detalle) }}
+                                {{ form_errors(form.detalle) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.marca) }}
+                                {{ form_widget(form.marca) }}
+                                {{ form_errors(form.marca) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.modelo) }}
+                                {{ form_widget(form.modelo) }}
+                                {{ form_errors(form.modelo) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.descripcion) }}
+                                {{ form_widget(form.descripcion) }}
+                                {{ form_errors(form.descripcion) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.subrubro) }}
+                                {{ form_widget(form.subrubro) }}
+                                {{ form_errors(form.subrubro) }}
                             </div>
                         </div>
-                    {% endif %}
-                </div>
+                        
+                        {# Columna derecha #}
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.precioLista) }}
+                                {{ form_widget(form.precioLista) }}
+                                {{ form_errors(form.precioLista) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.precio400) }}
+                                {{ form_widget(form.precio400) }}
+                                {{ form_errors(form.precio400) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.impuesto) }}
+                                {{ form_widget(form.impuesto) }}
+                                {{ form_errors(form.impuesto) }}
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="form-check mb-2">
+                                    {{ form_widget(form.destacado) }}
+                                    {{ form_label(form.destacado, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    {{ form_errors(form.destacado) }}
+                                </div>
+                                
+                                <div class="form-check mb-2">
+                                    {{ form_widget(form.novedad) }}
+                                    {{ form_label(form.novedad, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    {{ form_errors(form.novedad) }}
+                                </div>
+                                
+                                <div class="form-check mb-2">
+                                    {{ form_widget(form.habilitadoWeb) }}
+                                    {{ form_label(form.habilitadoWeb, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    {{ form_errors(form.habilitadoWeb) }}
+                                </div>
+
+                                <div class="form-check mb-2">
+                                    {{ form_widget(form.habilitadoGestion) }}
+                                    {{ form_label(form.habilitadoGestion, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    {{ form_errors(form.habilitadoGestion) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+                        <a href="{{ path('app_admin_articulo_index') }}" class="btn btn-secondary">Volver al listado</a>
+                    </div>
+                    
+                    {{ form_end(form) }}
+                    
+                    {# Campo oculto para almacenar el ID del artículo #}
+                    <input type="hidden" id="articulo-id" value="{{ articulo.codigo }}"/>
+            </div>
+            
+            {# Pestaña de Archivos #}
+            <div class="tab-pane fade" id="archivos" role="tabpanel" aria-labelledby="archivos-tab">
+                <div class="mb-4 border-danger">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4><i class="bi bi-images"></i> Gestión de Archivos</h4>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#modalSubirArchivos">
+                                <i class="bi bi-file-arrow-up"></i> Subir nuevos
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAsociarArchivos">
+                                <i class="bi bi-link-45deg"></i> Asociar existentes
+                            </button>
+                        </div>
+                    </div>
+                </div>   
+                    
+                        <div id="archivos-galeria" class="row row-cols-1 row-cols-md-4 g-4">
+                            {% if articulo.articuloArchivos|length > 0 %}
+                                {% for articuloArchivo in articulo.articuloArchivos %}
+                                    <div class="col archivo-item {% if articuloArchivo.esPrincipal %}archivo-principal-activo{% endif %}" data-id="{{ articuloArchivo.id }}">
+                                        <div class="card h-100 {% if articuloArchivo.esPrincipal %}border-primary{% endif %}">
+                                            
+                                            <div class="card-body">
+                                                <div class="card-archivo">
+                                                {% if articuloArchivo.archivo.esImagen %}
+                                                    <img src="/uploads/archivos/{{ articuloArchivo.archivo.filePath }}" 
+                                                        class="archivo-thumbnail" 
+                                                        alt="{{ articuloArchivo.archivo.fileName }}">
+                                                    {% if articuloArchivo.esPrincipal %}
+                                                        <span class="badge bg-primary position-absolute top-0 end-0 mt-2 me-2">Principal</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="archivo-icon">
+                                                        <i class="fas fa-file fa-4x text-secondary"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                                <h6 class="card-title text-truncate mb-2" title="{{ articuloArchivo.archivo.fileName }}">
+                                                    {{ articuloArchivo.archivo.fileName }}
+                                                </h6>
+                                                <p class="card-text small text-muted mb-2">
+                                                    {{ articuloArchivo.archivo.tamanioFormateado }}
+                                                </p>
+                                                {% if articuloArchivo.archivo.esImagen %}
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input archivo-principal" 
+                                                        type="radio" 
+                                                        name="archivoPrincipal" 
+                                                        id="archivoPrincipal_{{ articuloArchivo.id }}"
+                                                        value="{{ articuloArchivo.id }}"
+                                                        {% if articuloArchivo.esPrincipal %}checked{% endif %}>
+                                                    <label class="form-check-label" for="archivoPrincipal_{{ articuloArchivo.id }}">
+                                                        Imagen principal
+                                                    </label>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="d-flex justify-content-between">
+                                                    <a href="/uploads/archivos/{{ articuloArchivo.archivo.filePath }}" 
+                                                        class="btn btn-sm btn-outline-primary" 
+                                                        target="_blank">
+                                                        <i class="fas fa-eye"></i> Ver
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger btn-desasociar" data-id="{{ articuloArchivo.id }}">
+                                                        <i class="fas fa-unlink"></i> Desasociar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        Este artículo no tiene archivos asociados.
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    
+                
             </div>
         </div>
         
@@ -149,8 +254,46 @@
         
         .card-archivo {
             height: 200px;
-            
             overflow: hidden;
+            position: relative;
+        }
+        
+        .archivo-principal-activo .card {
+            border-color: #0d6efd !important;
+        }
+        
+        
+        
+        /* Estilo para los campos deshabilitados */
+        .form-control:disabled, .form-control[readonly],
+        .form-select:disabled, .form-select[readonly] {
+            background-color: #f8f9fa;
+            opacity: 0.8;
+        }
+        
+        /* Estilo para los checkbox */
+        .form-check {
+            padding-left: 1.75em;
+        }
+        
+        .form-check .form-check-input {
+            margin-left: -1.75em;
+        }
+        
+        /* Estilos para las pestañas */
+        .nav-tabs .nav-link {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #0d6efd;
+            border-bottom-color: #0d6efd;
+            background-color: #fff;
+        }
+        
+        .tab-content {
+            padding-top: 1rem;
         }
     </style>
 {% endblock %}
@@ -158,4 +301,29 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('js/articulo-archivos.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mantener la pestaña activa después de una recarga o error de formulario
+            let hash = window.location.hash;
+            if (hash) {
+                const tab = document.querySelector(`[data-bs-target="${hash}"]`);
+                if (tab) {
+                    new bootstrap.Tab(tab).show();
+                }
+            }
+            
+            // Actualizar URL cuando cambia la pestaña
+            const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+            tabs.forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function(e) {
+                    const id = e.target.getAttribute('data-bs-target');
+                    if (history.pushState) {
+                        history.pushState(null, null, id);
+                    } else {
+                        location.hash = id;
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
