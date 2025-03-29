@@ -146,7 +146,7 @@
                             {% if articulo.articuloArchivos|length > 0 %}
                                 {% for articuloArchivo in articulo.articuloArchivos %}
                                     <div class="col archivo-item {% if articuloArchivo.esPrincipal %}archivo-principal-activo{% endif %}" data-id="{{ articuloArchivo.id }}">
-                                        <div class="card h-100 {% if articuloArchivo.esPrincipal %}border-primary{% endif %}">
+                                        <div class="card h-100">
                                             
                                             <div class="card-body">
                                                 <div class="card-archivo">
@@ -154,9 +154,6 @@
                                                     <img src="/uploads/archivos/{{ articuloArchivo.archivo.filePath }}" 
                                                         class="archivo-thumbnail" 
                                                         alt="{{ articuloArchivo.archivo.fileName }}">
-                                                    {% if articuloArchivo.esPrincipal %}
-                                                        <span class="badge bg-primary position-absolute top-0 end-0 mt-2 me-2">Principal</span>
-                                                    {% endif %}
                                                 {% else %}
                                                     <div class="archivo-icon">
                                                         <i class="fas fa-file fa-4x text-secondary"></i>

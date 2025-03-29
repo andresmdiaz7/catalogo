@@ -334,12 +334,6 @@ class ArticuloArchivoController extends AbstractController
                     'idImagenPrincipal' => $nuevaPrincipal->getId()
                 ]);
             }
-            
-            // Si no era principal, simplemente retornar éxito
-            return $this->json([
-                'success' => true, 
-                'message' => 'Archivo desasociado correctamente'
-            ]);
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false, 
@@ -380,7 +374,8 @@ class ArticuloArchivoController extends AbstractController
             
             return $this->json([
                 'success' => true, 
-                'message' => 'Archivo establecido como principal correctamente'
+                'message' => 'Archivo establecido como principal correctamente',
+                'idImagenPrincipal' => $articuloArchivo->getId()
             ]);
         } catch (\Exception $e) {
             return $this->json([

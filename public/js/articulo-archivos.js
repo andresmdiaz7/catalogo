@@ -690,15 +690,31 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
                     
-                    // Actualizar cualquier otro elemento visual que indique el archivo principal
+                    // Actualizar elementos visuales que indican el archivo principal
                     const contenedoresArchivos = document.querySelectorAll('.archivo-item');
                     contenedoresArchivos.forEach(item => {
                         // Remover indicador visual de principal de todos los items
                         item.classList.remove('archivo-principal-activo');
                         
-                        // Añadir indicador visual al nuevo principal
+                        // Remover el badge-principal de todos los items
+                        const badgeAntiguo = item.querySelector('.badge-principal');
+                        if (badgeAntiguo) {
+                            badgeAntiguo.remove();
+                        }
+                        
+                        // Añadir indicador visual y badge al nuevo principal
                         if (item.dataset.id === idNuevaPrincipal) {
                             item.classList.add('archivo-principal-activo');
+                            
+                            // Crear y añadir el badge-principal
+                            const badge = document.createElement('span');
+                            badge.className = 'badge-principal badge bg-primary position-absolute top-0 end-0 mt-2 me-2';
+                            badge.textContent = 'Principal';
+                            
+                            // Insertar el badge en una posición adecuada dentro del item
+                            // Puedes ajustar el selector según la estructura de tu HTML
+                            const imagenContainer = item.querySelector('.card-archivo') || item;
+                            imagenContainer.appendChild(badge);
                         }
                     });
                 }
@@ -732,6 +748,50 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (data.success) {
+                // Si se asignó una nueva imagen principal, actualizar la UI
+                if (data.idImagenPrincipal) {
+                    
+                    // Desmarcar todos los radio buttons primero
+                    document.querySelectorAll('.archivo-principal').forEach(radio => {
+                        radio.checked = false;
+                    });
+                    
+                    // Marcar el nuevo principal (convertir a string si es necesario para comparación)
+                    const idNuevaPrincipal = String(data.idImagenPrincipal);
+                    document.querySelectorAll('.archivo-principal').forEach(radio => {
+                        if (String(radio.value) === idNuevaPrincipal) {
+                            radio.checked = true;
+                        }
+                    });
+                    
+                    // Actualizar elementos visuales que indican el archivo principal
+                    const contenedoresArchivos = document.querySelectorAll('.archivo-item');
+                    contenedoresArchivos.forEach(item => {
+                        // Remover indicador visual de principal de todos los items
+                        item.classList.remove('archivo-principal-activo');
+                        
+                        // Remover el badge-principal de todos los items
+                        const badgeAntiguo = item.querySelector('.badge-principal');
+                        if (badgeAntiguo) {
+                            badgeAntiguo.remove();
+                        }
+                        
+                        // Añadir indicador visual y badge al nuevo principal
+                        if (item.dataset.id === idNuevaPrincipal) {
+                            item.classList.add('archivo-principal-activo');
+                            
+                            // Crear y añadir el badge-principal
+                            const badge = document.createElement('span');
+                            badge.className = 'badge-principal badge bg-primary position-absolute top-0 end-0 mt-2 me-2';
+                            badge.textContent = 'Principal';
+                            
+                            // Insertar el badge en una posición adecuada dentro del item
+                            // Puedes ajustar el selector según la estructura de tu HTML
+                            const imagenContainer = item.querySelector('.card-archivo') || item;
+                            imagenContainer.appendChild(badge);
+                        }
+                    });
+                }
                 mostrarNotificacion('Archivo establecido como principal correctamente', 'success');
             } else {
                 // Si hay error, volver a la selección anterior
@@ -740,6 +800,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         radio.checked = false;
                     }
                 });
+                
                 mostrarError('Error al establecer el archivo como principal: ' + (data.message || 'Error desconocido'));
             }
         })
@@ -830,4 +891,48 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return ''; // Devolver vacío si no se encuentra
     }
+    
+    // Función para inicializar la vista de archivos
+    function inicializarVistaArchivos() {
+        // Asegurarse que solo haya un badge-principal al inicio
+        const idImagenPrincipal = obtenerIdImagenPrincipal(); // Función que debes implementar o adaptar
+        
+        // Eliminar todos los badges primero
+        document.querySelectorAll('.badge-principal').forEach(badge => {
+            badge.remove();
+        });
+        
+        // Aplicar el badge y clase solo al elemento principal
+        const contenedoresArchivos = document.querySelectorAll('.archivo-item');
+        contenedoresArchivos.forEach(item => {
+            item.classList.remove('archivo-principal-activo');
+            
+            if (item.dataset.id === String(idImagenPrincipal)) {
+                item.classList.add('archivo-principal-activo');
+                
+                // Crear y añadir el badge-principal
+                const badge = document.createElement('span');
+                badge.className = 'badge-principal badge bg-primary position-absolute top-0 end-0 mt-2 me-2';
+                badge.textContent = 'Principal';
+                
+                const imagenContainer = item.querySelector('.card-archivo') || item;
+                imagenContainer.appendChild(badge);
+            }
+        });
+    }
+    
+    // Función para obtener el ID de la imagen principal
+    function obtenerIdImagenPrincipal() {
+        // Opción 1: Obtener del radio button seleccionado
+        const radioSeleccionado = document.querySelector('.archivo-principal:checked');
+        if (radioSeleccionado) {
+            return radioSeleccionado.value;
+        }
+        
+        // Si no hay imagen principal, devolver null o un valor por defecto
+        return null;
+    }
+    
+    // Asegurarse de llamar a esta función cuando el DOM esté listo
+    inicializarVistaArchivos();
 });
