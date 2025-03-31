@@ -78,7 +78,7 @@
                             <td>
                                 <div class="btn-group" role="group">
                                     <form method="get" action="{{ path('app_admin_subrubro_edit', {'codigo': subrubro.codigo}) }}" style="display: inline-block">
-                                        <button type="submit" class="btn btn-sm btn-warning me-2">
+                                        <button type="submit" class="btn btn-sm btn-warning rounded-0 rounded-start">
                                             <i class="bi bi-pencil pe-1"></i> Editar
                                         </button>
                                     </form>
@@ -86,7 +86,7 @@
                                           onsubmit="return confirm('¿Está seguro que desea eliminar este subrubro?');" 
                                           style="display: inline-block">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ subrubro.codigo) }}">
-                                        <button type="submit" class="btn btn-sm btn-danger">
+                                        <button type="submit" class="btn btn-sm btn-danger rounded-0 rounded-end">
                                             <i class="bi bi-trash pe-1"></i> Eliminar
                                         </button>
                                     </form>
