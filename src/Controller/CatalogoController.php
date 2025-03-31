@@ -121,9 +121,15 @@ class CatalogoController extends AbstractController
 
         $seccion = $seccionRepository->createQueryBuilder('s')
             ->leftJoin('s.rubros', 'r')
+            ->leftJoin('r.subrubros', 'sr')
             ->addSelect('r')
+            ->addSelect('sr')
             ->where('s.id = :id')
+            ->andWhere('r.habilitado = :rubroHabilitado')
+            ->andWhere('sr.habilitado = :subrubroHabilitado')
             ->setParameter('id', $id)
+            ->setParameter('rubroHabilitado', true)
+            ->setParameter('subrubroHabilitado', true)
             ->orderBy('r.nombre', 'ASC')
             ->getQuery()
             ->getOneOrNullResult();
@@ -137,21 +143,25 @@ class CatalogoController extends AbstractController
             ->leftJoin('a.subrubro', 's')
             ->leftJoin('s.rubro', 'r')
             ->leftJoin('a.marca', 'm')
-            ->join('a.archivos', 'aa')  // Añadir esto
-            ->join('aa.archivo', 'ar')  // Añadir esto
+            ->join('a.archivos', 'aa')
+            ->join('aa.archivo', 'ar')
             ->where('r.seccion = :seccion')
             ->andWhere('a.habilitadoWeb = :habilitado')
             ->andWhere('a.habilitadoGestion = :habilitadoGestion')
             ->andWhere('a.precioLista > :precio')
             ->andWhere('(m.habilitado = :marcaHabilitada OR a.marca IS NULL)')
-            ->andWhere('ar.tipoMime LIKE :tipoImagen')  // Añadir esto
+            ->andWhere('ar.tipoMime LIKE :tipoImagen')
+            ->andWhere('r.habilitado = :rubroHabilitado')
+            ->andWhere('s.habilitado = :subrubroHabilitado')
             ->setParameter('seccion', $seccion)
             ->setParameter('habilitado', true)
             ->setParameter('habilitadoGestion', true)
             ->setParameter('precio', 0)
             ->setParameter('marcaHabilitada', true)
-            ->setParameter('tipoImagen', 'image/%')  // Añadir esto
-            ->distinct();  // Añadir esto
+            ->setParameter('tipoImagen', 'image/%')
+            ->setParameter('rubroHabilitado', true)
+            ->setParameter('subrubroHabilitado', true)
+            ->distinct();
 
         // Obtener rubro y subrubro activos si existen
         $rubroActual = null;
@@ -160,14 +170,16 @@ class CatalogoController extends AbstractController
         if ($rubro) {
             $rubroActual = $rubroRepository->findOneBy(['codigo' => $rubro]);
             if ($rubroActual) {
-                $queryBuilder->andWhere('r.codigo = :rubro')->setParameter('rubro', $rubro);
+                $queryBuilder->andWhere('r.codigo = :rubro')
+                ->setParameter('rubro', $rubro);
             }
         }
 
         if ($subrubro) {
             $subrubroActual = $subrubroRepository->findOneBy(['codigo' => $subrubro]);
             if ($subrubroActual) {
-                $queryBuilder->andWhere('s.codigo = :subrubro')->setParameter('subrubro', $subrubro);
+                $queryBuilder->andWhere('s.codigo = :subrubro')
+                ->setParameter('subrubro', $subrubro);
             }
         }
 

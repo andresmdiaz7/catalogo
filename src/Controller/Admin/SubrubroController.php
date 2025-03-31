@@ -34,9 +34,17 @@ class SubrubroController extends AdminController
             ->getQuery()
             ->getResult();
 
-        $queryBuilder = $subrubroRepository->createQueryBuilder('s')
+        $queryBuilder = $entityManager->getRepository(Subrubro::class)
+            ->createQueryBuilder('s')
             ->leftJoin('s.rubro', 'r')
             ->addSelect('r');
+
+        // Agregar filtro de búsqueda solo para código y nombre de subrubro
+        if ($search = $request->query->get('search')) {
+            $queryBuilder
+                ->andWhere('s.codigo LIKE :search OR s.nombre LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
 
         // Filtro por rubro
         if ($rubroId = $request->query->get('rubro')) {

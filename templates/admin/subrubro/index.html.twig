@@ -3,40 +3,22 @@
 {% block title %}Administración de SubRubros{% endblock %}
 
 {% block content %}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h1 class="mb-0">SubRubros</h1>
-            
-        </div>
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}    
-
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}    
-
-    {% for message in app.flashes('warning') %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}    
-        
-        <div class="card-body">
+    
             {# Filtros #}
             <form method="get" class="mb-4">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="search" class="form-label">Buscar por código o nombre</label>
+                            <input type="text" name="search" id="search" class="form-control form-control-sm" 
+                                   placeholder="Buscar..." 
+                                   value="{{ app.request.query.get('search') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label for="rubro" class="form-label">Rubro</label>
-                            <select name="rubro" id="rubro" class="form-select">
+                            <select name="rubro" id="rubro" class="form-select form-select-sm">
                                 <option value="">Todos los rubros</option>
                                 {% for rubro in rubros %}
                                     <option value="{{ rubro.codigo }}" 
@@ -47,23 +29,23 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label for="habilitado" class="form-label">Estado</label>
-                            <select name="habilitado" id="habilitado" class="form-select">
+                            <select name="habilitado" id="habilitado" class="form-select form-select-sm">
                                 <option value="">Todos</option>
                                 <option value="true" {% if filtro_habilitado == 'true' %}selected{% endif %}>Habilitados</option>
                                 <option value="false" {% if filtro_habilitado == 'false' %}selected{% endif %}>Deshabilitados</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-3 d-flex align-items-end">
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary me-2">
-                                <i class="bi bi-search"></i> Filtrar
+                            <button type="submit" class="btn btn-sm btn-primary me-2">
+                                <i class="bi bi-search pe-1"></i> Filtrar
                             </button>
-                            <a href="{{ path('app_admin_subrubro_index') }}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> Limpiar
+                            <a href="{{ path('app_admin_subrubro_index') }}" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-x-circle pe-1"></i> Limpiar
                             </a>
                         </div>
                     </div>
@@ -71,7 +53,7 @@
             </form>
 
             <div class="table-responsive">
-                <table class="table table-striped table-hover">
+                <table class="table table-sm table-striped  align-middle">
                     <thead>
                         <tr>
                             <th>Código</th>
@@ -81,7 +63,7 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for subrubro in pagination %}
                         <tr>
                             <td>{{ subrubro.codigo }}</td>
@@ -95,16 +77,17 @@
 
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ path('app_admin_subrubro_edit', {'codigo': subrubro.codigo}) }}" 
-                                       class="btn btn-sm btn-warning">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
+                                    <form method="get" action="{{ path('app_admin_subrubro_edit', {'codigo': subrubro.codigo}) }}" style="display: inline-block">
+                                        <button type="submit" class="btn btn-sm btn-warning me-2">
+                                            <i class="bi bi-pencil pe-1"></i> Editar
+                                        </button>
+                                    </form>
                                     <form method="post" action="{{ path('app_admin_subrubro_delete', {'codigo': subrubro.codigo}) }}" 
-                                        onsubmit="return confirm('¿Está seguro que desea eliminar este subrubro?');" 
-                                        style="display: inline-block">
+                                          onsubmit="return confirm('¿Está seguro que desea eliminar este subrubro?');" 
+                                          style="display: inline-block">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ subrubro.codigo) }}">
-                                        <button class="btn btn-sm btn-danger">
-                                            <i class="bi bi-trash"></i>
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash pe-1"></i> Eliminar
                                         </button>
                                     </form>
                                 </div>
@@ -122,6 +105,5 @@
             <div class="navigation d-flex justify-content-center">
                 {{ knp_pagination_render(pagination) }}
             </div>
-        </div>
-    </div>
+        
 {% endblock %} 
