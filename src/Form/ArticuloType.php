@@ -22,18 +22,18 @@ class ArticuloType extends AbstractType
         $builder
             ->add('codigo', TextType::class, [
                 'label' => 'Código',
-                'attr' => ['class' => 'form-control', 'disabled' => true]
+                'attr' => ['class' => 'form-control', 'readonly' => true]  // Este es el problema
             ])
             ->add('detalle', TextType::class, [
                 'label' => 'Detalle',
-                'attr' => ['class' => 'form-control', 'disabled' => true]
+                'attr' => ['class' => 'form-control', 'readonly' => true]
             ])
             ->add('marca', EntityType::class, [
                 'class' => Marca::class,
                 'choice_label' => 'nombre',
                 'placeholder' => 'Seleccione una marca',
                 'required' => false,
-                'attr' => ['class' => 'form-select', 'disabled' => true],
+                'attr' => ['class' => 'form-select', 'readonly' => true],
                 'query_builder' => function (\App\Repository\MarcaRepository $er) {
                     return $er->createQueryBuilder('m')
                         ->orderBy('m.nombre', 'ASC');
@@ -42,7 +42,7 @@ class ArticuloType extends AbstractType
             ->add('modelo', TextType::class, [
                 'label' => 'Modelo',
                 'required' => false,
-                'attr' => ['class' => 'form-control', 'disabled' => true]
+                'attr' => ['class' => 'form-control', 'readonly' => true]
             ])
             ->add('descripcion', TextareaType::class, [
                 'label' => 'Descripción',
@@ -52,17 +52,17 @@ class ArticuloType extends AbstractType
             ->add('precioLista', MoneyType::class, [
                 'label' => 'Precio de Lista',
                 'currency' => 'ARS',
-                'attr' => ['class' => 'form-control', 'disabled' => true]
+                'attr' => ['class' => 'form-control', 'readonly' => true]
             ])
             ->add('precio400', MoneyType::class, [
                 'label' => 'Precio 400',
                 'currency' => 'ARS',
-                'attr' => ['class' => 'form-control', 'disabled' => true]
+                'attr' => ['class' => 'form-control', 'readonly' => true]
             ])
             ->add('impuesto', MoneyType::class, [
                 'label' => 'Impuesto',
                 'currency' => 'ARS',
-                'attr' => ['class' => 'form-control', 'disabled' => true]
+                'attr' => ['class' => 'form-control', 'readonly' => true]
             ])
             ->add('subrubro', EntityType::class, [
                 'class' => Subrubro::class,
@@ -73,7 +73,7 @@ class ArticuloType extends AbstractType
                     return $subrubro->getRubro()->getNombre();
                 },
                 'label' => 'Subrubro',
-                'attr' => ['class' => 'form-select', 'disabled' => true]
+                'attr' => ['class' => 'form-select', 'readonly' => true]
             ])
             ->add('destacado', CheckboxType::class, [
                 'label' => 'Destacado',
@@ -92,7 +92,7 @@ class ArticuloType extends AbstractType
             ])->add('habilitadoGestion', CheckboxType::class, [
                 'label' => 'Habilitado en Gestión',
                 'required' => false,
-                'attr' => ['class' => 'form-check-input', 'disabled' => true]
+                'attr' => ['class' => 'form-check-input', 'readonly' => true]
             ])
         ;
     }

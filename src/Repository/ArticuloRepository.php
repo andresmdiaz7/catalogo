@@ -92,8 +92,7 @@ class ArticuloRepository extends ServiceEntityRepository
             $qb->andWhere(
                 $qb->expr()->orX(
                     $qb->expr()->like('a.codigo', ':buscar'),
-                    $qb->expr()->like('a.detalle', ':buscar'),
-                    $qb->expr()->like('a.marca', ':buscar')
+                    $qb->expr()->like('a.detalle', ':buscar')
                 )
             )
             ->setParameter('buscar', '%' . $filters['buscar'] . '%');

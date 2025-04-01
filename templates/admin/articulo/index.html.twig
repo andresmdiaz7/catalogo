@@ -93,28 +93,27 @@
                                 <td>${{ articulo.precioLista|number_format(2, ',', '.') }}</td>
                                 <td>
                                     {% if articulo.habilitadoWeb %}
-                                        <span class="badge bg-success">Habilitado</span>
+                                        <span class="badge bg-success" style="--bs-bg-opacity: .8;">Habilitado</span>
                                     {% else %}
-                                        <span class="badge bg-danger">Deshabilitado</span>
+                                        <span class="badge bg-danger" style="--bs-bg-opacity: .8;">Deshabilitado</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if articulo.habilitadoGestion %}
-                                        <span class="badge bg-success">Habilitado</span>
+                                        <span class="badge bg-success" style="--bs-bg-opacity: .8;">Habilitado</span>
                                     {% else %}
-                                        <span class="badge bg-danger">Deshabilitado</span>
+                                        <span class="badge bg-danger" style="--bs-bg-opacity: .8;">Deshabilitado</span>
 
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {% if articulo.destacado %}
                                         <i class="bi bi-check-circle-fill text-success"></i>
                                     {% else %}
                                         <i class="bi bi-x-circle-fill text-danger"></i>
                                     {% endif %}
                                 </td>
-                                <td>
-
+                                <td class="text-center">
                                     {% if articulo.novedad %}
                                         <i class="bi bi-check-circle-fill text-success"></i>
                                     {% else %}
@@ -128,17 +127,19 @@
                                             <i class="bi bi-pencil"></i> Editar
                                         </a>
                                         <form method="post" 
-                                              action="{{ path('app_admin_articulo_toggle_habilitado', {'codigo': articulo.codigo}) }}" 
+                                              action="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}" 
                                               style="display: inline;">
-                                            <input type="hidden" name="_token" 
-                                                   value="{{ csrf_token('toggle-habilitado' ~ articulo.codigo) }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('alternar-habilitado' ~ articulo.codigo) }}">
                                                 {% if articulo.habilitadoWeb %}
-                                                    <i class="bi bi-x-circle"></i> Deshabilitar
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-x-circle"></i> Deshabilitar
+                                                    </button>
                                                 {% else %}
-                                                    <i class="bi bi-check-circle"></i> Habilitar
+                                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                                        <i class="bi bi-check-circle"></i> Habilitar
+                                                    </button>
                                                 {% endif %}
-                                            </button>
+                                            
                                         </form>
                                     </div>
                                 </td>
