@@ -1,6 +1,6 @@
 {% if pageCount > 1 %}
     <nav aria-label="Navegación de páginas">
-        <ul class="pagination">
+        <ul class="pagination pagination-sm">
             {% if first is defined and current != first %}
                 <li class="page-item">
                     <a class="page-link" href="{{ path(route, query|merge({(pageParameterName): first})) }}">
