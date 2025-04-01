@@ -86,20 +86,26 @@ class ArticuloRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('a')
             ->leftJoin('a.subrubro', 's')
             ->leftJoin('s.rubro', 'r')
-            ->addSelect('s', 'r');
+            ->leftJoin('a.marca', 'm')
+            ->addSelect('s', 'r', 'm');
 
         if (!empty($filters['buscar'])) {
-            $qb->andWhere(
-                $qb->expr()->orX(
-                    $qb->expr()->like('a.codigo', ':buscar'),
-                    $qb->expr()->like('a.detalle', ':buscar')
+            $palabras = explode(' ', trim($filters['buscar']));
+            foreach ($palabras as $index => $palabra) {
+                $paramName = 'buscar' . $index;
+                $qb->andWhere(
+                    $qb->expr()->orX(
+                        $qb->expr()->like('a.codigo', ':' . $paramName),
+                        $qb->expr()->like('a.detalle', ':' . $paramName),
+                        $qb->expr()->like('m.nombre', ':' . $paramName)
+                    )
                 )
-            )
-            ->setParameter('buscar', '%' . $filters['buscar'] . '%');
+                ->setParameter($paramName, '%' . $palabra . '%');
+            }
         }
 
         if (!empty($filters['rubro'])) {
-            $qb->andWhere('r.id = :rubro')
+            $qb->andWhere('r.codigo = :rubro')
                 ->setParameter('rubro', $filters['rubro']);
         }
 

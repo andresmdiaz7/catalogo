@@ -43,11 +43,11 @@ class ArticuloController extends AbstractController
         PaginatorInterface $paginator
     ): Response {
         $filters = $request->query->all();
-        
+        // Query builder desde repositorio
         $queryBuilder = $articuloRepository->createQueryBuilderWithFilters($filters);
         
         $pagination = $paginator->paginate(
-            $queryBuilder, // Query builder o query
+            $queryBuilder, // Query builder desde repositorio
             $request->query->getInt('page', 1), // Página actual
             10 // Límite por página
         );
@@ -56,39 +56,6 @@ class ArticuloController extends AbstractController
             'articulos' => $pagination,
             'filtros' => $filters,
             'rubros' => $rubroRepository->findAll()
-        ]);
-    }
-
-    /**
-     * Crear un nuevo articulo, incluyendo la carga de archivos.
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @return Response
-     */
-    #[Route('/nuevo', name: 'app_admin_articulo_new', methods: ['GET', 'POST'])]
-    public function new(
-        Request $request, 
-        EntityManagerInterface $entityManager,
-    ): Response {
-        $articulo = new Articulo();
-        $form = $this->createForm(ArticuloType::class, $articulo);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $entityManager->persist($articulo);
-                $entityManager->flush();
-                $this->addFlash('success', 'Artículo creado correctamente');
-            } catch (FileException $e) {
-                $this->addFlash('error', 'Error al crear el slug: ' . $e->getMessage());
-            }
-            return $this->redirectToRoute('app_admin_articulo_index');
-        }
-
-        return $this->render('admin/articulo/new.html.twig', [
-            'articulo' => $articulo,
-            'form' => $form,
         ]);
     }
 

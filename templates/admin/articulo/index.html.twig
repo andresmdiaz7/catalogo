@@ -4,24 +4,19 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Artículos</h1>
-        <a href="{{ path('app_admin_articulo_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Nuevo Artículo
-        </a>
+    {# Título #}
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h4>Gestión de Artículos</h4>
+        <span class="d-inline-flex px-2 py-0  text-success-emphasis bg-success-subtle border border-success-subtle rounded-2">
+            Cantidad de artículos: {{ articulos.getTotalItemCount }}
+        </span>
     </div>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
-
-    <!-- Filtros -->
-    <div class="card mb-4">
+    {# Filtros #}
+    <div class="card mb-4 bg-light shadow-sm">
         <div class="card-body">
             <form method="get" class="row g-3">
+
                 <div class="col-md-3">
                     <label for="buscar" class="form-label">Buscar</label>
                     <input type="text" name="buscar" class="form-control" 
@@ -39,14 +34,14 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label for="habilitado" class="form-label">Estado</label>
                     <select class="form-select" id="habilitado" name="habilitado">
                         <option value="1" {% if app.request.query.get('habilitado') == '1' %}selected{% endif %}>Habilitados</option>
                         <option value="0" {% if app.request.query.get('habilitado') == '0' %}selected{% endif %}>Deshabilitados</option>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="buscar" class="form-label">&nbsp;</label>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
@@ -61,102 +56,115 @@
         </div>
     </div>
 
-    <!-- Listado -->
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Detalle</th>
-                            <th>Marca</th>
-                            <th>Precio</th>
-                            <th>Hab. Web</th>
-                            <th>Hab. Gestión</th>
-                            <th>Destacado</th>
-                            <th>Novedad</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
+    {# Paginado #}
+    <div class="table-responsive border rounded-2 bg-light shadow-sm">
+        <table class="table table-striped ">
+            <thead>
+                <tr>
+                    <th>{{ knp_pagination_sortable(articulos, 'Código', 'a.codigo') }}
+                        {% if articulos.isSorted('a.codigo') %}
+                            <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-short"></i>
+                        {% endif %}
+                    </th>
+                    <th>{{ knp_pagination_sortable(articulos, 'Detalle', 'a.detalle') }}
+                        {% if articulos.isSorted('a.detalle') %}
+                            <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-short"></i>
+                        {% endif %}
+                    </th>
+                    <th>{{ knp_pagination_sortable(articulos, 'Marca', 'm.nombre') }}
+                        {% if articulos.isSorted('m.nombre') %}
+                            <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-short"></i>
+                        {% endif %}
+                    </th>
+                    <th class="text-end pe-5">
+                        {{ knp_pagination_sortable(articulos, 'Precio', 'a.precioLista') }}
+                        {% if articulos.isSorted('a.precioLista') %}
+                            <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-short"></i>
+                        {% endif %}
+                    </th>
+                    <th class="text-center">Hab. Web</th>
+                    <th class="text-center">Hab. Gestión</th>
+                    <th class="text-center">Destacado</th>
+                    <th class="text-center">Novedad</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
 
+            <tbody>
+                {% for articulo in articulos %}
+                    <tr>
+                        <td>{{ articulo.codigo }}</td>
+                        <td>
+                            {{ articulo.detalle }}<br>
+                            <small class="text-muted">{{ articulo.subrubro.rubro.nombre }} > {{ articulo.subrubro.nombre }}</small>
+                        </td>
+                        <td>{{ articulo.marca }}</td>
+                        <td class="text-end pe-5">
+                            ${{ articulo.precioLista|number_format(2, ',', '.') }}
+                        </td>
+                        <td class="text-center">
+                            {% if articulo.habilitadoWeb %}
+                                <span class="badge bg-success" style="--bs-bg-opacity: .8;">Habilitado</span>
+                            {% else %}
+                                <span class="badge bg-danger" style="--bs-bg-opacity: .8;">Deshabilitado</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if articulo.habilitadoGestion %}
+                                <span class="badge bg-success" style="--bs-bg-opacity: .8;">Habilitado</span>
+                            {% else %}
+                                <span class="badge bg-danger" style="--bs-bg-opacity: .8;">Deshabilitado</span>
 
-                    <tbody>
-                        {% for articulo in articulos %}
-                            <tr>
-                                <td>{{ articulo.codigo }}</td>
-                                <td>
-                                    <strong>{{ articulo.detalle }}</strong><br>
-                                    <small class="text-muted">{{ articulo.subrubro.rubro.nombre }} > {{ articulo.subrubro.nombre }}</small>
-                                </td>
-                                <td>{{ articulo.marca }}</td>
-                                <td>${{ articulo.precioLista|number_format(2, ',', '.') }}</td>
-                                <td>
-                                    {% if articulo.habilitadoWeb %}
-                                        <span class="badge bg-success" style="--bs-bg-opacity: .8;">Habilitado</span>
-                                    {% else %}
-                                        <span class="badge bg-danger" style="--bs-bg-opacity: .8;">Deshabilitado</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if articulo.habilitadoGestion %}
-                                        <span class="badge bg-success" style="--bs-bg-opacity: .8;">Habilitado</span>
-                                    {% else %}
-                                        <span class="badge bg-danger" style="--bs-bg-opacity: .8;">Deshabilitado</span>
-
-                                    {% endif %}
-                                </td>
-                                <td class="text-center">
-                                    {% if articulo.destacado %}
-                                        <i class="bi bi-check-circle-fill text-success"></i>
-                                    {% else %}
-                                        <i class="bi bi-x-circle-fill text-danger"></i>
-                                    {% endif %}
-                                </td>
-                                <td class="text-center">
-                                    {% if articulo.novedad %}
-                                        <i class="bi bi-check-circle-fill text-success"></i>
-                                    {% else %}
-                                        <i class="bi bi-x-circle-fill text-danger"></i>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="input-group" role="group">
-                                        <a href="{{ path('app_admin_articulo_edit', {'codigo': articulo.codigo}) }}" 
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil"></i> Editar
-                                        </a>
-                                        <form method="post" 
-                                              action="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}" 
-                                              style="display: inline;">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('alternar-habilitado' ~ articulo.codigo) }}">
-                                                {% if articulo.habilitadoWeb %}
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                        <i class="bi bi-x-circle"></i> Deshabilitar
-                                                    </button>
-                                                {% else %}
-                                                    <button type="submit" class="btn btn-sm btn-outline-success">
-                                                        <i class="bi bi-check-circle"></i> Habilitar
-                                                    </button>
-                                                {% endif %}
-                                            
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="6">No hay artículos registrados</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="d-flex justify-content-center">
-                {{ knp_pagination_render(articulos, 'admin/shared/_pagination.html.twig') }}
-            </div>
-        </div>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if articulo.destacado %}
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if articulo.novedad %}
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="input-group text-center" role="group">
+                                <a href="{{ path('app_admin_articulo_edit', {'codigo': articulo.codigo}) }}" 
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil ps-1"></i> Editar
+                                </a>
+                                <form method="post" 
+                                        action="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}" 
+                                        style="display: inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('alternar-habilitado' ~ articulo.codigo) }}">
+                                        {% if articulo.habilitadoWeb %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-0 rounded-end-1">
+                                                <i class="bi bi-x-circle ps-1"></i> Deshabilitar
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-sm btn-outline-success rounded-0 rounded-end-1">
+                                                <i class="bi bi-check-circle ps-1"></i> Habilitar
+                                            </button>
+                                        {% endif %}
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">No hay artículos registrados</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
+    {# Paginado #}
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(articulos, './pagination/custom_pagination.html.twig') }}
+    </div>
+</div> 
 {% endblock %} 
