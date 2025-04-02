@@ -44,12 +44,16 @@ class ArticuloController extends AbstractController
     ): Response {
         $filters = $request->query->all();
         // Query builder desde repositorio
+
+        // Establecer el límite de resultados por página desde los filtros
+        $limit = isset($filters['limit']) ? (int)$filters['limit'] : 10;
+
         $queryBuilder = $articuloRepository->createQueryBuilderWithFilters($filters);
         
         $pagination = $paginator->paginate(
             $queryBuilder, // Query builder desde repositorio
             $request->query->getInt('page', 1), // Página actual
-            10 // Límite por página
+            $limit // Límite por página
         );
 
         return $this->render('admin/articulo/index.html.twig', [
