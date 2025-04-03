@@ -30,7 +30,7 @@
     </nav>
 
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-6">
             {% set tiene_imagenes = false %}
             {% set imagenes = [] %}
 
@@ -54,10 +54,10 @@
 
             {% if imagen_principal or imagenes|length > 0 %}
                 {% set tiene_imagenes = true %}
-                <div id="carouselArticulo" class="carousel slide">
+                <div id="carouselArticulo" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         {% if imagen_principal %}
-                            <div class="carousel-item active" style="transition: none !important;">
+                            <div class="carousel-item active">
                                <img src="{{ asset(directorio_archivos ~ imagen_principal.filePath) }}" 
                                      class="d-block w-100 rounded shadow img-thumbnail" 
                                      alt="{{ articulo.detalle }}"
@@ -66,7 +66,7 @@
                         {% endif %}
                         
                         {% for imagen in imagenes %}
-                            <div class="carousel-item {% if not imagen_principal and loop.first %}active{% endif %}" style="transition: none !important;">
+                            <div class="carousel-item {% if not imagen_principal and loop.first %}active{% endif %}">
                                 <img src="{{ asset(directorio_archivos ~ imagen.filePath) }}" 
                                      class="d-block w-100 rounded shadow img-thumbnail" 
                                      alt="{{ articulo.detalle }}"
@@ -75,31 +75,15 @@
                         {% endfor %}
                     </div>
 
-                    {# Miniaturas del carrusel #}
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="d-flex justify-content-center gap-2">
-                                {% if imagen_principal %}
-                                    <img src="{{ asset(directorio_archivos ~ imagen_principal.filePath) }}" 
-                                         class="img-thumbnail carousel-thumbnail active border-danger border-1" 
-                                         style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                                         data-bs-target="#carouselArticulo"
-                                         data-bs-slide-to="0"
-                                         aria-current="true"
-                                         aria-label="Slide 1">
-                                {% endif %}
-                                
-                                {% for imagen in imagenes %}
-                                    <img src="{{ asset(directorio_archivos ~ imagen.filePath) }}" 
-                                         class="img-thumbnail carousel-thumbnail {% if not imagen_principal and loop.first %}active border-danger border-1{% endif %}" 
-                                         style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                                         data-bs-target="#carouselArticulo"
-                                         data-bs-slide-to="{% if imagen_principal %}{{ loop.index }}{% else %}{{ loop.index0 }}{% endif %}"
-                                         aria-label="Slide {% if imagen_principal %}{{ loop.index + 1 }}{% else %}{{ loop.index }}{% endif %}">
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
+                    {% if (imagen_principal and imagenes|length > 0) or imagenes|length > 1 %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselArticulo" data-bs-slide="prev">
+                            <span class="text-danger fs-4" aria-hidden="false"><i class="bi bi-arrow-left-circle-fill"></i></span>
+                        </button>
+
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselArticulo" data-bs-slide="next">
+                            <span class="text-danger fs-4" aria-hidden="false"><i class="bi bi-arrow-right-circle-fill"></i></span>
+                        </button>
+                    {% endif %}
                 </div>
             {% else %}
                 <div class="bg-light p-5 text-center rounded">
@@ -132,12 +116,9 @@
             </ul>
         </div>
         
-        <div class="col-md-5">
-            <h3 class="mb-1 text-primary-emphasis">{{ articulo.detalle }}</h3>
-            <p class="lead text-muted fs-6">
-                <span class="fw-semibold">Marca:</span> {{ articulo.marca.nombre }}
-                <span class="fw-semibold"> | </span>
-                <span class="fw-semibold">Modelo:</span> {{ articulo.modelo }}</p>
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ articulo.detalle }}</h1>
+            <p class="lead text-muted">Código: {{ articulo.codigo }}</p>
 
             <!--
             <p class="lead text-muted">precioBase: {{ articulo.precios.precioBase }}</p>  
@@ -146,60 +127,46 @@
             <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioConDescuentoRecargo }}</p>
             <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioFinal }}</p>
             -->
-
-                <div class="d-flex justify-content-between align-top mb-3">
-                    <span class="h2 mb-0">${{ articulo.precios.precioBase|number_format(2, ',', '.') }}</span>
-                    {% if is_granted('ROLE_CLIENTE') %}
-                        <form action="{{ path('app_cliente_cart_add') }}" method="POST" style="display: inline;">
-                            <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
-                            <div class="input-group mb-0">
-                                <input type="text" name="cantidad" value="1" class="form-control" placeholder="Cantidad" aria-label="Cantidad" aria-describedby="agregar-al-carrito"/>
-                                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
-                                    <i class="bi bi-cart-plus"></i> Agregar al carrito
-                                </button>
-                            </div>
-                            {% if carrito_articulos[articulo.codigo] is defined %}
-                                <div  id="agregar-al-carrito" class="form-text fw-semibold text-danger mt-0 text-end">
-                                    Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
-                                </div>
-                            {% endif %}
-                        </form>
-                    {% endif %}
-                </div>
+            {% if carrito_articulos[articulo.codigo] is defined %}
+                <p class="fw-bold mb-1 text-center text-danger" style="font-size:12px">
+                    Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
+                </p>
+            {% endif %}
             
-
             {% if articulo.descripcion %}
                 <div class="mb-4">
                     <h5>Descripción</h5>
                     <p>{{ articulo.descripcion|raw }}</p>
                 </div>
             {% endif %}
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-middle">
+                        <span class="h2 mb-0">${{ articulo.precios.precioBase|number_format(2, ',', '.') }}</span>
+                        {% if is_granted('ROLE_CLIENTE') %}
+                            <form action="{{ path('app_cliente_cart_add') }}" method="POST" style="display: inline;">
+                                <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
+                                <div class="input-group mb-3">
+                                    <input type="text" name="cantidad" value="1" class="form-control" placeholder="Cantidad" aria-label="Cantidad" aria-describedby="button-addon2"/>
+                                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+                                        <i class="bi bi-cart-plus"></i> Agregar al carrito
+                                    </button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-person"></i> Iniciar sesión para comprar
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <a href="{{ path('app_catalogo_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al catálogo
+            </a>
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const carousel = document.getElementById('carouselArticulo');
-    const thumbnails = document.querySelectorAll('.carousel-thumbnail');
-    
-    // Función para actualizar el estilo de las miniaturas
-    function updateThumbnailStyles() {
-        thumbnails.forEach(thumb => {
-            thumb.classList.remove('active', 'border-danger', 'border-2');
-        });
-        
-        const activeIndex = Array.from(carousel.querySelectorAll('.carousel-item')).findIndex(item => item.classList.contains('active'));
-        if (activeIndex >= 0) {
-            thumbnails[activeIndex].classList.add('active', 'border-danger', 'border-2');
-        }
-    }
-    
-    // Actualizar estilos cuando cambia el slide
-    carousel.addEventListener('slid.bs.carousel', updateThumbnailStyles);
-    
-    // Inicializar estilos
-    updateThumbnailStyles();
-});
-</script>
 {% endblock %}

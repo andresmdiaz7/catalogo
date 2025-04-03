@@ -6,6 +6,7 @@ use App\Entity\Articulo;
 use App\Form\ArticuloType;
 use App\Repository\ArticuloRepository;
 use App\Repository\RubroRepository;
+use App\Repository\MarcaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,6 +41,7 @@ class ArticuloController extends AbstractController
         Request $request, 
         ArticuloRepository $articuloRepository,
         RubroRepository $rubroRepository,
+        MarcaRepository $marcaRepository,
         PaginatorInterface $paginator
     ): Response {
         $filters = $request->query->all();
@@ -56,10 +58,18 @@ class ArticuloController extends AbstractController
             $limit // Límite por página
         );
 
+        $subrubros = !empty($filters['rubro']) 
+            ? $rubroRepository->find($filters['rubro'])?->getSubrubros() ?? []
+            : $rubroRepository->findAll();
+
+        $marcas = $marcaRepository->findBy([], ['nombre' => 'ASC']);
+
         return $this->render('admin/articulo/index.html.twig', [
             'articulos' => $pagination,
             'filtros' => $filters,
-            'rubros' => $rubroRepository->findAll()
+            'rubros' => $rubroRepository->findAll(),
+            'subrubros' => $subrubros,
+            'marcas' => $marcas
         ]);
     }
 

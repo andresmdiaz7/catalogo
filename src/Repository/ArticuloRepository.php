@@ -109,9 +109,34 @@ class ArticuloRepository extends ServiceEntityRepository
                 ->setParameter('rubro', $filters['rubro']);
         }
 
-        if (isset($filters['habilitado'])) {
-            $qb->andWhere('a.habilitadoWeb = :habilitado')
-                ->setParameter('habilitado', $filters['habilitado']);
+        if (!empty($filters['subrubro'])) {
+            $qb->andWhere('s.codigo = :subrubro')
+                ->setParameter('subrubro', $filters['subrubro']);
+        }
+
+        if (!empty($filters['marca'])) {
+            $qb->andWhere('m.codigo = :marca')
+                ->setParameter('marca', $filters['marca']);
+        }
+
+        if (isset($filters['habilitadoWeb']) && $filters['habilitadoWeb'] !== '') {
+            $qb->andWhere('a.habilitadoWeb = :habilitadoWeb')
+                ->setParameter('habilitadoWeb', $filters['habilitadoWeb']);
+        }
+
+        if (isset($filters['habilitadoGestion']) && $filters['habilitadoGestion'] !== '') {
+            $qb->andWhere('a.habilitadoGestion = :habilitadoGestion')
+                ->setParameter('habilitadoGestion', $filters['habilitadoGestion']);
+        }
+
+        if (isset($filters['destacado']) && $filters['destacado'] !== '') {
+            $qb->andWhere('a.destacado = :destacado')
+                ->setParameter('destacado', $filters['destacado']);
+        }
+        
+        if (isset($filters['novedad']) && $filters['novedad'] !== '') {
+            $qb->andWhere('a.novedad = :novedad')
+                ->setParameter('novedad', $filters['novedad']);
         }
 
         $qb->orderBy('a.codigo', 'ASC');

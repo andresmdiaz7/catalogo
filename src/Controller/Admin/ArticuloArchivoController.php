@@ -297,11 +297,10 @@ class ArticuloArchivoController extends AbstractController
             // Eliminar la relación
             $this->entityManager->remove($articuloArchivo);
             $this->entityManager->flush();
-            
+            $mensaje = 'Archivo desasociado correctamente.';
             // Si el archivo desasociado era el principal, buscar otro para establecer como principal
             if ($eraPrincipal) {
-                $mensaje = 'Archivo desasociado correctamente.';
-                
+                        
                 // Buscar otras imágenes asociadas a este artículo
                 $otrasImagenes = $this->entityManager->createQuery(
                     'SELECT aa FROM App\Entity\ArticuloArchivo aa
@@ -325,8 +324,7 @@ class ArticuloArchivoController extends AbstractController
                     $mensaje .= ' Se ha establecido automáticamente otra imagen como principal.';
                 } else {
                     $mensaje .= ' Atención: el artículo ya no tiene una imagen principal.';
-                }
-                
+                } 
                 return $this->json([
                     'success' => true, 
                     'message' => $mensaje,
@@ -334,6 +332,11 @@ class ArticuloArchivoController extends AbstractController
                     'idImagenPrincipal' => $nuevaPrincipal->getId()
                 ]);
             }
+            return $this->json([
+                'success' => true, 
+                'message' => $mensaje,
+                'idImagenPrincipal' => null
+            ]);
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false, 
