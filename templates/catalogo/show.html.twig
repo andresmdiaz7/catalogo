@@ -120,12 +120,13 @@
             <h1 class="mb-3">{{ articulo.detalle }}</h1>
             <p class="lead text-muted">Código: {{ articulo.codigo }}</p>
 
+            <!--
             <p class="lead text-muted">precioBase: {{ articulo.precios.precioBase }}</p>  
             <p class="lead text-muted">precioSinIVA: {{ articulo.precios.precioBaseSIVA }}</p>
             <p class="lead text-muted">precioConDescuento: {{ articulo.precios.precioConDescuento }}</p>
             <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioConDescuentoRecargo }}</p>
             <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioFinal }}</p>
-
+            -->
             {% if carrito_articulos[articulo.codigo] is defined %}
                 <p class="fw-bold mb-1 text-center text-danger" style="font-size:12px">
                     Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
@@ -135,7 +136,7 @@
             {% if articulo.descripcion %}
                 <div class="mb-4">
                     <h5>Descripción</h5>
-                    <p>{{ articulo.descripcion }}</p>
+                    <p>{{ articulo.descripcion|raw }}</p>
                 </div>
             {% endif %}
 
