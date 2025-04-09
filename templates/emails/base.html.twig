@@ -6,6 +6,7 @@
     <title>{% block title %}Notificación{% endblock %} - Tu Empresa</title>
     <style>
         body { 
+            background-color: #ffffff;
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0; 
@@ -13,18 +14,23 @@
             line-height: 1.6;
         }
         .container {
-            max-width: 800px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px;
+        }
+        .logo {
+            background-color: #ffffff;
+            margin-bottom: 20px;
         }
         .header {
             background-color: #f8f9fa;
             padding: 15px;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid #dc3545;
             margin-bottom: 20px;
         }
         .header h1, .header h2 {
             margin-top: 0;
+            margin-bottom: 0;
             color: #333;
         }
         h1, h2, h3 {
@@ -47,7 +53,7 @@
             font-weight: bold;
         }
         .items-table th {
-            background-color: #3c4b64;
+            background-color: #dc3545;
             color: white;
         }
         .footer {
@@ -73,6 +79,10 @@
 </head>
 <body>
     <div class="container">
+        <div class="logo">
+            {#<img src="{{ asset('/images/logo.jpg') }}" alt="Ciardi Logo">#}
+            <img src="https://clientes.ciardi.com.ar/css/img/Ciardi-logo.jpg" alt="Ciardi Logo">
+        </div>
         {% block body %}{% endblock %}
         
         <div class="footer">

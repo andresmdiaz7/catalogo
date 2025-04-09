@@ -10,9 +10,10 @@
             <tr>
                 <th>Código</th>
                 <th>Detalle</th>
+                <th>Marca</th>
                 <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Subtotal</th>
+                <th style="text-align: right;">Precio</th>
+                <th style="text-align: right;">Subtotal</th>
             </tr>
         </thead>
         <tbody>
@@ -20,14 +21,15 @@
             <tr>
                 <td>{{ item.articulo.codigo }}</td>
                 <td>{{ item.articulo.detalle }}</td>
-                <td>{{ item.cantidad }}</td>
-                <td>$ {{ item.precioUnitario|number_format(2, ',', '.') }}</td>
-                <td>$ {{ (item.cantidad * item.precioUnitario)|number_format(2, ',', '.') }}</td>
+                <td>{{ item.articulo.marca.nombre }}</td>
+                <td style="text-align: center;">{{ item.cantidad }}</td>
+                <td style="text-align: right;">$ {{ item.precioUnitario|number_format(2, ',', '.') }}</td>
+                <td style="text-align: right;">$ {{ (item.cantidad * item.precioUnitario)|number_format(2, ',', '.') }}</td>
             </tr>
             {% endfor %}
             <tr class="total">
-                <td colspan="4" style="text-align: right;"><strong>Total:</strong></td>
-                <td><strong>$ {{ pedido.total|number_format(2, ',', '.') }}</strong></td>
+                <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
+                <td style="text-align: right;"><strong>$ {{ pedido.total|number_format(2, ',', '.') }}</strong></td>
             </tr>
         </tbody>
     </table>

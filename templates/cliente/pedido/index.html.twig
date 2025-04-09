@@ -23,13 +23,13 @@
                 <table class="table table-responsive align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-center">Número</th>
-                            <th class="text-center">Fecha</th>
-                            <th class="text-center">Estado</th>
-                            <th class="text-center">Fecha de lectura</th>
-                            <th>Observación</th>
-                            <th class="text-end">Total</th>
-                            <th class="text-center">Acciones</th>
+                            <th class="text-center fw-semibold">Número</th>
+                            <th class="text-center fw-semibold">Fecha</th>
+                            <th class="text-center fw-semibold">Estado</th>
+                            <th class="text-center fw-semibold">Fecha de lectura</th>
+                            <th class="fw-semibold">Observación</th>
+                            <th class="text-end fw-semibold">Total</th>
+                            <th class="text-center fw-semibold">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -39,9 +39,17 @@
                                 <td class="text-center">{{ pedido.fecha|date('d/m/Y H:i') }}</td>
                                 <td class="text-center">
                                     {% if pedido.estado == 'leido' %}
-                                        <span class="badge bg-success">Leido</span>
+                                        <span class="badge text-white" 
+                                              style="background-color: var(--bs-success);
+                                              ">
+                                            <i class="bi bi-check-circle me-2"></i>Recibido
+                                        </span>
                                     {% else %}
-                                        <span class="badge bg-warning">Pendiente</span>
+                                        <span class="badge text-dark"
+                                              style="background-color: var(--bs-dark-bg-subtle);
+                                              ">
+                                              <i class="bi bi-hourglass-split me-2"></i>En espera
+                                        </span>
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
@@ -50,9 +58,17 @@
                                     {% endif %}
                                 </td>
                                 <td class="">
-                                    {{ pedido.observaciones }}
+                                    {% if pedido.observaciones %}
+                                    <button type="button" 
+                                            class="btn btn-sm btn-info" 
+                                            data-bs-toggle="popover" 
+                                            data-bs-title="Observación del cliente" 
+                                            data-bs-content="{{ pedido.observaciones }}">
+                                            <i class="bi bi-eye me-2"></i>Ver
+                                    </button>
+                                    {% endif %}
                                 </td>
-                                <td class="text-end fw-semibold">
+                                <td class="text-end">
                                     ${{ pedido.total|number_format(2, ',', '.') }}
                                 </td>
                                 <td class="text-center">
@@ -90,3 +106,9 @@
         {% endif %}
     </div>
 {% endblock %} 
+{% block javascripts %}
+    <script>
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+    </script>
+{% endblock %}
