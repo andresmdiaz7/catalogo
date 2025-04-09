@@ -1,0 +1,90 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administrar Sliders{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Administrar Sliders</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Listado de Sliders</h6>
+                <a href="{{ path('app_admin_slider_new') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Nuevo Slider
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Ubicación</th>
+                                <th>Categoría</th>
+                                <th>Estado</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Orden</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for slider in sliders %}
+                                <tr>
+                                    <td>{{ slider.id }}</td>
+                                    <td>{{ slider.titulo }}</td>
+                                    <td>{{ slider.ubicacion.nombre }}</td>
+                                    <td>{{ slider.categoria ? slider.categoria.nombre : 'Sin categoría' }}</td>
+                                    <td>
+                                        {% if slider.activo %}
+                                            <span class="badge bg-success">Activo</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Inactivo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ slider.fechaInicio|date('d/m/Y H:i') }}</td>
+                                    <td>{{ slider.fechaFin|date('d/m/Y H:i') }}</td>
+                                    <td>{{ slider.orden }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_admin_slider_edit', {'id': slider.id}) }}" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{{ path('app_admin_slider_archivo_index', {'id': slider.id}) }}" class="btn btn-info btn-sm">
+                                                <i class="bi bi-images"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('app_admin_slider_delete', {'id': slider.id}) }}" style="display: inline-block;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este slider?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ slider.id) }}">
+                                                <button class="btn btn-danger btn-sm">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="9" class="text-center">No hay sliders registrados</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+                }
+            });
+        });
+    </script>
+{% endblock %}

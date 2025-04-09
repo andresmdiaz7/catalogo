@@ -9,14 +9,25 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    /**
+     * Muestra el formulario de login
+     */
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        /**
+         * Si el usuario está autenticado, redirigir al dashboard correspondiente
+         */ 
         if ($this->getUser()) {
+            if (in_array('ROLE_CLIENTE', $this->getUser()->getRoles())) {
+                return $this->redirectToRoute('app_cliente_dashboard');
+            }
             if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
                 return $this->redirectToRoute('app_admin_dashboard');
             }
-            return $this->redirectToRoute('app_cliente_dashboard');
+            if (in_array('ROLE_VENDEDOR', $this->getUser()->getRoles())) {
+                return $this->redirectToRoute('app_vendedor_dashboard');
+            }
         }
 
         return $this->render('security/login.html.twig', [
@@ -25,6 +36,9 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    /**
+     * Cierra la sesión del usuario
+     */
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {

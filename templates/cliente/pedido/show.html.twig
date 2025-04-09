@@ -4,15 +4,15 @@
 
 {% block body %}
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Pedido #{{ pedido.id }}</h1>
-        <a href="{{ path('app_cliente_pedidos') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Volver a Mis Pedidos
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4>Pedido #{{ pedido.id }}</h4>
+        <a href="{{ path('app_cliente_pedidos') }}" class="btn btn-sm btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Volver a Mis Pedidos
         </a>
     </div>
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Detalles del Pedido</h5>
@@ -24,6 +24,7 @@
                                 <tr>
                                     <th>Código</th>
                                     <th>Artículo</th>
+                                    <th>Marca</th>
                                     <th class="text-center">Cantidad</th>
                                     <th class="text-end">Precio</th>
                                     <th class="text-end">Subtotal</th>
@@ -34,6 +35,7 @@
                                     <tr>
                                         <td>{{ detalle.articulo.codigo }}</td>
                                         <td>{{ detalle.articulo.detalle }}</td>
+                                        <td>{{ detalle.articulo.marca }}</td>
                                         <td class="text-center">{{ detalle.cantidad }}</td>
                                         <td class="text-end">${{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
                                         <td class="text-end">${{ (detalle.precioUnitario * detalle.cantidad)|number_format(2, ',', '.') }}</td>
@@ -44,7 +46,7 @@
 
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                    <td colspan="5" class="text-end"><strong>Total:</strong></td>
                                     <td class="text-end"><strong>${{ pedido.total|number_format(2, ',', '.') }}</strong></td>
                                 </tr>
                             </tfoot>
@@ -54,7 +56,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-2">
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Información del Pedido</h5>
@@ -62,28 +64,30 @@
                 <div class="card-body">
                     <p><strong>Fecha:</strong> {{ pedido.fecha|date('d/m/Y H:i') }}</p>
                     <p><strong>Estado:</strong> 
-                        {% if pedido.estado == 'enviado' %}
-                            <span class="badge bg-success">Enviado</span>
+                        {% if pedido.estado == 'leido' %}
+                            <span class="badge bg-success">Leido</span>
                         {% else %}
-                            <span class="badge bg-warning">{{ pedido.estado }}</span>
+                            <span class="badge bg-warning">Pendiente</span>
                         {% endif %}
                     </p>
                     {% if pedido.observaciones %}
-                        <p><strong>Observaciones:</strong><br>
-                        {{ pedido.observaciones|nl2br }}</p>
+                        <strong>Observación</strong>
+                            <div class="p-3 mt-1 rounded-2" style="background-color: var(--bs-warning-bg-subtle)">
+                            {{ pedido.observaciones|nl2br }}
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    {% if pedido.estado != 'enviado' %}
+    {% if pedido.estado != 'leido' %}
         <form method="post" action="{{ path('app_cliente_pedido_delete', {'id': pedido.id}) }}" 
               onsubmit="return confirm('¿Está seguro que desea eliminar este pedido?');" 
               style="display: inline;">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pedido.id) }}">
-            <button type="submit" class="btn btn-danger">
-                <i class="bi bi-trash"></i> Eliminar Pedido
+            <button type="submit" class="btn btn-sm btn-danger">
+                <i class="bi bi-trash me-2"></i>Eliminar Pedido
             </button>
         </form>
     {% endif %}

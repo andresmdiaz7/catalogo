@@ -1,0 +1,59 @@
+
+
+{% if sliders is defined and sliders|length > 0 %}
+    <div class="slider-container">
+        <div id="slider-{{ ubicacion }}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                {% set totalItems = 0 %}
+                {% for slider in sliders %}
+                    {% for archivo in slider.archivos %}
+                        <button type="button" data-bs-target="#slider-{{ ubicacion }}" data-bs-slide-to="{{ totalItems }}" {% if totalItems == 0 %}class="active"{% endif %} aria-current="true" aria-label="Slide {{ totalItems + 1 }}"></button>
+                        {% set totalItems = totalItems + 1 %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="carousel-inner">
+                {% set isFirst = true %}
+                {% for slider in sliders %}
+                    {% for archivo in slider.archivos %}
+                        <div class="carousel-item {% if isFirst %}active{% set isFirst = false %}{% endif %}" data-bs-interval="5000">
+                            {% if archivo.urlDestino or slider.urlDestino %}
+                                <a href="{{ archivo.urlDestino ?? slider.urlDestino }}" title="{{ archivo.textoAlternativo ?? slider.titulo }}">
+                            {% endif %}
+                            
+                            {% if archivo.filePathMobile %}
+                                <picture>
+                                    <source media="(max-width: 768px)" srcset="{{ asset('uploads/sliders/' ~ archivo.filePathMobile) }}">
+                                    <img src="{{ asset('uploads/sliders/' ~ archivo.filePath) }}" 
+                                         class="d-block w-100" 
+                                         alt="{{ archivo.textoAlternativo ?? slider.titulo }}"
+                                         >
+                                </picture>
+                            {% else %}
+                                <img src="{{ asset('uploads/sliders/' ~ archivo.filePath) }}" 
+                                     class="d-block w-100" 
+                                     alt="{{ archivo.textoAlternativo ?? slider.titulo }}"
+                                     >
+                            {% endif %}
+                            
+                            {% if archivo.urlDestino or slider.urlDestino %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            
+            {% if totalItems > 1%}
+                <button class="carousel-control-prev" type="button" data-bs-target="#slider-{{ ubicacion }}" data-bs-slide="prev">
+                    <span class="text-white fs-1" aria-hidden="false"><i class="bi bi-arrow-left-circle-fill"></i></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#slider-{{ ubicacion }}" data-bs-slide="next">
+                    <span class="text-white fs-1" aria-hidden="false"><i class="bi bi-arrow-right-circle-fill"></i></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+{% endif %} 

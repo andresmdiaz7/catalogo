@@ -61,7 +61,7 @@
                             {% if is_granted('ROLE_CLIENTE') %} {% include 'partials/_menu_cliente.html.twig' %} {% endif %}
                             
                         {% else %}
-                            <a class="btn btn-primary" href="{{ path('app_login') }}">Iniciar Sesión</a>
+                            <a class="btn btn-primary" href="{{ path('app_login') }}"><i class="bi bi-box-arrow-in-right pe-2"></i>Iniciar Sesión</a>
                         {% endif %}
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                 </div>
             </div>
         </nav>
-
+        {% block sliders %}{% endblock %}
         <div class="container-fluid px-4 py-3">
             <div class="row">
                 {% block body %}{% endblock %}

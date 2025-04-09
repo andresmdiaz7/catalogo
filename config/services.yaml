@@ -6,6 +6,7 @@
 parameters:
     articulos_directory: '%kernel.project_dir%/public/uploads/articulos'
     directorio_archivos: '/uploads/archivos/'
+    slider_directory: '%kernel.project_dir%/public/uploads/sliders'
 
 services:
     # default configuration for services in *this* file
@@ -37,3 +38,11 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%directorio_archivos%'
+
+    App\Service\SliderArchivoService:
+        arguments:
+            $sliderDirectory: '%slider_directory%'
+
+    App\Command\CrearDirectorioSliderCommand:
+        arguments:
+            $sliderDirectory: '%slider_directory%'

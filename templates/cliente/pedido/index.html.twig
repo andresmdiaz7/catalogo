@@ -3,68 +3,90 @@
 {% block title %}Mis Pedidos{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <h1 class="mb-4">Mis Pedidos</h1>
-
-    {% if pedidos is empty %}
-        <div class="alert alert-info">
-            No tienes pedidos realizados. 
-            <a href="{{ path('app_cliente_articulo_index') }}">Ver catálogo de artículos</a>
+    <div class="container-fluid">
+        {# Título #}
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <h4><i class="bi bi-card-list me-2"></i>Mis pedidos</h4>
+            <span class="d-inline-flex px-2 py-0  text-success-emphasis bg-success-subtle border border-success-subtle rounded-2">
+                Cantidad de pedidos: {{ pedidos.getTotalItemCount }}
+            </span>
         </div>
-    {% else %}
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Número</th>
-                                <th>Fecha</th>
-                                <th>Estado</th>
-                                <th class="text-end">Total</th>
-                                <th class="text-end">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for pedido in pedidos %}
-                                <tr>
-                                    <td>{{ pedido.id }}</td>
-                                    <td>{{ pedido.fecha|date('d/m/Y H:i') }}</td>
-                                    <td>
-                                        {% if pedido.estado == 'enviado' %}
-                                            <span class="badge bg-success">Enviado</span>
-                                        {% else %}
-                                            <span class="badge bg-warning">Pendiente</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        ${{ pedido.total|number_format(2, ',', '.') }}
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{{ path('app_cliente_pedido_show', {'id': pedido.id}) }}" 
-                                           class="btn btn-sm btn-info">
-                                            <i class="bi bi-eye"></i> Ver
-                                        </a>
-                                        {% if pedido.estado != 'enviado' %}
-                                            <form method="post" 
-                                                  action="{{ path('app_cliente_pedido_delete', {'id': pedido.id}) }}" 
-                                                  style="display: inline;">
-                                                <input type="hidden" name="_token" 
-                                                       value="{{ csrf_token('delete' ~ pedido.id) }}">
-                                                <button type="submit" class="btn btn-sm btn-danger" 
-                                                        onclick="return confirm('¿Está seguro que desea eliminar este pedido?')">
-                                                    <i class="bi bi-trash"></i> Eliminar
-                                                </button>
-                                            </form>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+        {% if pedidos is empty %}
+            {# Si no hay pedidos #}
+            <div class="alert alert-info">
+                No tienes pedidos realizados. 
+                <a href="{{ path('app_catalogo_index') }}">Ver catálogo de artículos</a>
             </div>
-        </div>
-    {% endif %}
-</div>
+        {% else %}
+            {# Tabla de pedidos #}
+            <div class="border rounded-2 shadow-sm mb-3">
+                <table class="table table-responsive align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">Número</th>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Fecha de lectura</th>
+                            <th>Observación</th>
+                            <th class="text-end">Total</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% for pedido in pedidos %}
+                            <tr>
+                                <td class="text-center">{{ pedido.id }}</td>
+                                <td class="text-center">{{ pedido.fecha|date('d/m/Y H:i') }}</td>
+                                <td class="text-center">
+                                    {% if pedido.estado == 'leido' %}
+                                        <span class="badge bg-success">Leido</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Pendiente</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if pedido.fechaLeido %}
+                                        {{ pedido.fechaLeido|date('d/m/Y') }}
+                                    {% endif %}
+                                </td>
+                                <td class="">
+                                    {{ pedido.observaciones }}
+                                </td>
+                                <td class="text-end fw-semibold">
+                                    ${{ pedido.total|number_format(2, ',', '.') }}
+                                </td>
+                                <td class="text-center">
+                                    {# Ver pedido #}
+                                    <a href="{{ path('app_cliente_pedido_show', {'id': pedido.id}) }}" 
+                                        class="btn btn-sm btn-info">
+                                        <i class="bi bi-file-earmark-text me-2"></i>Ver pedido
+                                    </a>
+                                    {# Eliminar pedido #}
+                                    <form method="post" 
+                                            action="{{ path('app_cliente_pedido_delete', {'id': pedido.id}) }}" 
+                                            style="display: inline;">
+                                        <input type="hidden" name="_token" 
+                                                value="{{ csrf_token('delete' ~ pedido.id) }}">
+                                        <button type="submit" class="btn btn-sm
+                                            {% if pedido.estado == 'leido' %} btn-secondary disabled {% else%} btn-danger {% endif %}"
+                                                onclick="return confirm('¿Está seguro que desea eliminar este pedido?')">
+                                            <i class="bi bi-trash me-2"></i>Eliminar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center align-middle">No hay pedidos registrados</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {# Añadir navegación de paginación #}
+            <div class="d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(pedidos, 'pagination/custom_pagination.html.twig') }}
+            </div>
+        {% endif %}
+    </div>
 {% endblock %} 

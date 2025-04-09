@@ -1,0 +1,32 @@
+{% if sliders|length > 0 %}
+    <div id="carouselSlider{{ ubicacion|capitalize }}" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for slider in sliders %}
+                {% for archivo in slider.archivos %}
+                    <div class="carousel-item {% if loop.first and loop.parent.loop.first %}active{% endif %}">
+                        <a href="{{ archivo.urlDestino|default(slider.urlDestino) }}" {% if archivo.urlDestino|default(slider.urlDestino) %}target="_blank"{% endif %}>
+                            <picture>
+                                <source media="(max-width: 767px)" srcset="{{ asset('uploads/sliders/' ~ archivo.filePathMobile|default(archivo.filePath)) }}">
+                                <img src="{{ asset('uploads/sliders/' ~ archivo.filePath) }}" 
+                                     class="d-block w-100" 
+                                     alt="{{ archivo.textoAlternativo|default(slider.titulo) }}"
+                                     style="max-height: 500px; object-fit: contain;">
+                            </picture>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        
+        {% if sliders|length > 0 and sliders|reduce((carry, slider) => carry + slider.archivos|length, 0) > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselSlider{{ ubicacion|capitalize }}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselSlider{{ ubicacion|capitalize }}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        {% endif %}
+    </div>
+{% endif %}

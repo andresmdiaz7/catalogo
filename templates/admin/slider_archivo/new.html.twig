@@ -1,0 +1,71 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Agregar Archivo al Slider{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Agregar Archivo al Slider: {{ slider.titulo }}</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Información del Archivo</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.archivo, 'Imagen') }}
+                                {{ form_widget(form.archivo, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.archivo) }}
+                                <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF, WEBP. Tamaño máximo: 5MB</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.archivoMobile, 'Imagen para móvil') }}
+                                {{ form_widget(form.archivoMobile, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.archivoMobile) }}
+                                <small class="form-text text-muted">Opcional. Se usará en dispositivos móviles</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.urlDestino, 'URL de destino') }}
+                                {{ form_widget(form.urlDestino, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.urlDestino) }}
+                                <small class="form-text text-muted">Opcional. Si se deja vacío, se usará la URL del slider</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.textoAlternativo, 'Texto alternativo') }}
+                                {{ form_widget(form.textoAlternativo, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.textoAlternativo) }}
+                                <small class="form-text text-muted">Importante para SEO y accesibilidad</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.orden, 'Orden') }}
+                                {{ form_widget(form.orden, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.orden) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a href="{{ path('app_admin_slider_archivo_index', {'id': slider.id}) }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

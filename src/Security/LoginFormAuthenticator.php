@@ -27,6 +27,9 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     {
     }
 
+    /**
+     * Autentica al usuario
+     */
     public function authenticate(Request $request): Passport
     {
         $email = $request->request->get('email', '');
@@ -42,18 +45,27 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
+    /**
+     * Redirige al usuario al dashboard correspondiente después de iniciar sesión
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
+        // Si el usuario está autenticado, redirigir al dashboard correspondiente
         $user = $token->getUser();
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
             return new RedirectResponse($this->urlGenerator->generate('app_admin_dashboard'));
         }
-
-        return new RedirectResponse($this->urlGenerator->generate('app_cliente_dashboard'));
+        if (in_array('ROLE_VENDEDOR', $user->getRoles())) {
+            return new RedirectResponse($this->urlGenerator->generate('app_vendedor_dashboard'));
+        }
+        if (in_array('ROLE_CLIENTE', $user->getRoles())) {  
+            return new RedirectResponse($this->urlGenerator->generate('app_cliente_dashboard'));
+        }
+        return new RedirectResponse($this->urlGenerator->generate('app_catalogo_index'));
     }
 
     protected function getLoginUrl(Request $request): string

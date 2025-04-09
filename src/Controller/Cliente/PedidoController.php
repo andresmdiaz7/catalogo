@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * Controlador para gestionar los pedidos de los clientes
@@ -69,13 +70,12 @@ class PedidoController extends AbstractController
 
             
             // En tu método que confirma el pedido (después de persistirlo)
-            //$emailService->sendPedidoConfirmation($pedido); // Para notificar al cliente
-            //$emailService->sendPedidoNotification($pedido); // Para notificar al vendedor y logística
-            
+            $emailService->sendPedidoConfirmation($pedido); // Para notificar al cliente
+            $emailService->sendPedidoNotification($pedido); // Para notificar al vendedor y logística
 
             
-            $entityManager->flush();
-            $cartService->clear();
+            //$entityManager->flush();
+            //$cartService->clear();
             $this->addFlash('success', 'Pedido creado correctamente');
             return $this->redirectToRoute('app_cliente_pedidos');
         } catch (\Exception $e) {
@@ -87,19 +87,35 @@ class PedidoController extends AbstractController
      * Muestra un listado de los pedidos del cliente actual
      *
      * @param EntityManagerInterface $entityManager
+     * @param Request $request
      * @return Response
      */
     #[Route('/', name: 'app_cliente_pedidos')]
-    public function index(EntityManagerInterface $entityManager): Response  
-    {
-        /** @var \App\Entity\Cliente $cliente */
+    public function index(
+        EntityManagerInterface $entityManager, 
+        PaginatorInterface $paginator, 
+        Request $request
+    ): Response {
+        
         $cliente = $this->getUser();
         
+        // Crear la consulta
+        $query = $entityManager->getRepository(Pedido::class)
+            ->createQueryBuilder('p')
+            ->where('p.cliente = :cliente')
+            ->setParameter('cliente', $cliente)
+            ->orderBy('p.fecha', 'DESC')
+            ->getQuery();
+        
+        // Paginar los resultados
+        $pedidos = $paginator->paginate(
+            $query            ,                 // Consulta a paginar
+            $request->query->getInt('page', 1), // Número de página, 1 por defecto
+            10                                  // Elementos por página
+        );
+        
         return $this->render('cliente/pedido/index.html.twig', [
-            'pedidos' => $entityManager->getRepository(Pedido::class)->findBy(
-                ['cliente' => $cliente],
-                ['fecha' => 'DESC']
-            ),
+            'pedidos' => $pedidos,
         ]);
     }
 

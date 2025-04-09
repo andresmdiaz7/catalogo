@@ -2,251 +2,251 @@
 
 {% block title %}Gestión de Artículos{% endblock %}
 
-{% block content %}
-<div class="container-fluid">
-    {# Título #}
-    <div class="d-flex justify-content-between align-items-center mb-1">
-        <h4>Gestión de Artículos</h4>
-        <span class="d-inline-flex px-2 py-0  text-success-emphasis bg-success-subtle border border-success-subtle rounded-2">
-            Cantidad de artículos: {{ articulos.getTotalItemCount }}
-        </span>
-    </div>
+{% block body %}
+    <div class="container-fluid">
+        {# Título #}
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <h4>Gestión de Artículos</h4>
+            <span class="d-inline-flex px-2 py-0  text-success-emphasis bg-success-subtle border border-success-subtle rounded-2">
+                Cantidad de artículos: {{ articulos.getTotalItemCount }}
+            </span>
+        </div>
 
-    {# Filtros #}
-    <div class="card mb-4 bg-light shadow-sm">
-        <div class="card-body pt-2">
-            <form method="get" class="row g-3">
-                <div class="row g-3 mt-2">
-                    <div class="col-md-2">
-                        <label for="buscar" class="form-label mb-1">Buscar</label>
-                        <input type="text" name="buscar" class="form-control form-control-sm" 
-                            placeholder="Buscar..." value="{{ app.request.query.get('buscar') }}">
-                    </div>
-                    <div class="col-md-2">
-                        <label for="rubro" class="form-label mb-1">Rubro</label>
-                        <select class="form-select form-select-sm" id="rubro" name="rubro">
-                            <option value="">Todos</option>
-                            {% for rubro in rubros %}
-                                <option value="{{ rubro.codigo }}" 
-                                        {% if app.request.query.get('rubro') == rubro.codigo %}selected{% endif %}>
-                                    {{ rubro.nombre }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="subrubro" class="form-label mb-1">Sub Rubro</label>
-                        <select class="form-select form-select-sm" id="subrubro" name="subrubro">
-                            <option value="">Todos</option>
-                            {% for subrubroItem in subrubros %}
-                                <option value="{{ subrubroItem.codigo }}" 
-                                        {% if app.request.query.get('subrubro') == subrubroItem.codigo %}selected{% endif %}>
-                                    {{ subrubroItem.nombre }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="marca" class="form-label mb-1">Marca</label>
-                        <select class="form-select form-select-sm" id="marca" name="marca">
-                            <option value="">Todos</option>
-                            {% for marcaItem in marcas %}
-                                <option value="{{ marcaItem.codigo }}" 
-                                        {% if app.request.query.get('marca') == marcaItem.codigo %}selected{% endif %}>
-                                    {{ marcaItem.nombre }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="limit" class="form-label mb-1">Resultados por página</label>
-                        <select class="form-select form-select-sm" id="limit" name="limit">
-                            <option value="10" {% if app.request.query.get('limit') == '10' %}selected{% endif %}>10</option>
-                            <option value="25" {% if app.request.query.get('limit') == '25' %}selected{% endif %}>25</option>
-                            <option value="50" {% if app.request.query.get('limit') == '50' %}selected{% endif %}>50</option>
-                            <option value="100" {% if app.request.query.get('limit') == '100' %}selected{% endif %}>100</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="buscar" class="form-label mb-1">&nbsp;</label>
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-sm btn-primary">
-                                <i class="bi bi-search"></i> Buscar
-                            </button>
-                            <a href="{{ path('app_admin_articulo_index') }}" class="btn btn-sm btn-secondary">
-                                <i class="bi bi-x-circle"></i> Limpiar
-                            </a>
-                            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                Más filtros
-                            </button>
+        {# Filtros #}
+        <div class="card mb-4 bg-light shadow-sm">
+            <div class="card-body pt-2">
+                <form method="get" class="row g-3">
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-2">
+                            <label for="buscar" class="form-label mb-1">Buscar</label>
+                            <input type="text" name="buscar" class="form-control form-control-sm" 
+                                placeholder="Buscar..." value="{{ app.request.query.get('buscar') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="rubro" class="form-label mb-1">Rubro</label>
+                            <select class="form-select form-select-sm" id="rubro" name="rubro">
+                                <option value="">Todos</option>
+                                {% for rubro in rubros %}
+                                    <option value="{{ rubro.codigo }}" 
+                                            {% if app.request.query.get('rubro') == rubro.codigo %}selected{% endif %}>
+                                        {{ rubro.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="subrubro" class="form-label mb-1">Sub Rubro</label>
+                            <select class="form-select form-select-sm" id="subrubro" name="subrubro">
+                                <option value="">Todos</option>
+                                {% for subrubroItem in subrubros %}
+                                    <option value="{{ subrubroItem.codigo }}" 
+                                            {% if app.request.query.get('subrubro') == subrubroItem.codigo %}selected{% endif %}>
+                                        {{ subrubroItem.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="marca" class="form-label mb-1">Marca</label>
+                            <select class="form-select form-select-sm" id="marca" name="marca">
+                                <option value="">Todos</option>
+                                {% for marcaItem in marcas %}
+                                    <option value="{{ marcaItem.codigo }}" 
+                                            {% if app.request.query.get('marca') == marcaItem.codigo %}selected{% endif %}>
+                                        {{ marcaItem.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="limit" class="form-label mb-1">Resultados por página</label>
+                            <select class="form-select form-select-sm" id="limit" name="limit">
+                                <option value="10" {% if app.request.query.get('limit') == '10' %}selected{% endif %}>10</option>
+                                <option value="25" {% if app.request.query.get('limit') == '25' %}selected{% endif %}>25</option>
+                                <option value="50" {% if app.request.query.get('limit') == '50' %}selected{% endif %}>50</option>
+                                <option value="100" {% if app.request.query.get('limit') == '100' %}selected{% endif %}>100</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="buscar" class="form-label mb-1">&nbsp;</label>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-search"></i> Buscar
+                                </button>
+                                <a href="{{ path('app_admin_articulo_index') }}" class="btn btn-sm btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Limpiar
+                                </a>
+                                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                    Más filtros
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row g-3 mt-2" id="collapseExample">
-                    <div class="col-md-2">
-                        <label for="habilitadoWeb" class="form-label mb-1">Hab Web</label>
-                        <select class="form-select form-select-sm" id="habilitadoWeb" name="habilitadoWeb">
-                            <option value="" {% if app.request.query.get('habilitadoWeb') is null %}selected{% endif %}>Todos</option>
-                            <option value="1" {% if app.request.query.get('habilitadoWeb') == '1' %}selected{% endif %}>Habilitados</option>
-                            <option value="0" {% if app.request.query.get('habilitadoWeb') == '0' %}selected{% endif %}>Deshabilitados</option>
-                        </select>
+                    <div class="row g-3 mt-2" id="collapseExample">
+                        <div class="col-md-2">
+                            <label for="habilitadoWeb" class="form-label mb-1">Hab Web</label>
+                            <select class="form-select form-select-sm" id="habilitadoWeb" name="habilitadoWeb">
+                                <option value="" {% if app.request.query.get('habilitadoWeb') is null %}selected{% endif %}>Todos</option>
+                                <option value="1" {% if app.request.query.get('habilitadoWeb') == '1' %}selected{% endif %}>Habilitados</option>
+                                <option value="0" {% if app.request.query.get('habilitadoWeb') == '0' %}selected{% endif %}>Deshabilitados</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="habilitadoGestion" class="form-label mb-1">Hab Gestión</label>
+                            <select class="form-select form-select-sm" id="habilitadoGestion" name="habilitadoGestion">
+                                <option value="" {% if app.request.query.get('habilitadoGestion') is null %}selected{% endif %}>Todos</option>
+                                <option value="1" {% if app.request.query.get('habilitadoGestion') == '1' %}selected{% endif %}>Habilitados</option>
+                                <option value="0" {% if app.request.query.get('habilitadoGestion') == '0' %}selected{% endif %}>Deshabilitados</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="destacado" class="form-label mb-1">Destacado</label>
+                            <select class="form-select form-select-sm" id="destacado" name="destacado">
+                                <option value="" {% if app.request.query.get('destacado') is null %}selected{% endif %}>Todos</option>
+                                <option value="1" {% if app.request.query.get('destacado') == '1' %}selected{% endif %}>Habilitados</option>
+                                <option value="0" {% if app.request.query.get('destacado') == '0' %}selected{% endif %}>Deshabilitados</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="novedad" class="form-label mb-1">Novedad</label>
+                            <select class="form-select form-select-sm" id="novedad" name="novedad">
+                                <option value="" {% if app.request.query.get('novedad') is null %}selected{% endif %}>Todos</option>
+                                <option value="1" {% if app.request.query.get('novedad') == '1' %}selected{% endif %}>Habilitados</option>
+                                <option value="0" {% if app.request.query.get('novedad') == '0' %}selected{% endif %}>Deshabilitados</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            &nbsp;
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <label for="habilitadoGestion" class="form-label mb-1">Hab Gestión</label>
-                        <select class="form-select form-select-sm" id="habilitadoGestion" name="habilitadoGestion">
-                            <option value="" {% if app.request.query.get('habilitadoGestion') is null %}selected{% endif %}>Todos</option>
-                            <option value="1" {% if app.request.query.get('habilitadoGestion') == '1' %}selected{% endif %}>Habilitados</option>
-                            <option value="0" {% if app.request.query.get('habilitadoGestion') == '0' %}selected{% endif %}>Deshabilitados</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="destacado" class="form-label mb-1">Destacado</label>
-                        <select class="form-select form-select-sm" id="destacado" name="destacado">
-                            <option value="" {% if app.request.query.get('destacado') is null %}selected{% endif %}>Todos</option>
-                            <option value="1" {% if app.request.query.get('destacado') == '1' %}selected{% endif %}>Habilitados</option>
-                            <option value="0" {% if app.request.query.get('destacado') == '0' %}selected{% endif %}>Deshabilitados</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="novedad" class="form-label mb-1">Novedad</label>
-                        <select class="form-select form-select-sm" id="novedad" name="novedad">
-                            <option value="" {% if app.request.query.get('novedad') is null %}selected{% endif %}>Todos</option>
-                            <option value="1" {% if app.request.query.get('novedad') == '1' %}selected{% endif %}>Habilitados</option>
-                            <option value="0" {% if app.request.query.get('novedad') == '0' %}selected{% endif %}>Deshabilitados</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        &nbsp;
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
 
-    {# Paginado #}
-    <div class="border rounded-2 shadow-sm mb-3">
-        <table class="table table-responsive ">
-            <thead class="table-light">
-                <tr>
-                    <th>
-                        {{ knp_pagination_sortable(articulos, 'Código', 'a.codigo', {
-                            'class': 'text-decoration-none link-primary',
-                            'title': 'Ordenar por código'
-                        })}}
-                        {% if articulos.isSorted('a.codigo') %}
-                            <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
-                        {% endif %}
-                    </th>
-                    <th>
-                        {{ knp_pagination_sortable(articulos, 'Detalle', 'a.detalle', {
-                            'class': 'text-decoration-none link-primary',
-                            'title': 'Ordenar por el detalle'
-                        })}}
-                        {% if articulos.isSorted('a.detalle') %}
-                            <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
-                        {% endif %}
-                    </th>
-                    <th>
-                        {{ knp_pagination_sortable(articulos, 'Marca', 'm.nombre', {
-                            'class': 'text-decoration-none link-primary',
-                            'title': 'Ordenar la marca del artículo'
-                        })}}
-                        {% if articulos.isSorted('m.nombre') %}
-                            <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
-                        {% endif %}
-                    </th>
-                    <th class="text-end pe-5">
-                        {{ knp_pagination_sortable(articulos, 'Precio', 'a.precioLista', {
-                            'class': 'text-decoration-none link-primary',
-                            'title': 'Ordenar por el valor del precio'
-                        })}}
-                        {% if articulos.isSorted('a.precioLista') %}
-                            <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
-                        {% endif %}
-                    </th>
-                    <th class="text-center">Hab. Web</th>
-                    <th class="text-center">Hab. GB</th>
-                    <th class="text-center">Destacado</th>
-                    <th class="text-center">Novedad</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody class="table-group-divider">
-                {% for articulo in articulos %}
+        {# Paginado #}
+        <div class="border rounded-2 shadow-sm mb-3">
+            <table class="table table-responsive ">
+                <thead class="table-light">
                     <tr>
-                        <td>{{ articulo.codigo }}</td>
-                        <td>
-                            {{ articulo.detalle }}<br>
-                            
-                        </td>
-                        <td>{{ articulo.marca }}</td>
-                        <td class="text-end pe-5">
-                            ${{ articulo.precioLista|number_format(2, ',', '.') }}
-                        </td>
-                        <td class="text-center">
-                            {% if articulo.habilitadoWeb %}
-                                <i class="bi bi-check-circle-fill text-success"></i>
-                            {% else %}
-                                <i class="bi bi-x-circle-fill text-danger"></i>
+                        <th>
+                            {{ knp_pagination_sortable(articulos, 'Código', 'a.codigo', {
+                                'class': 'text-decoration-none link-primary',
+                                'title': 'Ordenar por código'
+                            })}}
+                            {% if articulos.isSorted('a.codigo') %}
+                                <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
                             {% endif %}
-                        </td>
-                        <td class="text-center">
-                            {% if articulo.habilitadoGestion %}
-                                <i class="bi bi-check-circle-fill text-success"></i>
-                            {% else %}
-                                <i class="bi bi-x-circle-fill text-danger"></i>
+                        </th>
+                        <th>
+                            {{ knp_pagination_sortable(articulos, 'Detalle', 'a.detalle', {
+                                'class': 'text-decoration-none link-primary',
+                                'title': 'Ordenar por el detalle'
+                            })}}
+                            {% if articulos.isSorted('a.detalle') %}
+                                <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
+                            {% endif %}
+                        </th>
+                        <th>
+                            {{ knp_pagination_sortable(articulos, 'Marca', 'm.nombre', {
+                                'class': 'text-decoration-none link-primary',
+                                'title': 'Ordenar la marca del artículo'
+                            })}}
+                            {% if articulos.isSorted('m.nombre') %}
+                                <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
+                            {% endif %}
+                        </th>
+                        <th class="text-end pe-5">
+                            {{ knp_pagination_sortable(articulos, 'Precio', 'a.precioLista', {
+                                'class': 'text-decoration-none link-primary',
+                                'title': 'Ordenar por el valor del precio'
+                            })}}
+                            {% if articulos.isSorted('a.precioLista') %}
+                                <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
+                            {% endif %}
+                        </th>
+                        <th class="text-center">Hab. Web</th>
+                        <th class="text-center">Hab. GB</th>
+                        <th class="text-center">Destacado</th>
+                        <th class="text-center">Novedad</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
 
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            {% if articulo.destacado %}
-                                <i class="bi bi-check-circle-fill text-success"></i>
-                            {% else %}
-                                <i class="bi bi-x-circle-fill text-danger"></i>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            {% if articulo.novedad %}
-                                <i class="bi bi-check-circle-fill text-success"></i>
-                            {% else %}
-                                <i class="bi bi-x-circle-fill text-danger"></i>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            <div class="input-group text-center" role="group">
-                                <a href="{{ path('app_admin_articulo_edit', {'codigo': articulo.codigo}) }}" 
-                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-pencil ps-1"></i> Editar
-                                </a>
-                                <form method="post" 
-                                        action="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}" 
-                                        style="display: inline;">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('alternar-habilitado' ~ articulo.codigo) }}">
-                                        {% if articulo.habilitadoWeb %}
-                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-0 rounded-end-1">
-                                                <i class="bi bi-x-circle ps-1"></i> Deshabilitar
-                                            </button>
-                                        {% else %}
-                                            <button type="submit" class="btn btn-sm btn-outline-success rounded-0 rounded-end-1">
-                                                <i class="bi bi-check-circle ps-1"></i> Habilitar
-                                            </button>
-                                        {% endif %}
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="6">No hay artículos registrados</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {# Paginado #}
-    <div class="d-flex justify-content-center">
-        {{ knp_pagination_render(articulos, './pagination/custom_pagination.html.twig') }}
-    </div>
-</div> 
+                <tbody class="table-group-divider">
+                    {% for articulo in articulos %}
+                        <tr>
+                            <td>{{ articulo.codigo }}</td>
+                            <td>
+                                {{ articulo.detalle }}<br>
+                                
+                            </td>
+                            <td>{{ articulo.marca }}</td>
+                            <td class="text-end pe-5">
+                                ${{ articulo.precioLista|number_format(2, ',', '.') }}
+                            </td>
+                            <td class="text-center">
+                                {% if articulo.habilitadoWeb %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                {% else %}
+                                    <i class="bi bi-x-circle-fill text-danger"></i>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if articulo.habilitadoGestion %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                {% else %}
+                                    <i class="bi bi-x-circle-fill text-danger"></i>
+
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if articulo.destacado %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                {% else %}
+                                    <i class="bi bi-x-circle-fill text-danger"></i>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if articulo.novedad %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                {% else %}
+                                    <i class="bi bi-x-circle-fill text-danger"></i>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="input-group text-center" role="group">
+                                    <a href="{{ path('app_admin_articulo_edit', {'codigo': articulo.codigo}) }}" 
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil ps-1"></i> Editar
+                                    </a>
+                                    <form method="post" 
+                                            action="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}" 
+                                            style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('alternar-habilitado' ~ articulo.codigo) }}">
+                                            {% if articulo.habilitadoWeb %}
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-0 rounded-end-1">
+                                                    <i class="bi bi-x-circle ps-1"></i> Deshabilitar
+                                                </button>
+                                            {% else %}
+                                                <button type="submit" class="btn btn-sm btn-outline-success rounded-0 rounded-end-1">
+                                                    <i class="bi bi-check-circle ps-1"></i> Habilitar
+                                                </button>
+                                            {% endif %}
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">No hay artículos registrados</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {# Paginado #}
+        <div class="d-flex justify-content-center">
+            {{ knp_pagination_render(articulos, './pagination/custom_pagination.html.twig') }}
+        </div>
+    </div> 
 {% endblock %} 

@@ -1,0 +1,80 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nueva Ubicación de Slider{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Crear Nueva Ubicación de Slider</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Información de la Ubicación</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.nombre, 'Nombre') }}
+                                {{ form_widget(form.nombre, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.nombre) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.codigo, 'Código') }}
+                                {{ form_widget(form.codigo, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.codigo) }}
+                                <small class="form-text text-muted">Este código se usará para identificar la ubicación en el código</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.anchoMaximo, 'Ancho máximo (px)') }}
+                                {{ form_widget(form.anchoMaximo, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.anchoMaximo) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.altoMaximo, 'Alto máximo (px)') }}
+                                {{ form_widget(form.altoMaximo, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.altoMaximo) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                {{ form_label(form.descripcion, 'Descripción') }}
+                                {{ form_widget(form.descripcion, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.descripcion) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    {{ form_widget(form.activo, {'attr': {'class': 'custom-control-input'}}) }}
+                                    {{ form_label(form.activo, 'Activo', {'label_attr': {'class': 'custom-control-label'}}) }}
+                                </div>
+                                {{ form_errors(form.activo) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a href="{{ path('app_admin_slider_ubicacion_index') }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

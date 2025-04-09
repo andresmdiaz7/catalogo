@@ -2,17 +2,29 @@
 
 {% block title %}Catálogo{% endblock %}
 
+{# Si no se está buscando, se muestra el slider de la home #}
+{% block sliders %}
+    {% if app.request.query.get('buscar') is empty %}
+        {% set sliders_home = get_sliders_por_ubicacion(100) %}
+        {% include 'partials/_slider.html.twig' with { 'sliders': sliders_home, 'ubicacion': 'home-principal' } %}
+    {% endif %}
+{% endblock %}
+
+
 {% block body %}
 <div class="container mt-4">
-    <h1 class="mb-4">
+    <h4 class="mb-4">
         {% if app.request.query.get('buscar') %}
             Resultados de su busqueda: "{{ app.request.query.get('buscar') }}"
         {% else %}
-            Catálogo de productos
+            <i class="bi bi-star-fill text-warning"></i> Catálogo de productos
+            <i class="bi bi-cloud-arrow-down-fill text-danger"></i>
         {% endif %}
-    </h1>
+    </h4>
+
+    {# Si hay artículos, se muestran 5 por fila #}
     {% if articulos|length > 0 %}
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5 g-4 mb-4">
             {% for articulo in articulos %}
                 <div class="col">
                     {% include 'partials/_tarjeta_articulo.html.twig' with {'articulo': articulo} %}

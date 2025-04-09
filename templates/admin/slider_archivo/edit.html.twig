@@ -1,0 +1,82 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Editar Archivo del Slider{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Editar Archivo del Slider: {{ slider_archivo.slider.titulo }}</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Información del Archivo</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Imagen actual</h5>
+                        <img src="{{ asset('uploads/sliders/' ~ slider_archivo.filePath) }}" alt="{{ slider_archivo.textoAlternativo }}" class="img-thumbnail" style="max-width: 300px;">
+                    </div>
+                    {% if slider_archivo.filePathMobile %}
+                        <div class="col-md-6">
+                            <h5>Imagen móvil actual</h5>
+                            <img src="{{ asset('uploads/sliders/' ~ slider_archivo.filePathMobile) }}" alt="{{ slider_archivo.textoAlternativo }}" class="img-thumbnail" style="max-width: 300px;">
+                        </div>
+                    {% endif %}
+                </div>
+
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.archivo, 'Nueva imagen') }}
+                                {{ form_widget(form.archivo, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.archivo) }}
+                                <small class="form-text text-muted">Dejar vacío para mantener la imagen actual</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.archivoMobile, 'Nueva imagen para móvil') }}
+                                {{ form_widget(form.archivoMobile, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.archivoMobile) }}
+                                <small class="form-text text-muted">Dejar vacío para mantener la imagen actual</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.urlDestino, 'URL de destino') }}
+                                {{ form_widget(form.urlDestino, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.urlDestino) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.textoAlternativo, 'Texto alternativo') }}
+                                {{ form_widget(form.textoAlternativo, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.textoAlternativo) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.orden, 'Orden') }}
+                                {{ form_widget(form.orden, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.orden) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        <a href="{{ path('app_admin_slider_archivo_index', {'id': slider_archivo.slider.id}) }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

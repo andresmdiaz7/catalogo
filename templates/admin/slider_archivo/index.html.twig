@@ -1,0 +1,85 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Archivos del Slider{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Archivos del Slider: {{ slider.titulo }}</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Listado de Archivos</h6>
+                <a href="{{ path('app_admin_slider_archivo_new', {'id': slider.id}) }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Agregar Archivo
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>URL de destino</th>
+                                <th>Texto alternativo</th>
+                                <th>Orden</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for archivo in archivos %}
+                                <tr>
+                                    <td>{{ archivo.id }}</td>
+                                    <td>
+                                        <img src="{{ asset('uploads/sliders/' ~ archivo.filePath) }}" alt="{{ archivo.textoAlternativo }}" style="max-width: 100px; max-height: 100px;">
+                                    </td>
+                                    <td>{{ archivo.fileName }}</td>
+                                    <td>{{ archivo.urlDestino }}</td>
+                                    <td>{{ archivo.textoAlternativo }}</td>
+                                    <td>{{ archivo.orden }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_admin_slider_archivo_edit', {'id': archivo.id}) }}" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('app_admin_slider_archivo_delete', {'id': archivo.id}) }}" style="display: inline-block;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este archivo?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ archivo.id) }}">
+                                                <button class="btn btn-danger btn-sm">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No hay archivos registrados para este slider</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <a href="{{ path('app_admin_slider_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al listado de sliders
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Editar Slider{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Editar Slider</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Información del Slider</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.titulo, 'Título') }}
+                                {{ form_widget(form.titulo, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.titulo) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.urlDestino, 'URL de destino') }}
+                                {{ form_widget(form.urlDestino, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.urlDestino) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.ubicacion, 'Ubicación') }}
+                                {{ form_widget(form.ubicacion, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.ubicacion) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.categoria, 'Categoría') }}
+                                {{ form_widget(form.categoria, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.categoria) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.fechaInicio, 'Fecha de inicio') }}
+                                {{ form_widget(form.fechaInicio, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.fechaInicio) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.fechaFin, 'Fecha de fin') }}
+                                {{ form_widget(form.fechaFin, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.fechaFin) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.orden, 'Orden') }}
+                                {{ form_widget(form.orden, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.orden) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="custom-control custom-switch mt-4">
+                                    {{ form_widget(form.activo, {'attr': {'class': 'custom-control-input'}}) }}
+                                    {{ form_label(form.activo, 'Activo', {'label_attr': {'class': 'custom-control-label'}}) }}
+                                </div>
+                                {{ form_errors(form.activo) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        <a href="{{ path('app_admin_slider_index') }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            // Inicializar select2 para los campos de selección
+            $('select').select2({
+                theme: 'bootstrap4'
+            });
+        });
+    </script>
+{% endblock %}
