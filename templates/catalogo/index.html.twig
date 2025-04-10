@@ -12,6 +12,76 @@
 
 
 {% block body %}
+
+
+<div class="container py-5">
+    <h2 class="text-center mb-5 text-dark text-uppercase">Nuestras Divisiones Especializadas</h2>
+    
+    <div class="row g-4">
+        <!-- División Iluminación -->
+        <div class="col-md-4">
+            <div class="card h-100 overflow-hidden border border-1 border-secondary-subtle rounded-4">
+                <div class="position-relative">
+                    <img src="{{ asset('images/divisiones/home_iluminacion_card.jpg') }}" alt="División Iluminación" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                </div>
+                <div class="card-body d-flex flex-column p-4 text-dark bg-body-secondary bg-opacity-50">
+                    <div class="mb-3">
+                        <h3 class="card-title h4"><i class="bi bi-lightbulb-fill text-warning fs-3 me-2"></i>Iluminación y diseño</h3>
+                    </div>
+                    <h3 class="card-title h4 fw-normal">Soluciones de iluminación para cada espacio</h3>
+                    <p class="card-text">Diseño, asesoramiento y productos para proyectos residenciales, comerciales y urbanos. Optimizamos espacios con eficiencia energética y estética de vanguardia.</p>
+                    <a href="{{ path('app_division_iluminacion') }}" class="btn btn-info mt-auto">
+                        Descubrir soluciones lumínicas <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- División Industria -->
+        <div class="col-md-4">
+            <div class="card h-100 overflow-hidden border border-1 border-secondary-subtle rounded-4">
+                <div class="position-relative">
+                    <img src="{{ asset('images/divisiones/home_industria_card.jpg') }}" alt="División Industria" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                </div>
+                <div class="card-body d-flex flex-column p-4 text-dark bg-body-secondary bg-opacity-50">
+                    <div class="mb-3">
+                        <h3 class="card-title h4"><i class="bi bi-gear-fill text-primary fs-3 me-2"></i>Industria</h3>
+                    </div>
+                    <h3 class="card-title h4 fw-normal">Potencia industrial y soluciones eléctricas</h3>
+                    <p class="card-text">Equipamiento, componentes y asesoramiento técnico para proyectos industriales. Garantizamos seguridad, eficiencia y continuidad operativa para tu negocio.</p>
+                    <a href="{{ path('app_division_industria') }}" class="btn btn-info mt-auto">
+                        Explorar soluciones industriales <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- División Telecomunicaciones -->
+        <div class="col-md-4">
+            <div class="card h-100 overflow-hidden border border-1 border-secondary-subtle rounded-4">
+                <div class="position-relative">
+                    <img src="{{ asset('images/divisiones/home_telecomunicaciones_card.jpg') }}" alt="División Telecomunicaciones" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                </div>
+                <div class="card-body d-flex flex-column p-4 text-dark bg-body-secondary bg-opacity-50">
+                    <div class="mb-3">
+                        <h3 class="card-title h4"><i class="bi bi-broadcast-pin text-success fs-3 me-2"></i>Telecomunicaciones</h3>
+                    </div>
+                    <h3 class="card-title h4 fw-normal">Conectividad y redes de última generación</h3>
+                    <p class="card-text">Infraestructura, equipamiento y servicios para comunicaciones empresariales. Implementamos soluciones de conectividad que impulsan la transformación digital.</p>
+                    <a href="{{ path('app_division_telecomunicaciones') }}" class="btn btn-info mt-auto">
+                        Conocer nuestras soluciones <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <div class="container mt-4">
     <h4 class="mb-4">
         {% if app.request.query.get('buscar') %}
@@ -41,5 +111,71 @@
             No hay artículos disponibles.
         </div>
     {% endif %}
+</div>
+
+<div class="container py-5">
+    <h2 class="text-center mb-5">Nuestras Divisiones Especializadas</h2>
+    
+    <div class="row g-4">
+        <!-- División Iluminación -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 overflow-hidden">
+                <div class="position-relative">
+                    <img src="{{ asset('images/divisiones/iluminacion-card.jpg') }}" alt="División Iluminación" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <i class="bi bi-lightbulb-fill text-warning fs-3"></i>
+                    </div>
+                    <h3 class="card-title h4">Soluciones de iluminación para cada espacio</h3>
+                    <p class="card-text">Diseño, asesoramiento y productos para proyectos residenciales, comerciales y urbanos. Optimizamos espacios con eficiencia energética y estética de vanguardia.</p>
+                    <a href="{{ path('app_division_iluminacion') }}" class="btn btn-outline-primary mt-auto">
+                        Descubrir soluciones lumínicas <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- División Industria -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 overflow-hidden">
+                <div class="position-relative">
+                    <img src="{{ asset('images/divisiones/industria-card.jpg') }}" alt="División Industria" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <i class="bi bi-gear-fill text-primary fs-3"></i>
+                    </div>
+                    <h3 class="card-title h4">Potencia industrial y soluciones eléctricas</h3>
+                    <p class="card-text">Equipamiento, componentes y asesoramiento técnico para proyectos industriales. Garantizamos seguridad, eficiencia y continuidad operativa para tu negocio.</p>
+                    <a href="{{ path('app_division_industria') }}" class="btn btn-outline-primary mt-auto">
+                        Explorar soluciones industriales <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- División Telecomunicaciones -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 overflow-hidden">
+                <div class="position-relative">
+                    <img src="{{ asset('images/divisiones/telecomunicaciones-card.jpg') }}" alt="División Telecomunicaciones" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <i class="bi bi-broadcast-pin text-success fs-3"></i>
+                    </div>
+                    <h3 class="card-title h4">Conectividad y redes de última generación</h3>
+                    <p class="card-text">Infraestructura, equipamiento y servicios para comunicaciones empresariales. Implementamos soluciones de conectividad que impulsan la transformación digital.</p>
+                    <a href="{{ path('app_division_telecomunicaciones') }}" class="btn btn-outline-primary mt-auto">
+                        Conocer nuestras soluciones <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %} 

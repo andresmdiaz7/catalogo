@@ -44,3 +44,8 @@ vertical-align: middle;
     color: #fff !important;
     background-color: #e20018 !important;
 }
+
+/* Estilo para el rubro activo */
+.text-ciardi {
+    color: #e20018 !important;
+}
