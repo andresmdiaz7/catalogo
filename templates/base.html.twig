@@ -22,6 +22,7 @@
             </div>
         </div>
 
+        {# Header de la página #}
         <div class="container-fluid">
             <div class="row py-3 align-items-center">
                 <!-- Logo - Columna izquierda -->
@@ -69,6 +70,7 @@
             </div>
         </div>
 
+        {# Menu de secciones #}
         <nav class="navbar navbar-expand-lg navbar p-0 bg-body-secondary">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
@@ -91,26 +93,88 @@
                 </div>
             </div>
         </nav>
-        {% block sliders %}{% endblock %}
-        <div class="container-fluid px-4 py-3">
-            <div class="row">
-                {% block body %}{% endblock %}
+            {% block sliders %}{% endblock %}
+        
+            {% block body %}{% endblock %}
+        
+        <footer class="bg-dark text-white py-5 mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-4">
+                        <h2 class="h3">Nuestras Sucursales</h2>
+                        <p class="text-white">Estamos cerca tuyo para brindarte el mejor servicio</p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <!-- Casa Central -->
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="bi bi-building fs-2 text-ciardi mb-3"></i>
+                            <h3 class="h5">Casa Central</h3>
+                            <p class="mb-1 small">Av. Luro 7146, Mar del Plata</p>
+                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(0223) 499-1600</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(0223) 223 594 0094</p>
+                            <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>contacto@ciardi.com.ar</p>
+                        </div>
+                    </div>
+
+                    <!-- Sucursal Belgrano -->
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="bi bi-shop fs-2 text-ciardi mb-3"></i>
+                            <h3 class="h5">Centro</h3>
+                            <p class="mb-1 small">Belgrano 3547, Mar del Plata</p>
+                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(0223) 499-1670</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(0223) 223 524 7095</p>
+                            <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>sucursalbelgrano@ciardi.com.ar</p>
+                        </div>
+                    </div>
+
+                    <!-- Sucursal Puerto -->
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="bi bi-shop fs-2 text-ciardi mb-3"></i>
+                            <h3 class="h5">Sucursal Puerto</h3>
+                            <p class="mb-1 small">Edison 701, Mar del Plata</p>
+                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(0223) 499-1680</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(0223) 223 302 6092</p>
+                            <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>sucursalpuerto@ciardi.com.ar</p>
+                        </div>
+                    </div>
+
+                    <!-- Sucursal Balcarce -->
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="bi bi-shop fs-2 text-ciardi mb-3"></i>
+                            <h3 class="h5">Sucursal Balcarce</h3>
+                            <p class="mb-1 small">Av. Favaloro 850 esq. 26, Balcarce</p>
+                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(0223) 464-1666</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(0223) 2266 47 0734</p>
+                            <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>sucursalbalcarce@ciardi.com.ar</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </footer>
+        <footer class="bg-dark text-white py-5 border-top border-secondary text-center">
+            <h5 class="fw-light">1979~2025  Todos los derechos reservados Ciardi Hnos.</h5>
+            <h5 class="fw-light">Diseño y desarrollo por <a href="https://www.linkedin.com/in/manuel-andres-diaz/" target="_blank" class="text-primary mx-3"><i class="bi bi-linkedin me-1"></i>Andres Diaz</a></h5>
+        </footer
 
         {# En base.html.twig, antes del cierre del body #}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-es-ES.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-es-ES.min.js"></script>
         
         
         {% block javascripts %}
             <script>
+                // Inicializar tooltips
                 Array.from(document.querySelectorAll('.toast')).forEach(toastNode => new Toast(toastNode));
                 
+                // Inicializar todos los tooltips
                 document.addEventListener('DOMContentLoaded', function() {
-                    // Inicializar todos los tooltips
                     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
                     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                         return new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -119,19 +183,13 @@
                     });
                 });
 
-
-                {# Al final de base.html.twig #}
-                
+                // Inicializa todos los dropdowns
                 document.addEventListener('DOMContentLoaded', function() {
-                    // Inicializa todos los dropdowns
                     var dropdowns = document.querySelectorAll('.dropdown-toggle');
                     dropdowns.forEach(function(dropdown) {
                         new bootstrap.Dropdown(dropdown);
                     });
                 });
-                
-
-
             </script>
         {% endblock %}
     </body>
