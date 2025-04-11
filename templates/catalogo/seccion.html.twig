@@ -3,81 +3,83 @@
 {% block title %}Ciardi Hnos - {{ seccion.nombre }}{% endblock %}
 
 {% block body %}
-
-    {# Sidebar con Rubros #}
-    <div class="col-md-2 px-0">
-        {% if seccion is defined and seccion is not null %}
-            {% include 'partials/_sidebar_rubros.html.twig' with {
-                'seccion': seccion,
-                'rubros': seccion.rubros,
-                'rubro_actual': rubro_actual|default(null),
-                'subrubro_actual': subrubro_actual|default(null)
-            } %}
-            
-        {% endif %}
-    </div>
-
-    {# Contenido Principal #}
-    <div class="col-md-10 ps-4">
-        
-        {# Muestra el slider de la sección si existe en las ubicaciones de sliders asociados por el ID de la sección y del slider #}
-            {% if seccion.id is defined and seccion.id is not null %}
-                {% set sliders_home = get_sliders_por_ubicacion(seccion.id) %}
-                {% if sliders_home|length > 0 %}
-                    <div class="container-fluid border border-primarydark-subtle rounded-4 p-0 overflow-hidden mb-3 shadow-sm">
-                        {% include 'partials/_slider.html.twig' with { 'sliders': sliders_home, 'ubicacion': 'home-principal' } %}
-                    </div>
-                {% endif %}
+<div class="container-fluid py-4 px-4">
+    <div class="row">
+        {# Sidebar con Rubros #}
+        <div class="col-md-2">
+            {% if seccion is defined and seccion is not null %}
+                {% include 'partials/_sidebar_rubros.html.twig' with {
+                    'seccion': seccion,
+                    'rubros': seccion.rubros,
+                    'rubro_actual': rubro_actual|default(null),
+                    'subrubro_actual': subrubro_actual|default(null)
+                } %}
+                
             {% endif %}
-        
-        <div class="container-fluid">
-        
-        {# Breadcrumb #}
-        <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{{ path('app_catalogo_index') }}" class="text-decoration-none">
-                        <i class="bi bi-house pe-2 text-decoration-none"></i> Inicio
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ path('app_catalogo_seccion', {'id': seccion.id}) }}" class="text-decoration-none">
-                        {{ seccion.nombre }}
-                    </a>
-                </li>
-                {% if rubro_actual %}
+        </div>
+
+        {# Contenido Principal #}
+        <div class="col-md-10">
+            
+            {# Muestra el slider de la sección si existe en las ubicaciones de sliders asociados por el ID de la sección y del slider #}
+                {% if seccion.id is defined and seccion.id is not null %}
+                    {% set sliders_home = get_sliders_por_ubicacion(seccion.id) %}
+                    {% if sliders_home|length > 0 %}
+                        <div class="container-fluid border border-primarydark-subtle rounded-4 p-0 overflow-hidden mb-3 shadow-sm">
+                            {% include 'partials/_slider.html.twig' with { 'sliders': sliders_home, 'ubicacion': 'home-principal' } %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            
+            <div class="container-fluid">
+            
+            {# Breadcrumb #}
+            <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="{{ path('app_catalogo_seccion', { 'id': seccion.id, 'rubro': rubro_actual.codigo }) }}" class="text-decoration-none">
-                            {{ rubro_actual.nombre }}
+                        <a href="{{ path('app_catalogo_index') }}" class="text-decoration-none">
+                            <i class="bi bi-house pe-2 text-decoration-none"></i> Inicio
                         </a>
                     </li>
-                {% endif %}
-                {% if subrubro_actual %}
-                    <li class="breadcrumb-item active class="text-decoration-none"" aria-current="page">
-                        {{ subrubro_actual.nombre }}
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_catalogo_seccion', {'id': seccion.id}) }}" class="text-decoration-none">
+                            {{ seccion.nombre }}
+                        </a>
                     </li>
-                {% endif %}
-            </ol>
-        </nav>
-        
-        {% if articulos|length > 0 %}
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4">
-                {% for articulo in articulos %}
-                    <div class="col">
-                        {% include 'partials/_tarjeta_articulo.html.twig' with {'articulo': articulo} %}
-                    </div>
-                {% endfor %}
-            </div>
+                    {% if rubro_actual %}
+                        <li class="breadcrumb-item">
+                            <a href="{{ path('app_catalogo_seccion', { 'id': seccion.id, 'rubro': rubro_actual.codigo }) }}" class="text-decoration-none">
+                                {{ rubro_actual.nombre }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if subrubro_actual %}
+                        <li class="breadcrumb-item active class="text-decoration-none"" aria-current="page">
+                            {{ subrubro_actual.nombre }}
+                        </li>
+                    {% endif %}
+                </ol>
+            </nav>
+            
+            {% if articulos|length > 0 %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4">
+                    {% for articulo in articulos %}
+                        <div class="col">
+                            {% include 'partials/_tarjeta_articulo.html.twig' with {'articulo': articulo} %}
+                        </div>
+                    {% endfor %}
+                </div>
 
-            {# Paginación #}
-            <div class="d-flex justify-content-center">
-                {{ knp_pagination_render(articulos, 'pagination/custom_pagination.html.twig') }}
-            </div>
-        {% else %}
-            <div class="alert alert-info">
-                No hay artículos disponibles.
-            </div>
-        {% endif %}
-    </div>
-    
+                {# Paginación #}
+                <div class="d-flex justify-content-center">
+                    {{ knp_pagination_render(articulos, 'pagination/custom_pagination.html.twig') }}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    No hay artículos disponibles.
+                </div>
+            {% endif %}
+        </div>
+    </div>{# fin ROW #}
+</div>{# fin CONTAINER-FLUID #}
 {% endblock %} 

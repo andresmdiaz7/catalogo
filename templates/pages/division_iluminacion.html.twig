@@ -4,6 +4,120 @@
 
 {% block body %}
 <div class="container-fluid p-0" id="puntoEntrada">
+
+
+    <!-- Galería de iluminación decorativa - usando CSS Grid con dimensiones ajustadas -->
+    <div class="container-fluid p-0">
+        <!-- Puedes ajustar las proporciones de columnas (4fr 3fr 5fr) a las que necesites -->
+        <!-- También puedes definir alturas específicas en grid-template-rows -->
+        <div style="display: grid; 
+                    grid-template-columns: 5fr 2fr 2fr; 
+                    grid-template-rows: 600px 300px; 
+                    gap: 4px; 
+                    margin-bottom: 4px;
+                    margin-top: 4px;">
+            
+            <!-- Imagen 1 (izquierda superior) -->
+            <div class="position-relative" style="grid-column: 1; grid-row: 1;">
+                <img src="{{ asset('images/divisiones/iluminacion/decorativa1.jpg') }}" 
+                     class="img-fluid w-100 h-100" 
+                     alt="Iluminación decorativa 1"
+                     style="object-fit: cover;">
+                <div class="position-absolute" style="bottom: 3%; left: 3%">
+                    <a href="https://wa.me/5492235864181?text=Hola! Quiero solicitar información sobre iluminación" 
+                        target="_blank" 
+                        class="float-start btn"
+                        style="background-color: var(--bs-success-bg-subtle)">
+                        <i class="bi bi-whatsapp fs-5"></i>
+                    </a>
+                    <a href="https://www.instagram.com/ciardi_matelec/" 
+                        target="_blank" 
+                        class="float-start btn ms-2" 
+                        style="background-color: var(--bs-primary-bg-subtle)">
+                        <i class="bi bi-info-circle fs-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Imagen 2 (centro superior) -->
+            <div class="position-relative" style="grid-column: 2; grid-row: 1;">
+                <img src="{{ asset('images/divisiones/iluminacion/decorativa2.png') }}" 
+                     class="img-fluid w-100 h-100" 
+                     alt="Iluminación decorativa 2"
+                     style="object-fit: cover;">
+                <div class="position-absolute" style="bottom: 3%; right: 5%">
+                    <a href="https://www.instagram.com/ciardi_matelec/" target="_blank" class="float-start">
+                        <img src="{{ asset('images/divisiones/iluminacion/icono-info-blanco.png') }}" alt="Instagram" height="40">
+                    </a> 
+                    <a href="https://wa.me/5492235864181?text=Hola! Quiero solicitar información sobre iluminación" target="_blank" class="float-start ms-2">
+                        <img src="{{ asset('images/divisiones/iluminacion/icono-wpp-blanco.png') }}" alt="WhatsApp" height="40">
+                    </a>
+                </div>
+            </div>
+
+            <!-- Imagen 3 (derecha, altura completa) -->
+            <div class="position-relative" style="grid-column: 3; grid-row: 1 / span 2;">
+                <img src="{{ asset('images/divisiones/iluminacion/decorativa3.jpg') }}" 
+                     class="img-fluid w-100 h-100" 
+                     alt="Iluminación decorativa 3"
+                     style="object-fit: cover;">
+                <div class="position-absolute" style="bottom: 2%; right: 4%">
+                    <a href="https://www.instagram.com/ciardi_matelec/" target="_blank" class="float-start">
+                        <img src="{{ asset('images/divisiones/iluminacion/icono-info-gris.png') }}" alt="Instagram" height="40">
+                    </a> 
+                    <a href="https://wa.me/5492235864181?text=Hola! Quiero solicitar información sobre iluminación" target="_blank" class="float-start ms-2">
+                        <img src="{{ asset('images/divisiones/iluminacion/icono-wpp-gris.png') }}" alt="WhatsApp" height="40">
+                    </a>
+                </div>
+            </div>
+
+            <!-- Imagen 4 (debajo de Imagen 1 e Imagen 2) -->
+            <div class="position-relative" style="grid-column: 1 / span 2; grid-row: 2;">
+                <img src="{{ asset('images/divisiones/iluminacion/decorativa4.png') }}" 
+                     class="img-fluid w-100 h-100" 
+                     alt="Iluminación decorativa 4"
+                     style="object-fit: cover;">
+                <div class="position-absolute" style="top: 7%; left: 49%">
+                    <a href="https://www.instagram.com/ciardi_matelec/" target="_blank" class="float-start">
+                        <img src="{{ asset('images/divisiones/iluminacion/icono-info-blanco.png') }}" alt="Instagram" height="40">
+                    </a> 
+                    <a href="https://wa.me/5492235864181?text=Hola! Quiero solicitar información sobre iluminación" target="_blank" class="float-start ms-2">
+                        <img src="{{ asset('images/divisiones/iluminacion/icono-wpp-blanco.png') }}" alt="WhatsApp" height="40">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--
+
+    <div class="container-fluid p-0">
+        <div class="row">
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-8">
+                        Imagen 1
+                    </div>
+                    <div class="col-4">
+                        Imagen 2
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        Imagen 4
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-3">
+                Imagen 3
+            </div>
+        </div>
+    </div>
+
+-->
+
+
     <!-- Banner principal -->
     <div class="position-relative">
         <div class="bg-dark text-white py-5" style="background-image: url('{{ asset('images/divisiones/iluminacion/banner.jpg') }}'); background-size: cover; background-position: center; min-height: 500px;">
@@ -541,6 +655,35 @@
                 }
                 .nav-pills .nav-link.active h6 {
                     color: #fff !important;
+                }
+
+                {# GRid iluminacion #}
+                 @media (max-width: 768px) {
+                    .iluminacion-grid {
+                        display: grid;
+                        grid-template-columns: 1fr !important;
+                        grid-template-rows: auto auto auto auto !important;
+                    }
+                    
+                    .iluminacion-grid > div:nth-child(1) {
+                        grid-column: 1 !important;
+                        grid-row: 1 !important;
+                    }
+                    
+                    .iluminacion-grid > div:nth-child(2) {
+                        grid-column: 1 !important;
+                        grid-row: 2 !important;
+                    }
+                    
+                    .iluminacion-grid > div:nth-child(3) {
+                        grid-column: 1 !important;
+                        grid-row: 3 !important;
+                    }
+                    
+                    .iluminacion-grid > div:nth-child(4) {
+                        grid-column: 1 !important;
+                        grid-row: 4 !important;
+                    }
                 }
             </style>
             

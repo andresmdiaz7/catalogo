@@ -1,0 +1,477 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}División Industria - Ciardi Hnos{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-0" id="puntoEntrada">
+
+    <!-- Banner principal -->
+    <div class="position-relative">
+        <div class="bg-dark text-white py-5" style="background-image: url('{{ asset('images/divisiones/industria/banner.jpg') }}'); background-size: cover; background-position: center; min-height: 500px;">
+            <div class="container position-relative" style="z-index: 1;">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3 text-center py-5">
+                        <img src="{{ asset('images/logo.png') }}" width="246" height="246" alt="Logo Ciardi" class="mb-4">
+                        <h1 class="display-4 fw-bold mb-4">SOLUCIONES PARA TODO TIPO DE INDUSTRIAS</h1>
+                        <h2 class="h3 mb-4">MATERIALES ELÉCTRICOS PARA CADA PROYECTO</h2>
+                        <a href="https://api.whatsapp.com/send?phone=542235940094&text=Hola%20buen%20d%C3%ADa,%20quiero%20hacer%20una%20consulta%20sobre%20industria." target="_blank" class="btn btn-success btn-lg">
+                            <i class="bi bi-whatsapp me-2"></i>
+                            Contáctanos
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.6;"></div>
+        </div>
+    </div>
+
+    <!-- Rubros especializados -->
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="h1 mb-4 fw-normal">Nos especializamos en los siguientes rubros</h2>
+            <p class="lead mb-0">
+                Desde el Área de Industria de Ciardi Hnos brindamos soluciones para todo tipo de proyectos, desde la generación de la energía, 
+                pasando por el transporte y su distribución hasta llegar a todos los tipos de consumos. 
+                Atendemos proyectos relacionados a áreas tan variadas como la pesca, el agro, los alimentos, 
+                químicas, metalúrgicas y la construcción entre otros.
+            </p>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ asset('images/divisiones/industria/card_distribucion.jpg') }}" class="card-img-top" alt="Distribución">
+                    <div class="card-body text-center">
+                        <i class="bi bi-list-check fs-1 mb-3 text-ciardi"></i>
+                        <h3 class="h4 mb-3">Distribución y canalización de energía</h3>
+                        <p>Ofrecemos opciones para todo tipo de industria priorizando la seguridad y la integridad de su instalación. Nuestras marcas cuentan con certificaciones que respaldan y aseguran la sustentabilidad de cada proyecto.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ asset('images/divisiones/industria/card_gabinetes.jpg') }}" class="card-img-top" alt="Gabinetes">
+                    <div class="card-body text-center">
+                        <i class="bi bi-box-fill fs-1 mb-3 text-ciardi"></i>
+                        <h3 class="h4 mb-3">Tableros y gabinetes</h3>
+                        <p>Gran variedad en la oferta de tipos, medidas y accesorios para lograr la opción óptima en cada aplicación. Soporte técnico para realizar el dimensionamiento y elección de materiales para lograr una eficiente gestión térmica dentro de cada envolvente.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ asset('images/divisiones/industria/card_protecciones.jpg') }}" class="card-img-top" alt="Protecciones">
+                    <div class="card-body text-center">
+                        <i class="bi bi-shield-check fs-1 mb-3 text-ciardi"></i>
+                        <h3 class="h4 mb-3">Comandos y protecciones</h3>
+                        <p>La confiabilidad es un factor crucial en la industria, es por eso que contamos con un porfolio de marcas y soluciones para asegurar la integridad tanto de su proyecto como del personal interviniente. Herramientas, protecciones y comandos son algunas de las líneas disponibles para darle máxima calidad a su trabajo.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ asset('images/divisiones/industria/card_automatizaciones.jpg') }}" class="card-img-top" alt="Automatizaciones">
+                    <div class="card-body text-center">
+                        <i class="bi bi-cpu fs-1 mb-3 text-ciardi"></i>
+                        <h3 class="h4 mb-3">Automatizaciones</h3>
+                        <p>En un mercado cada vez más competitivo, la eficiencia y optimización de los procesos es clave para ser líder en su rubro. Tenemos todo el equipamiento necesario para poder lograrlo, entre ellos plc, sensores, relés programables y medidores de consumo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Casos de éxito -->
+    <div class="container-fluid mt-5">
+        <div class="text-center mb-5">
+            <h2 class="h1 mb-4 fw-normal">Casos de éxito</h2>
+            <p class="lead">Contamos con una amplia experiencia para brindar la mejor solución para cada escenario.</p>
+        </div>
+        
+        <div class="container-fluid px-0">
+            <div class="row g-2">
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_1.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Canalización"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Canalización</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_2.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Canalización"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Canalización</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_3.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Producción pesquera"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Producción pesquera</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_4.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Gabinetes"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Gabinetes</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_5.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Industria pesquera"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Industria pesquera</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_6.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Planta de producción"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Planta de producción</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_7.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Industria química"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Industria química</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_8.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Energía eólica"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Energía eólica</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_9.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Industria de alimentos"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Industria de alimentos</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_10.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Infraestructura"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Infraestructura</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_11.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Industria de alimentos"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Industria de alimentos</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-sm-4 col-md-3">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/divisiones/industria/caso_12.jpg') }}" 
+                             class="img-fluid w-100" 
+                             alt="Tableros"
+                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: rgba(0,0,0,0.7);">
+                            <h6 class="text-white mb-0 small">Tableros</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nuestro equipo -->
+    <div class="bg-light py-5 mt-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="h1 mb-4 fw-normal">Nuestro equipo de profesionales</h2>
+                <p class="lead">
+                    En el competitivo mundo empresarial de hoy en día, contar con un equipo de profesionales altamente capacitados 
+                    es esencial para el éxito de tu negocio. En Ciardi Hnos, entendemos la importancia de contar con expertos 
+                    en cada área para garantizar resultados excepcionales.
+                </p>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-6">
+                    <div class="card text-center h-100 shadow-sm">
+                        <div class="card-body">
+                            <img src="{{ asset('images/divisiones/industria/equipo_luciano.jpg') }}" alt="Luciano Eriksen" class="rounded-circle mb-3" width="300">
+                            <h3 class="h4 mb-0">Luciano Eriksen</h3>
+                            <p class="text-muted">Ingeniero Electromecánico</p>
+                            <div class="mt-3">
+                                <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
+                                <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                                <a href="https://www.linkedin.com/in/lucianoeriksen/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card text-center h-100 shadow-sm">
+                        <div class="card-body">
+                            <img src="{{ asset('images/divisiones/industria/equipo_jose.jpg') }}" alt="Jose Angelillo" class="rounded-circle mb-3" width="300">
+                            <h3 class="h4 mb-0">Jose Angelillo</h3>
+                            <p class="text-muted">Técnico Electromecánico</p>
+                            <div class="mt-3">
+                                <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
+                                <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sobre nosotros -->
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="h1 mb-4 fw-normal">Sobre nosotros</h2>
+            <p class="lead">
+                Somos empresa dedicada a la comercialización y distribución de materiales eléctricos, 
+                de iluminación y de telecomunicaciones con un objetivo claro: satisfacer siempre a nuestro 
+                clientes brindando soluciones integrales.<br>
+                Contamos con 3 divisiones especializadas en: Iluminación - Industria - Telecomunicaciones
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-5 mb-4 mb-lg-0">
+                <img src="{{ asset('images/divisiones/industria/electricista.jpg') }}" alt="Electricista" class="img-fluid rounded-4">
+            </div>
+            <div class="col-lg-7">
+                <h3 class="h4 mt-0 mt-lg-4">Desde Ciardi Hnos nos comprometemos con tus proyectos</h3>
+                
+                <!-- Pestañas -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="division-tab" data-bs-toggle="tab" data-bs-target="#division-tab-pane" type="button" role="tab" aria-controls="division-tab-pane" aria-selected="true">División Industria</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sustentabilidad-tab" data-bs-toggle="tab" data-bs-target="#sustentabilidad-tab-pane" type="button" role="tab" aria-controls="sustentabilidad-tab-pane" aria-selected="false">Sustentabilidad</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content pt-4" id="myTabContent">
+                    <div class="tab-pane fade show active" id="division-tab-pane" role="tabpanel" aria-labelledby="division-tab" tabindex="0">
+                        <p class="fst-italic">
+                            Contamos con un equipo de profesionales listos para acoplarse al desarrollo de proyectos industriales y cubrir todo tipo de necesidades.
+                        </p>
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <p class="mb-0">Asesoramiento durante la fase de diseño.</p>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <p class="mb-0">Presentación de muestras.</p>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <p class="mb-0">Presentación del proyecto en general.</p>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <p class="mb-0">Logística de entrega.</p>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <p class="mb-0">Servicio postventa.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="sustentabilidad-tab-pane" role="tabpanel" aria-labelledby="sustentabilidad-tab" tabindex="0">
+                        <p class="fst-italic">
+                            Analizamos cada proyecto buscando alcanzar la máxima eficiencia, no solo desde la perspectiva económica sino en todos los aspectos del proceso.
+                        </p>
+                        <div class="d-flex align-items-start mt-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2 mt-1"></i>
+                            <div>
+                                <h5 class="h6 mb-1">Eficiencia energética</h5>
+                                <p>Tenemos un fuerte compromiso en proveer materiales de calidad, que favorezcan el ahorro de energía tanto desde su proceso de fabricación como así también en todo el ciclo de vida del producto.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mt-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2 mt-1"></i>
+                            <div>
+                                <h5 class="h6 mb-1">Alianzas estratégicas</h5>
+                                <p>Trabajamos en conjunto con fabricantes y proveedores que son lideres mundiales en sustentabilidad.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mt-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2 mt-1"></i>
+                            <div>
+                                <h5 class="h6 mb-1">Acompañamiento en proyectos</h5>
+                                <p>Damos soporte y guiamos a nuestros clientes en la selección de productos que complementan cada obra, para hacerla sostenible y respetuosa del medio ambiente.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Servicios destacados -->
+    <div class="py-5 bg-light">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-award fs-3"></i>
+                            </div>
+                            <h4 class="h5 mb-3">Distribuidor Nº1</h4>
+                            <p class="mb-0">En Ciardi Hnos nos caracterizamos por ser los mejores distribuidores de materiales eléctricos de Argentina</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-bounding-box-circles fs-3"></i>
+                            </div>
+                            <h4 class="h5 mb-3">Acuerdo con proveedores</h4>
+                            <p class="mb-0">Llevamos a cabo acuerdos exitosos, siempre con proveedores de primer nivel.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-boxes fs-3"></i>
+                            </div>
+                            <h4 class="h5 mb-3">Disponibilidad de productos</h4>
+                            <p class="mb-0">Nos caracterizamos por contar con una amplia cantidad de productos en forma continua.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-wallet2 fs-3"></i>
+                            </div>
+                            <h4 class="h5 mb-3">Precios competitivos</h4>
+                            <p class="mb-0">Nos caracterizamos por tener precios competitivos que hacen la diferencia en el mercado.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-save2 fs-3"></i>
+                            </div>
+                            <h4 class="h5 mb-3">Acopio/Guarda de materiales</h4>
+                            <p class="mb-0">Tememos un Centro de acopio de 5000 mts2.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-person-check fs-3"></i>
+                            </div>
+                            <h4 class="h5 mb-3">Asesoramiento técnico</h4>
+                            <p class="mb-0">Contamos con asesores en forma personalizada para atender cualquier requerimiento técnico.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-people fs-3"></i>
+                            </div>
+                            <h4 class="h5 mb-3">Asesoramiento técnico</h4>
+                            <p class="mb-0">Contamos con asesores en forma personalizada para atender cualquier requerimiento técnico.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
