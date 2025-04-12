@@ -83,7 +83,7 @@ class CatalogoController extends AbstractController
         $articulos = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            12 // número de elementos por página
+            15 // número de elementos por página
         );
 
         return $this->render('catalogo/index.html.twig', [

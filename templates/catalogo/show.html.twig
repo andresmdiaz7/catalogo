@@ -3,203 +3,215 @@
 {% block title %}{{ articulo.detalle }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    {# Breadcrumb - Sin cambios #}
-    <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            {% if articulo.subrubro.rubro.seccion is not null %}
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_catalogo_seccion', {'id': articulo.subrubro.rubro.seccion.id}) }}" class="text-decoration-none">
-                    <i class="bi bi-house pe-2 text-decoration-none"></i> {{ articulo.subrubro.rubro.seccion.nombre }}
-                </a>
-            </li>
-            {% endif %}
-            {% if articulo.subrubro.rubro is not null and articulo.subrubro.rubro.seccion is not null %}
-                <li class="breadcrumb-item">
-                    <a href="{{ path('app_catalogo_seccion', { 'id': articulo.subrubro.rubro.seccion.id, 'rubro': articulo.subrubro.rubro.codigo }) }}" class="text-decoration-none">
-                        {{ articulo.subrubro.rubro.nombre }}
-                    </a>
-                </li>
-            {% endif %}
-            {% if articulo.subrubro is not null %}
-                <li class="breadcrumb-item active class="text-decoration-none"" aria-current="page">
-                    {{ articulo.subrubro.nombre }}
-                </li>
-            {% endif %}
-        </ol>
-    </nav>
-
-    <div class="row">
-        <div class="col-md-5">
-            {% set tiene_imagenes = false %}
-            {% set imagenes = [] %}
-
-            {# Buscar imagen principal entre todos los articuloArchivos #}
-            {% set imagen_principal = null %}
-            {% for articuloArchivo in articulo.articuloArchivos %}
-                {% if articuloArchivo.esPrincipal and articuloArchivo.archivo.esImagen %}
-                    {% set imagen_principal = articuloArchivo.archivo %}
-                {% endif %}
-            {% endfor %}
-            
-            {# Recorrer articuloArchivos para encontrar imágenes no principales #}
-            {% for articuloArchivo in articulo.archivos %}
-                {% if articuloArchivo.archivo.tipoMime starts with 'image/' %}
-                    {% set tiene_imagenes = true %}
-                    {% if not articuloArchivo.esPrincipal %}
-                        {% set imagenes = imagenes|merge([articuloArchivo.archivo]) %}
+    <div class="container-fluid px-4 py-3">
+        <div class="row">
+            {# Breadcrumb - Sin cambios #}
+            <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% if articulo.subrubro.rubro.seccion is not null %}
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_catalogo_seccion', {'id': articulo.subrubro.rubro.seccion.id}) }}" class="text-decoration-none">
+                            <i class="bi bi-house pe-2 text-decoration-none"></i> {{ articulo.subrubro.rubro.seccion.nombre }}
+                        </a>
+                    </li>
                     {% endif %}
-                {% endif %}
-            {% endfor %}
-
-            {% if imagen_principal or imagenes|length > 0 %}
-                {% set tiene_imagenes = true %}
-                <div id="carouselArticulo" class="carousel slide">
-                    <div class="carousel-inner">
-                        {% if imagen_principal %}
-                            <div class="carousel-item active" style="transition: none !important;">
-                               <img src="{{ asset(directorio_archivos ~ imagen_principal.filePath) }}" 
-                                     class="d-block w-100 rounded shadow img-thumbnail" 
-                                     alt="{{ articulo.detalle }}"
-                                     style="max-height: 500px; object-fit: contain;">
-                            </div>
-                        {% endif %}
-                        
-                        {% for imagen in imagenes %}
-                            <div class="carousel-item {% if not imagen_principal and loop.first %}active{% endif %}" style="transition: none !important;">
-                                <img src="{{ asset(directorio_archivos ~ imagen.filePath) }}" 
-                                     class="d-block w-100 rounded shadow img-thumbnail" 
-                                     alt="{{ articulo.detalle }}"
-                                     style="max-height: 500px; object-fit: contain;">
-                            </div>
-                        {% endfor %}
-                    </div>
-
-                    {# Miniaturas del carrusel #}
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="d-flex justify-content-center gap-2">
-                                {% if imagen_principal %}
-                                    <img src="{{ asset(directorio_archivos ~ imagen_principal.filePath) }}" 
-                                         class="img-thumbnail carousel-thumbnail active border-danger border-1" 
-                                         style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                                         data-bs-target="#carouselArticulo"
-                                         data-bs-slide-to="0"
-                                         aria-current="true"
-                                         aria-label="Slide 1">
-                                {% endif %}
-                                
-                                {% for imagen in imagenes %}
-                                    <img src="{{ asset(directorio_archivos ~ imagen.filePath) }}" 
-                                         class="img-thumbnail carousel-thumbnail {% if not imagen_principal and loop.first %}active border-danger border-1{% endif %}" 
-                                         style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                                         data-bs-target="#carouselArticulo"
-                                         data-bs-slide-to="{% if imagen_principal %}{{ loop.index }}{% else %}{{ loop.index0 }}{% endif %}"
-                                         aria-label="Slide {% if imagen_principal %}{{ loop.index + 1 }}{% else %}{{ loop.index }}{% endif %}">
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="bg-light p-5 text-center rounded">
-                    <i class="bi bi-image fs-1 text-muted"></i>
-                    <p class="text-muted mt-2">No hay imágenes disponibles</p>
-                </div>
-            {% endif %}
-            
-            {# Lista de documentos adjuntos #}
-            <ul class="list-group list-group-flush mt-3">
-                <h5>Documentos adjuntos</h5>
-                {% set tiene_documentos = false %}
-                {% for articuloArchivo in articulo.archivos %}
-                    {% if articuloArchivo.archivo.tipoMime == 'application/pdf' %}
-                        {% set tiene_documentos = true %}
-                        <li class="list-group-item">
-                            <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.filePath) }}" 
-                                target="_blank" 
-                                class="text-decoration-none">
-                                <i class="bi {{ articuloArchivo.archivo.tipoIcono }} pe-1"></i>
-                                
-                                {{ articuloArchivo.archivo.fileName }}
+                    {% if articulo.subrubro.rubro is not null and articulo.subrubro.rubro.seccion is not null %}
+                        <li class="breadcrumb-item">
+                            <a href="{{ path('app_catalogo_seccion', { 'id': articulo.subrubro.rubro.seccion.id, 'rubro': articulo.subrubro.rubro.codigo }) }}" class="text-decoration-none">
+                                {{ articulo.subrubro.rubro.nombre }}
                             </a>
                         </li>
                     {% endif %}
-                {% endfor %}
-                {% if not tiene_documentos %}
-                    <li class="list-group-item text-muted">No hay documentos adjuntos</li>
-                {% endif %}
-            </ul>
-        </div>
-        
-        <div class="col-md-5">
-            <h3 class="mb-1 text-primary-emphasis">{{ articulo.detalle }}</h3>
-            <p class="lead text-muted fs-6">
-                <span class="fw-semibold">Marca:</span> {{ articulo.marca.nombre }}
-                <span class="fw-semibold"> | </span>
-                <span class="fw-semibold">Modelo:</span> {{ articulo.modelo }}</p>
+                    {% if articulo.subrubro is not null %}
+                        <li class="breadcrumb-item active class="text-decoration-none"" aria-current="page">
+                            {{ articulo.subrubro.nombre }}
+                        </li>
+                    {% endif %}
+                </ol>
+            </nav>
 
-            <!--
-            <p class="lead text-muted">precioBase: {{ articulo.precios.precioBase }}</p>  
-            <p class="lead text-muted">precioSinIVA: {{ articulo.precios.precioBaseSIVA }}</p>
-            <p class="lead text-muted">precioConDescuento: {{ articulo.precios.precioConDescuento }}</p>
-            <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioConDescuentoRecargo }}</p>
-            <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioFinal }}</p>
-            -->
+            <div class="row">
+                <div class="col-md-5">
+                    {% set tiene_imagenes = false %}
+                    {% set imagenes = [] %}
 
-                <div class="d-flex justify-content-between align-top mb-3">
-                    <span class="h2 mb-0">${{ articulo.precios.precioBase|number_format(2, ',', '.') }}</span>
-                    {% if is_granted('ROLE_CLIENTE') %}
-                        <form action="{{ path('app_cliente_cart_add') }}" method="POST" style="display: inline;">
-                            <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
-                            <div class="input-group mb-0">
-                                <input type="text" name="cantidad" value="1" class="form-control" placeholder="Cantidad" aria-label="Cantidad" aria-describedby="agregar-al-carrito"/>
-                                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
-                                    <i class="bi bi-cart-plus"></i> Agregar al carrito
-                                </button>
-                            </div>
-                            {% if carrito_articulos[articulo.codigo] is defined %}
-                                <div  id="agregar-al-carrito" class="form-text fw-semibold text-danger mt-0 text-end">
-                                    Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
-                                </div>
+                    {# Buscar imagen principal entre todos los articuloArchivos #}
+                    {% set imagen_principal = null %}
+                    {% for articuloArchivo in articulo.articuloArchivos %}
+                        {% if articuloArchivo.esPrincipal and articuloArchivo.archivo.esImagen %}
+                            {% set imagen_principal = articuloArchivo.archivo %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {# Recorrer articuloArchivos para encontrar imágenes no principales #}
+                    {% for articuloArchivo in articulo.archivos %}
+                        {% if articuloArchivo.archivo.tipoMime starts with 'image/' %}
+                            {% set tiene_imagenes = true %}
+                            {% if not articuloArchivo.esPrincipal %}
+                                {% set imagenes = imagenes|merge([articuloArchivo.archivo]) %}
                             {% endif %}
-                        </form>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if imagen_principal or imagenes|length > 0 %}
+                        {% set tiene_imagenes = true %}
+                        <div id="carouselArticulo" class="carousel slide">
+                            <div class="carousel-inner">
+                                {% if imagen_principal %}
+                                    <div class="carousel-item active" style="transition: none !important;">
+                                    <img src="{{ asset(directorio_archivos ~ imagen_principal.filePath) }}" 
+                                            class="d-block w-100 rounded shadow img-thumbnail" 
+                                            alt="{{ articulo.detalle }}"
+                                            style="max-height: 500px; object-fit: contain;">
+                                    </div>
+                                {% endif %}
+                                
+                                {% for imagen in imagenes %}
+                                    <div class="carousel-item {% if not imagen_principal and loop.first %}active{% endif %}" style="transition: none !important;">
+                                        <img src="{{ asset(directorio_archivos ~ imagen.filePath) }}" 
+                                            class="d-block w-100 rounded shadow img-thumbnail" 
+                                            alt="{{ articulo.detalle }}"
+                                            style="max-height: 500px; object-fit: contain;">
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {# Miniaturas del carrusel #}
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        {% if imagen_principal %}
+                                            <img src="{{ asset(directorio_archivos ~ imagen_principal.filePath) }}" 
+                                                class="img-thumbnail carousel-thumbnail active border-danger border-1" 
+                                                style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                                                data-bs-target="#carouselArticulo"
+                                                data-bs-slide-to="0"
+                                                aria-current="true"
+                                                aria-label="Slide 1">
+                                        {% endif %}
+                                        
+                                        {% for imagen in imagenes %}
+                                            <img src="{{ asset(directorio_archivos ~ imagen.filePath) }}" 
+                                                class="img-thumbnail carousel-thumbnail {% if not imagen_principal and loop.first %}active border-danger border-1{% endif %}" 
+                                                style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                                                data-bs-target="#carouselArticulo"
+                                                data-bs-slide-to="{% if imagen_principal %}{{ loop.index }}{% else %}{{ loop.index0 }}{% endif %}"
+                                                aria-label="Slide {% if imagen_principal %}{{ loop.index + 1 }}{% else %}{{ loop.index }}{% endif %}">
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="bg-light p-5 text-center rounded">
+                            <i class="bi bi-image fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">No hay imágenes disponibles</p>
+                        </div>
+                    {% endif %}
+                    
+                    {# Lista de documentos adjuntos #}
+                    <ul class="list-group list-group-flush mt-3">
+                        <h5>Documentos adjuntos</h5>
+                        {% set tiene_documentos = false %}
+                        {% for articuloArchivo in articulo.archivos %}
+                            {% if articuloArchivo.archivo.tipoMime == 'application/pdf' %}
+                                {% set tiene_documentos = true %}
+                                <li class="list-group-item">
+                                    <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.filePath) }}" 
+                                        target="_blank" 
+                                        class="text-decoration-none">
+                                        <i class="bi {{ articuloArchivo.archivo.tipoIcono }} pe-1"></i>
+                                        
+                                        {{ articuloArchivo.archivo.fileName }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if not tiene_documentos %}
+                            <li class="list-group-item text-muted">No hay documentos adjuntos</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                
+                <div class="col-md-5">
+                    <h3 class="mb-1 text-primary-emphasis">{{ articulo.detalle }}</h3>
+                    <p class="lead text-muted fs-6">
+                        # <span class="fw-semibold texto-copiable">{{ articulo.codigo }}</span>
+                        <i class="bi bi-copy text-primary copiable"></i>
+
+                    </p>
+                    <p class="lead text-muted fs-6">
+                        <span class="fw-semibold">Marca:</span> {{ articulo.marca.nombre }}
+                        <span class="fw-semibold"> | </span>
+                        <span class="fw-semibold">Modelo:</span> {{ articulo.modelo }}
+                    </p>
+
+                    <!--
+                    <p class="lead text-muted">precioBase: {{ articulo.precios.precioBase }}</p>  
+                    <p class="lead text-muted">precioSinIVA: {{ articulo.precios.precioBaseSIVA }}</p>
+                    <p class="lead text-muted">precioConDescuento: {{ articulo.precios.precioConDescuento }}</p>
+                    <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioConDescuentoRecargo }}</p>
+                    <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioFinal }}</p>
+                    -->
+
+                        <div class="d-flex justify-content-between align-top mb-3">
+                            <span class="h2 mb-0">${{ articulo.precios.precioBase|number_format(2, ',', '.') }}</span>
+                            {% if is_granted('ROLE_CLIENTE') %}
+                                <form action="{{ path('app_cliente_cart_add') }}" method="POST" style="display: inline;">
+                                    <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
+                                    <div class="input-group mb-0">
+                                        <input type="text" name="cantidad" value="1" class="form-control" placeholder="Cantidad" aria-label="Cantidad" aria-describedby="agregar-al-carrito"/>
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+                                            <i class="bi bi-cart-plus"></i> Agregar al carrito
+                                        </button>
+                                    </div>
+                                    {% if carrito_articulos[articulo.codigo] is defined %}
+                                        <div  id="agregar-al-carrito" class="form-text fw-semibold text-danger mt-0 text-end">
+                                            Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
+                                        </div>
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+                        </div>
+                    
+
+                    {% if articulo.descripcion %}
+                        <div class="mb-4">
+                            <h5>Descripción</h5>
+                            <p>{{ articulo.descripcion|raw }}</p>
+                        </div>
                     {% endif %}
                 </div>
-            
-
-            {% if articulo.descripcion %}
-                <div class="mb-4">
-                    <h5>Descripción</h5>
-                    <p>{{ articulo.descripcion|raw }}</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const carousel = document.getElementById('carouselArticulo');
-    const thumbnails = document.querySelectorAll('.carousel-thumbnail');
-    
-    // Función para actualizar el estilo de las miniaturas
-    function updateThumbnailStyles() {
-        thumbnails.forEach(thumb => {
-            thumb.classList.remove('active', 'border-danger', 'border-2');
-        });
+            </div>
         
-        const activeIndex = Array.from(carousel.querySelectorAll('.carousel-item')).findIndex(item => item.classList.contains('active'));
-        if (activeIndex >= 0) {
-            thumbnails[activeIndex].classList.add('active', 'border-danger', 'border-2');
+        </div>{# fin row #}
+    </div>{# fin container-fluid #}
+
+{% endblock %} {# Fin del bloque body #}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const carousel = document.getElementById('carouselArticulo');
+        const thumbnails = document.querySelectorAll('.carousel-thumbnail');
+        
+        // Función para actualizar el estilo de las miniaturas
+        function updateThumbnailStyles() {
+            thumbnails.forEach(thumb => {
+                thumb.classList.remove('active', 'border-danger', 'border-2');
+            });    
+            const activeIndex = Array.from(carousel.querySelectorAll('.carousel-item')).findIndex(item => item.classList.contains('active'));
+            if (activeIndex >= 0) {
+                thumbnails[activeIndex].classList.add('active', 'border-danger', 'border-2');
+            }
         }
-    }
-    
-    // Actualizar estilos cuando cambia el slide
-    carousel.addEventListener('slid.bs.carousel', updateThumbnailStyles);
-    
-    // Inicializar estilos
-    updateThumbnailStyles();
-});
-</script>
+        
+        // Actualizar estilos cuando cambia el slide
+        carousel.addEventListener('slid.bs.carousel', updateThumbnailStyles);
+        
+        // Inicializar estilos
+        updateThumbnailStyles();
+    });
+    </script>
 {% endblock %}

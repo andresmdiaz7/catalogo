@@ -30,6 +30,7 @@ text-align: right;
 vertical-align: middle;
 }
 
+
 /* Aplica a menu de secciones */
 .navbar-nav .nav-item .nav-link {
     padding: 0.7rem 0.8rem;
@@ -45,7 +46,16 @@ vertical-align: middle;
     background-color: #e20018 !important;
 }
 
+
 /* Estilo para el rubro activo */
 .text-ciardi {
     color: #e20018 !important;
 }
+
+
+/* Estilo para el icono de copiar */
+.copiable {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+

@@ -7,19 +7,13 @@
     {% if app.request.query.get('buscar') is empty %}
         {% set sliders_home = get_sliders_por_ubicacion(100) %}
         {% include 'partials/_slider.html.twig' with { 'sliders': sliders_home, 'ubicacion': 'home-principal' } %}
-    {% endif %}
-{% endblock %}
 
-
-{% block body %}
-    <div class="container-fluid px-4 py-3">
-        <div class="row">
-
-            <div class="container py-5">
+        {# Nuestras Divisiones Especializadas #}
+        <div class="container py-5">
                 <h2 class="text-center mb-5 text-dark text-uppercase">Nuestras Divisiones Especializadas</h2>
                 
                 <div class="row g-4">
-                    <!-- División Iluminación -->
+                    {# División Iluminación #}
                     <div class="col-md-4">
                         <div class="card h-100 overflow-hidden border border-1 border-secondary-subtle rounded-4">
                             <div class="position-relative">
@@ -39,7 +33,7 @@
                         </div>
                     </div>
                     
-                    <!-- División Industria -->
+                    {# División Industria #}
                     <div class="col-md-4">
                         <div class="card h-100 overflow-hidden border border-1 border-secondary-subtle rounded-4">
                             <div class="position-relative">
@@ -59,7 +53,7 @@
                         </div>
                     </div>
                     
-                    <!-- División Telecomunicaciones -->
+                    {# División Telecomunicaciones #}
                     <div class="col-md-4">
                         <div class="card h-100 overflow-hidden border border-1 border-secondary-subtle rounded-4">
                             <div class="position-relative">
@@ -81,7 +75,13 @@
                 </div>
             </div>
 
+    {% endif %}
+{% endblock %}
 
+
+{% block body %}
+    <div class="container-fluid px-4 py-3">
+        <div class="row">
 
             <div class="container mt-4">
                 <h4 class="mb-4">

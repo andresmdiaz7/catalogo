@@ -36,6 +36,9 @@
 
     <div class="card-body">
         <h5 class="card-title fs-6 fw-normal">{{ articulo.detalle }}</h5>
+        <p class="card-text text-start text-muted small">
+            #{{ articulo.codigo }}
+        </p>
         <p class="card-text fs-5 text-end">
             ${{ articulo.precioLista|number_format(0, ',', '.') }}
         </p>
