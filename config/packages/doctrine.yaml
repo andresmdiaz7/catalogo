@@ -1,33 +1,57 @@
 doctrine:
     dbal:
-        dbname:               catalogodb
-        host:                 127.0.0.1
-        port:                 3306
-        user:                 catalogoUser
-        password:             catalogoPass
-        driver:               pdo_mysql
-        charset:              utf8mb4
-        server_version:       '9.1.0'
-
-
-        profiling_collect_backtrace: '%kernel.debug%'
-        use_savepoints: true
+        default_connection: default
+        connections:
+            default:
+                driver: '%env(resolve:MYSQL_DRIVER)%'
+                host: '%env(resolve:MYSQL_HOST)%'
+                port: '%env(resolve:MYSQL_PORT)%'
+                dbname: '%env(resolve:MYSQL_DATABASE)%'
+                user: '%env(resolve:MYSQL_USER)%'
+                password: '%env(resolve:MYSQL_PASSWORD)%'
+                server_version: '%env(resolve:MYSQL_SERVER_VERSION)%'
+                charset: utf8mb4
+                
+            mssql:
+                driver: '%env(resolve:MSSQL_DRIVER)%'
+                host: '%env(resolve:MSSQL_HOST)%'
+                port: '%env(resolve:MSSQL_PORT)%'
+                dbname: '%env(resolve:MSSQL_DATABASE)%'
+                user: '%env(resolve:MSSQL_USER)%'
+                password: '%env(resolve:MSSQL_PASSWORD)%'
+                server_version: '%env(resolve:MSSQL_SERVER_VERSION)%'
+                
+        #identity_generation_preferences:
+        #    sequence:
+        #        # Mantén tus configuraciones actuales
+        #        preferred: auto
+            
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
-        report_fields_where_declared: true
-        validate_xml_mapping: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        identity_generation_preferences:
-            Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
-        auto_mapping: true
-        mappings:
-            App:
-                type: attribute
-                is_bundle: false
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+        #report_fields_where_declared: true
+        #validate_xml_mapping: true
+        #naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+                mappings:
+                    App:
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+                        alias: App
+                        
+            mssql:
+                connection: mssql
+                mappings:
+                    MssqlEntities:
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity/Mssql'
+                        prefix: 'App\Entity\Mssql'
+                        alias: MssqlEntities
         controller_resolver:
             auto_mapping: false
 

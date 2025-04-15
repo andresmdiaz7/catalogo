@@ -5,7 +5,10 @@ namespace App\Controller\Admin;
 use App\Entity\Cliente;
 use App\Form\ClienteType;
 use App\Repository\ClienteRepository;
+use App\Repository\LocalidadRepository;
+use App\Service\ClienteMssqlService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -146,5 +149,38 @@ class ClienteController extends AdminController
         }
 
         return $this->redirectToRoute('app_admin_cliente_index');
+    }
+
+    #[Route('/buscar-mssql', name: 'app_admin_cliente_buscar_mssql', methods: ['GET'])]
+    public function buscarClienteMssql(
+        Request $request, 
+        ClienteMssqlService $clienteMssqlService,
+        LocalidadRepository $localidadRepository
+    ): JsonResponse {
+        $codigo = $request->query->get('codigo');
+        
+        if (!$codigo) {
+            return new JsonResponse(['error' => 'Debe proporcionar un código de cliente'], 400);
+        }
+        
+        $clienteMssql = $clienteMssqlService->buscarClientePorCodigo($codigo);
+        
+        
+        if (!$clienteMssql) {
+            return new JsonResponse(['error' => 'Cliente no encontrado en la base de datos MSSQL'], 404);
+        }
+        
+        // Buscar la localidad por nombre
+        $localidad = null;
+        if (!empty($clienteMssql['localidadNombre'])) {
+            $localidad = $localidadRepository->findOneBy(['nombre' => $clienteMssql['localidadNombre']]);
+        }
+        
+        // Agregar el ID de la localidad si existe
+        if ($localidad) {
+            $clienteMssql['localidad'] = $localidad->getId();
+        }
+        
+        return new JsonResponse($clienteMssql);
     }
 } 

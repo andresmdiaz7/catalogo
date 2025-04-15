@@ -17,6 +17,7 @@ use App\Entity\Cliente;
 use App\Service\ArticuloPrecioService;
 use Symfony\Bundle\SecurityBundle\Security;
 use App\Service\MenuService;
+use Doctrine\Persistence\ManagerRegistry;
 
 
 class CatalogoController extends AbstractController

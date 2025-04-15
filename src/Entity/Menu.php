@@ -16,7 +16,7 @@ class Menu
     #[ORM\Column(length: 100)]
     private ?string $nombre = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private ?bool $porDefecto = false;
 
     #[ORM\Column]
@@ -46,7 +46,7 @@ class Menu
         return $this;
     }
 
-    public function isPorDefecto(): ?bool
+    public function getPorDefecto(): ?bool
     {
         return $this->porDefecto;
     }
@@ -57,7 +57,7 @@ class Menu
         return $this;
     }
 
-    public function isActivo(): ?bool
+    public function getActivo(): ?bool
     {
         return $this->activo;
     }
