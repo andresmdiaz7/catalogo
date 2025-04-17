@@ -54,10 +54,10 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $web = null;
 
-    #[ORM\Column(type: 'decimal', precision: 5, scale: 2)]
+    #[ORM\Column(type: 'decimal', precision: 5, scale: 2, nullable: true)]
     private ?string $porcentajeDescuento = null;
 
-    #[ORM\Column(type: 'decimal', precision: 5, scale: 2)]
+    #[ORM\Column(type: 'decimal', precision: 5, scale: 2, nullable: true)]
     private ?string $rentabilidad = null;
 
     #[ORM\Column(length: 255)]

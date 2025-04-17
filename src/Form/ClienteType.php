@@ -9,6 +9,7 @@ use App\Entity\Vendedor;
 use App\Entity\ResponsableLogistica;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -36,8 +37,7 @@ class ClienteType extends AbstractType
                     'maxlength' => 50,
                     
                 ],
-                'disabled' => true,
-                'attr' => ['class' => 'form-control'],
+                'attr' => ['class' => 'form-control','readonly' => true],
                 'row_attr' => ['class' => 'mb-3']
             ])
             ->add('razonSocial', TextType::class, [
@@ -140,6 +140,7 @@ class ClienteType extends AbstractType
             ->add('porcentajeDescuento', NumberType::class, [
                 'label' => 'Porcentaje de Descuento',
                 'label_attr' => ['class' => 'form-label'],
+                'required' => false,
                 'scale' => 2,
                 'attr' => ['class' => 'form-control'],
                 'row_attr' => ['class' => 'mb-3']
@@ -147,6 +148,7 @@ class ClienteType extends AbstractType
             ->add('rentabilidad', NumberType::class, [
                 'label' => 'Rentabilidad',
                 'label_attr' => ['class' => 'form-label'],
+                'required' => false,
                 'scale' => 2,
                 'attr' => ['class' => 'form-control'],
                 'row_attr' => ['class' => 'mb-3']

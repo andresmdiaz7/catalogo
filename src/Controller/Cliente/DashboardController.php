@@ -3,7 +3,7 @@
 namespace App\Controller\Cliente;
 
 use App\Repository\PedidoRepository;
-use App\Service\ClienteFacturacionService;
+use App\Service\ClienteMssqlService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,7 +19,7 @@ class DashboardController extends AbstractController
     #[Route('/', name: 'app_cliente_dashboard')]
     public function index(
         PedidoRepository $pedidoRepository,
-        ClienteFacturacionService $clienteFacturacionService
+        ClienteMssqlService $clienteMssqlService
     ): Response {
         /** @var \App\Entity\Cliente $cliente */
         $cliente = $this->getUser();
@@ -31,7 +31,7 @@ class DashboardController extends AbstractController
         
         
         // Obtenemos el total pendiente de la cuenta corriente
-        $deudaCuentaCorriente = $clienteFacturacionService->getDeudaCuentaCorriente((int)$idClienteMssql);
+        $deudaCuentaCorriente = $clienteMssqlService->getDeudaCuentaCorriente((int)$idClienteMssql);
         
         return $this->render('cliente/dashboard/index.html.twig', [
             'pedidos_recientes' => $pedidoRepository->findBy(
