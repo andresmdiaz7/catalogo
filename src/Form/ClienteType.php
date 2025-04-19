@@ -24,6 +24,8 @@ use App\Repository\CategoriaImpositivaRepository;
 use Doctrine\ORM\EntityRepository;
 use App\Entity\Categoria;
 use App\Repository\CategoriaRepository;
+use App\Entity\Usuario;
+use App\Repository\UsuarioRepository;
 
 class ClienteType extends AbstractType
 {
@@ -153,24 +155,6 @@ class ClienteType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'row_attr' => ['class' => 'mb-3']
             ])
-            ->add('password', PasswordType::class, [
-                'label' => 'Nueva Contraseña',
-                'label_attr' => ['class' => 'form-label'],
-                'required' => false,
-                'mapped' => false,
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => ['class' => 'mb-3']
-            ])
-            ->add('currentPassword', TextType::class, [
-                'label' => 'Contraseña Actual',
-                'label_attr' => ['class' => 'form-label'],
-                'required' => false,
-                'mapped' => false,
-                'disabled' => true,
-                'data' => 'Contraseña configurada',
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => ['class' => 'mb-3']
-            ])
             ->add('observaciones', TextType::class, [
                 'label' => 'Observaciones',
                 'label_attr' => ['class' => 'form-label'],
@@ -210,6 +194,28 @@ class ClienteType extends AbstractType
                     'class' => 'form-check-label'
                 ],
                 'row_attr' => ['class' => 'mb-3']
+            ])
+            ->add('usuario', EntityType::class, [
+                'class' => Usuario::class,
+                'choice_label' => function(Usuario $usuario) {
+                    return $usuario->getEmail() . ' (' . $usuario->getNombreCompleto() . ')';
+                },
+                'query_builder' => function(UsuarioRepository $repo) {
+                    return $repo->createQueryBuilder('u')
+                        ->leftJoin('u.tipoUsuario', 't')
+                        ->where('t.nombre = :tipo')
+                        ->setParameter('tipo', 'Cliente')
+                        ->andWhere('u.activo = :activo')
+                        ->setParameter('activo', true)
+                        ->orderBy('u.email', 'ASC');
+                },
+                'required' => false,
+                'placeholder' => 'Seleccione un usuario',
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => ['class' => 'mb-3'],
+                'label' => 'Usuario del Sistema',
+                'label_attr' => ['class' => 'form-label'],
+                'help' => 'Selecciona un usuario existente o déjalo en blanco para crear solo el cliente sin acceso al sistema',
             ])
         ;
     }

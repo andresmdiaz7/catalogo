@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/usuarios')]
-/* #[IsGranted('ROLE_ADMIN')] */
+#[IsGranted('ROLE_ADMIN')]
 class UsuarioController extends AbstractController
 {
     #[Route('/', name: 'app_admin_usuario_index', methods: ['GET'])]
@@ -29,25 +29,44 @@ class UsuarioController extends AbstractController
     public function new(
         Request $request, 
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        UsuarioRepository $usuarioRepository
     ): Response {
         $usuario = new Usuario();
         $form = $this->createForm(UsuarioType::class, $usuario);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hashear la contraseña
-            $hashedPassword = $passwordHasher->hashPassword(
-                $usuario,
-                $form->get('plainPassword')->getData()
-            );
-            $usuario->setPassword($hashedPassword);
-            
-            $entityManager->persist($usuario);
-            $entityManager->flush();
+            try {
+                // Verificar si el email ya existe antes de persistir
+                $emailExistente = $usuarioRepository->findOneBy(['email' => $usuario->getEmail()]);
+                if ($emailExistente) {
+                    $this->addFlash('danger', 'Este correo electrónico ya está registrado en el sistema.');
+                    return $this->render('admin/usuario/new.html.twig', [
+                        'usuario' => $usuario,
+                        'form' => $form,
+                    ]);
+                }
 
-            $this->addFlash('success', 'Usuario creado correctamente.');
-            return $this->redirectToRoute('app_admin_usuario_index');
+                // Hashear la contraseña
+                $hashedPassword = $passwordHasher->hashPassword(
+                    $usuario,
+                    $form->get('plainPassword')->getData()
+                );
+                $usuario->setPassword($hashedPassword);
+                
+                // Asignar roles basados en el tipo de usuario
+                $this->asignarRolesPorTipoUsuario($usuario);
+                
+                $entityManager->persist($usuario);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Usuario creado correctamente.');
+                return $this->redirectToRoute('app_admin_usuario_index');
+            } catch (\Exception $e) {
+                // Captura cualquier excepción y muestra un mensaje amigable
+                $this->addFlash('error', 'No se pudo crear el usuario. Por favor, verifica que el correo electrónico no esté en uso.');
+            }
         }
 
         return $this->render('admin/usuario/new.html.twig', [
@@ -61,25 +80,52 @@ class UsuarioController extends AbstractController
         Request $request, 
         Usuario $usuario, 
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        UsuarioRepository $usuarioRepository
     ): Response {
-        $form = $this->createForm(UsuarioType::class, $usuario);
+        $tipoUsuarioOriginal = $usuario->getTipoUsuario();
+        $emailOriginal = $usuario->getEmail();
+        
+        $form = $this->createForm(UsuarioType::class, $usuario, [
+            'require_password' => false,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Si se proporcionó una nueva contraseña, hashearla
-            if ($plainPassword = $form->get('plainPassword')->getData()) {
-                $hashedPassword = $passwordHasher->hashPassword(
-                    $usuario,
-                    $plainPassword
-                );
-                $usuario->setPassword($hashedPassword);
+            try {
+                // Verificar si el email ya existe y no es del usuario actual
+                if ($emailOriginal !== $usuario->getEmail()) {
+                    $emailExistente = $usuarioRepository->findOneBy(['email' => $usuario->getEmail()]);
+                    if ($emailExistente && $emailExistente->getId() !== $usuario->getId()) {
+                        $this->addFlash('error', 'Este correo electrónico ya está registrado en el sistema.');
+                        return $this->render('admin/usuario/edit.html.twig', [
+                            'usuario' => $usuario,
+                            'form' => $form,
+                        ]);
+                    }
+                }
+                
+                // Si se proporcionó una nueva contraseña, hashearla
+                if ($plainPassword = $form->get('plainPassword')->getData()) {
+                    $hashedPassword = $passwordHasher->hashPassword(
+                        $usuario,
+                        $plainPassword
+                    );
+                    $usuario->setPassword($hashedPassword);
+                }
+                
+                // Verificar si el tipo de usuario cambió
+                if ($usuario->getTipoUsuario() !== $tipoUsuarioOriginal) {
+                    $this->asignarRolesPorTipoUsuario($usuario);
+                }
+
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Usuario actualizado correctamente.');
+                return $this->redirectToRoute('app_admin_usuario_index');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'No se pudo actualizar el usuario. Por favor, verifica que el correo electrónico no esté en uso.');
             }
-
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Usuario actualizado correctamente.');
-            return $this->redirectToRoute('app_admin_usuario_index');
         }
 
         return $this->render('admin/usuario/edit.html.twig', [
@@ -101,5 +147,36 @@ class UsuarioController extends AbstractController
         }
 
         return $this->redirectToRoute('app_admin_usuario_index');
+    }
+    
+    /**
+     * Asigna roles al usuario basados en su tipo
+     */
+    private function asignarRolesPorTipoUsuario(Usuario $usuario): void
+    {
+        // Mantener siempre ROLE_USER como base
+        $roles = ['ROLE_USER'];
+        
+        // Agregar roles específicos según tipo
+        $tipo = $usuario->getTipoUsuario();
+        if ($tipo) {
+            switch ($tipo->getCodigo()) {
+                case 'admin':
+                    $roles[] = 'ROLE_ADMIN';
+                    break;
+                case 'vendedor':
+                    $roles[] = 'ROLE_VENDEDOR';
+                    break;
+                case 'cliente':
+                    $roles[] = 'ROLE_CLIENTE';
+                    break;
+                case 'responsable_logistica':
+                    $roles[] = 'ROLE_LOGISTICA';
+                    break;
+            }
+        }
+        
+        // Establecer los roles
+        $usuario->setRoles($roles);
     }
 } 

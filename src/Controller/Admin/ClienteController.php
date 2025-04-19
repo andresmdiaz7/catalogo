@@ -49,33 +49,23 @@ class ClienteController extends AdminController
     }
 
     #[Route('/nuevo', name: 'app_admin_cliente_new', methods: ['GET', 'POST'])]
-    public function new(
-        Request $request, 
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
-    ): Response {
+    public function new(Request $request): Response
+    {
         $cliente = new Cliente();
         $form = $this->createForm(ClienteType::class, $cliente);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hashear el password antes de guardar
-            $hashedPassword = $passwordHasher->hashPassword(
-                $cliente,
-                $form->get('password')->getData()
-            );
-            $cliente->setPassword($hashedPassword);
-            
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($cliente);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Cliente creado correctamente');
             return $this->redirectToRoute('app_admin_cliente_index');
         }
 
         return $this->render('admin/cliente/new.html.twig', [
             'cliente' => $cliente,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 

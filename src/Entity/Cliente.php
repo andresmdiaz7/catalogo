@@ -7,11 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ClienteRepository::class)]
-class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
+class Cliente
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -60,9 +58,6 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'decimal', precision: 5, scale: 2, nullable: true)]
     private ?string $rentabilidad = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
-
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $observaciones = null;
 
@@ -84,24 +79,18 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $habilitado = true;
 
+    // Nueva relación con Usuario
+    #[ORM\ManyToOne(targetEntity: Usuario::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Usuario $usuario = null;
+
+    #[ORM\ManyToOne(targetEntity: TipoUsuario::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?TipoUsuario $tipoUsuario = null;
+
     public function __construct()
     {
         $this->pedidos = new ArrayCollection();
-    }
-
-    // Implementación de UserInterface
-    public function getRoles(): array
-    {
-        return ['ROLE_CLIENTE'];
-    }
-
-    public function eraseCredentials(): void
-    {
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return $this->email;
     }
 
     public function getCodigo(): ?string
@@ -280,17 +269,6 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
     public function getCategoria(): ?Categoria
     {
         return $this->categoria;
@@ -337,7 +315,7 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isHabilitado(): bool
+    public function getHabilitado(): bool
     {
         return $this->habilitado;
     }
@@ -345,6 +323,35 @@ class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
     public function setHabilitado(bool $habilitado): static
     {
         $this->habilitado = $habilitado;
+        return $this;
+    }
+
+    // Métodos para la nueva relación con Usuario
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): self
+    {
+        $this->usuario = $usuario;
+        return $this;
+    }
+
+    // Método para representación de texto
+    public function __toString(): string
+    {
+        return $this->razonSocial ?: '';
+    }
+
+    public function getTipoUsuario(): ?TipoUsuario
+    {
+        return $this->tipoUsuario;
+    }
+
+    public function setTipoUsuario(?TipoUsuario $tipoUsuario): static
+    {
+        $this->tipoUsuario = $tipoUsuario;
         return $this;
     }
 }

@@ -6,12 +6,10 @@ use App\Repository\VendedorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VendedorRepository::class)]
-class Vendedor implements UserInterface, PasswordAuthenticatedUserInterface
+class Vendedor 
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -40,15 +38,12 @@ class Vendedor implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $activo = true;
 
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
-
-    #[Assert\NotBlank(groups: ['create'])]
-    #[Assert\Length(min: 6, max: 4096)]
-    private ?string $plainPassword = null;
-
     #[ORM\OneToMany(mappedBy: 'vendedor', targetEntity: Cliente::class)]
     private Collection $clientes;
+
+    #[ORM\ManyToOne(targetEntity: TipoUsuario::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?TipoUsuario $tipoUsuario = null;
 
     public function __construct()
     {
@@ -104,7 +99,7 @@ class Vendedor implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isActivo(): ?bool
+    public function getActivo(): ?bool
     {
         return $this->activo;
     }
@@ -113,40 +108,6 @@ class Vendedor implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->activo = $activo;
         return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    public function getPlainPassword(): ?string
-    {
-        return $this->plainPassword;
-    }
-
-    public function setPlainPassword(?string $plainPassword): self
-    {
-        $this->plainPassword = $plainPassword;
-        return $this;
-    }
-
-    public function getRoles(): array
-    {
-        return ['ROLE_VENDEDOR'];
-    }
-
-    public function eraseCredentials(): void {}
-
-    public function getUserIdentifier(): string
-    {
-        return $this->email;
     }
 
     /**
@@ -187,5 +148,16 @@ class Vendedor implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->getNombreCompleto();
+    }
+
+    public function getTipoUsuario(): ?TipoUsuario
+    {
+        return $this->tipoUsuario;
+    }
+
+    public function setTipoUsuario(?TipoUsuario $tipoUsuario): static
+    {
+        $this->tipoUsuario = $tipoUsuario;
+        return $this;
     }
 }

@@ -56,15 +56,20 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
         // Si el usuario está autenticado, redirigir al dashboard correspondiente
         $user = $token->getUser();
-        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+        $roles = $user->getRoles();
+        
+        if (in_array('ROLE_ADMIN', $roles)) {
             return new RedirectResponse($this->urlGenerator->generate('app_admin_dashboard'));
         }
-        if (in_array('ROLE_VENDEDOR', $user->getRoles())) {
+        if (in_array('ROLE_VENDEDOR', $roles)) {
             return new RedirectResponse($this->urlGenerator->generate('app_vendedor_dashboard'));
         }
-        if (in_array('ROLE_CLIENTE', $user->getRoles())) {  
+        if (in_array('ROLE_CLIENTE', $roles)) {  
+            // Aquí necesitarás buscar el cliente asociado al usuario
+            // y establecer el ID en la sesión
             return new RedirectResponse($this->urlGenerator->generate('app_cliente_dashboard'));
         }
+        
         return new RedirectResponse($this->urlGenerator->generate('app_catalogo_index'));
     }
 

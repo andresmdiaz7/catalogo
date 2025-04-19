@@ -10,12 +10,6 @@
         </a>
     </div>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
 
     <div class="card">
         <div class="card-body">
@@ -26,7 +20,7 @@
                             <th>Email</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
-                            <th>Roles</th>
+                            <th>Tipo de Usuario</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -36,17 +30,7 @@
                             <td>{{ usuario.email }}</td>
                             <td>{{ usuario.nombre }}</td>
                             <td>{{ usuario.apellido }}</td>
-                            <td>
-                                {% for role in usuario.roles %}
-                                    {% if role == 'ROLE_ADMIN' %}
-                                        <span class="badge bg-danger">Administrador</span>
-                                    {% elseif role == 'ROLE_VENDEDOR' %}
-                                        <span class="badge bg-primary">Vendedor</span>
-                                    {% elseif role == 'ROLE_LOGISTICA' %}
-                                        <span class="badge bg-success">Logística</span>
-                                    {% endif %}
-                                {% endfor %}
-                            </td>
+                            <td>{{ usuario.tipoUsuario ? usuario.tipoUsuario.nombre : '-' }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="{{ path('app_admin_usuario_edit', {'id': usuario.id}) }}" 

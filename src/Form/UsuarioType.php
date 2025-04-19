@@ -3,8 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Usuario;
+use App\Entity\TipoUsuario;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,13 +19,13 @@ class UsuarioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('apellido', TextType::class, [
-            'label' => 'Apellido',
-            'attr' => ['class' => 'form-control'],
-            'row_attr' => [
-                'class' => 'mb-3'
-            ]
-        ])
+            ->add('apellido', TextType::class, [
+                'label' => 'Apellido',
+                'attr' => ['class' => 'form-control'],
+                'row_attr' => [
+                    'class' => 'mb-3'
+                ]
+            ])
             ->add('nombre', TextType::class, [
                 'label' => 'Nombre',
                 'attr' => ['class' => 'form-control'],
@@ -32,7 +33,6 @@ class UsuarioType extends AbstractType
                     'class' => 'mb-3'
                 ]
             ])
-            
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'attr' => ['class' => 'form-control'],
@@ -45,7 +45,6 @@ class UsuarioType extends AbstractType
                 'mapped' => false,
                 'required' => $options['require_password'],
                 'constraints' => [
-
                     new NotBlank([
                         'message' => 'Por favor ingrese una contraseña',
                         'groups' => ['create']
@@ -62,18 +61,23 @@ class UsuarioType extends AbstractType
                     'class' => 'mb-3'
                 ]
             ])
-            ->add('roles', ChoiceType::class, [
-                'label' => 'Roles',
-                'choices' => [
-                    'Administrador' => 'ROLE_ADMIN',
-                    'Vendedor' => 'ROLE_VENDEDOR',
-                    'Logística' => 'ROLE_LOGISTICA'
+            ->add('tipoUsuario', EntityType::class, [
+                'class' => TipoUsuario::class,
+                'choice_label' => 'nombre',
+                'placeholder' => 'Seleccione un tipo de usuario',
+                'required' => true,
+                'label' => 'Tipo de Usuario',
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => [
+                    'class' => 'mb-3'
                 ],
-                'multiple' => true,
-                'expanded' => true
-            ])
-        ;
-
+                'query_builder' => function ($er) {
+                    return $er->createQueryBuilder('t')
+                        ->where('t.activo = :activo')
+                        ->setParameter('activo', true)
+                        ->orderBy('t.nombre', 'ASC');
+                },
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
