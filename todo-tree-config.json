@@ -1,0 +1,23 @@
+{
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "FIXME",
+        "TODO",
+        "@TODO",
+        "@todo"
+    ],
+    "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|\\*\\s*@|^|^\\s*(-|\\d+.))\\s*($TAGS)",
+    "todo-tree.filtering.excludeGlobs": [
+        "**/var/**",
+        "**/vendor/**",
+        "**/translations/**",
+        "**/tests/**",
+        "**/migrations/**",
+        "**/imports/**",
+        "**/bin/**",
+        "**/node_modules/**"
+    ],
+    "todo-tree.regex.enableMultiLine": true,
+    "todo-tree.tree.buttons.export": true
+} 

@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "mblode.twig-language-2"
+        "mblode.twig-language-2",
+        "gruntfuggly.todo-tree"
     ]
 }

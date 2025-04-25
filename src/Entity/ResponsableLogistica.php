@@ -6,11 +6,9 @@ use App\Repository\ResponsableLogisticaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ResponsableLogisticaRepository::class)]
-class ResponsableLogistica implements UserInterface, PasswordAuthenticatedUserInterface
+class ResponsableLogistica
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -32,20 +30,6 @@ class ResponsableLogistica implements UserInterface, PasswordAuthenticatedUserIn
     public function __construct()
     {
         $this->clientes = new ArrayCollection();
-    }
-
-    public function getRoles(): array
-    {
-        return ['ROLE_RESPONSABLE_LOGISTICA'];
-    }
-
-    public function eraseCredentials(): void
-    {
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return $this->email;
     }
 
     public function getId(): ?int
@@ -83,17 +67,6 @@ class ResponsableLogistica implements UserInterface, PasswordAuthenticatedUserIn
     public function setEmail(string $email): static
     {
         $this->email = $email;
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
         return $this;
     }
 

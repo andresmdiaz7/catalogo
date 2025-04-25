@@ -4,7 +4,7 @@ namespace App\Controller\Vendedor;
 
 use App\Entity\Pedido;
 use App\Entity\PedidoDetalle;
-use App\Service\CartService;
+use App\Services\CartManager;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +17,7 @@ use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * Controlador para gestionar los pedidos de los clientes del vendedor
+ * @todo Implementar la paginación de los pedidos.
  */
 #[Route('/vendedor/pedido')]
 #[IsGranted('ROLE_VENDEDOR')]

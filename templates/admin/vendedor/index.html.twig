@@ -34,6 +34,7 @@
                             <th>Nombre</th>
                             <th>Email</th>
                             <th>Teléfono</th>
+                            <th>Usuario</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -43,6 +44,13 @@
                             <td>{{ vendedor.nombre }}</td>
                             <td>{{ vendedor.email }}</td>
                             <td>{{ vendedor.telefono }}</td>
+                            <td>
+                                {% if vendedor.usuario %}
+                                    {{ vendedor.usuario.email }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="{{ path('app_admin_vendedor_edit', {'id': vendedor.id}) }}" class="btn btn-sm btn-primary">
                                     <i class="bi bi-pencil"></i>

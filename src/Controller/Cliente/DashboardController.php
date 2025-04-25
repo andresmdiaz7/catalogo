@@ -11,36 +11,59 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Form\Cliente\PerfilType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\ClienteManager;
 
 #[Route('/cliente')]
 #[IsGranted('ROLE_CLIENTE')]
 class DashboardController extends AbstractController
 {
+    private $clienteManager;
+    
+    // Inyectar ClienteManager en el constructor
+    public function __construct(ClienteManager $clienteManager)
+    {
+        $this->clienteManager = $clienteManager;
+    }
+
     #[Route('/', name: 'app_cliente_dashboard')]
     public function index(
         PedidoRepository $pedidoRepository,
         ClienteMssqlService $clienteMssqlService
     ): Response {
-        /** @var \App\Entity\Cliente $cliente */
-        $cliente = $this->getUser();
+        /** @var Usuario $user */
+        $user = $this->getUser();
         
-        // Obtenemos el código de cliente en el sistema MSSQL
-        // Si el ID en MSSQL es diferente, puedes tener un campo
-        // en tu entidad Cliente que guarde la relación
-        $idClienteMssql = $cliente->getCodigo(); // O un campo específico como $cliente->getIdMssql()
+        // Verificar si hay un cliente activo
+        if (!$this->clienteManager->hasClienteActivo()) {
+            // Intentar configurar automáticamente
+            if (!$this->clienteManager->configurarClienteActivoAutomaticamente()) {
+                return $this->redirectToRoute('app_cliente_seleccionar');
+            }
+        }
         
+        // Verificar que el cliente activo pertenece al usuario actual
+        if (!$this->clienteManager->validarClienteActivo()) {
+            $this->addFlash('error', 'El cliente seleccionado no es válido');
+            return $this->redirectToRoute('app_cliente_seleccionar');
+        }
         
-        // Obtenemos el total pendiente de la cuenta corriente
-        $deudaCuentaCorriente = $clienteMssqlService->getDeudaCuentaCorriente((int)$idClienteMssql);
+        $clienteActivo = $this->clienteManager->getClienteActivo();
+        
+        // Obtener el código del cliente para consultar en MSSQL
+        $codigoCliente = $clienteActivo->getCodigo();
+        
+        // Obtener la deuda de cuenta corriente desde MSSQL
+        
+        $deudaCuentaCorriente = $clienteMssqlService->getDeudaCuentaCorriente((string)$codigoCliente);
         
         return $this->render('cliente/dashboard/index.html.twig', [
+            'cliente' => $clienteActivo,
             'pedidos_recientes' => $pedidoRepository->findBy(
-                ['cliente' => $cliente],
+                ['cliente' => $clienteActivo],
                 ['fecha' => 'DESC'],
                 5
             ),
             'deuda_cuenta_corriente' => $deudaCuentaCorriente
         ]);
     }
-
 } 

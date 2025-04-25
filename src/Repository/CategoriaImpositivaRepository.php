@@ -12,12 +12,4 @@ class CategoriaImpositivaRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, CategoriaImpositiva::class);
     }
-
-    public function findAllOrdered(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->orderBy('c.nombre', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
 } 

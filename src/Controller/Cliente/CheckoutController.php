@@ -4,7 +4,7 @@ namespace App\Controller\Cliente;
 
 use App\Entity\Pedido;
 use App\Entity\PedidoDetalle;
-use App\Service\CartService;
+use App\Service\CarritoManager;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CheckoutController extends AbstractController
 {
     public function __construct(
-        private CartService $cartService,
+        private CarritoManager $carritoManager,
         private EntityManagerInterface $entityManager,
         private EmailService $emailService
     ) {}
@@ -26,26 +26,26 @@ class CheckoutController extends AbstractController
     #[Route('', name: 'app_cliente_checkout')]
     public function index(): Response
     {
-        $cart = $this->cartService->getItems();
+        $carrito = $this->carritoManager->getItems();
         
-        if (empty($cart)) {
+        if (empty($carrito)) {
             $this->addFlash('warning', 'El carrito está vacío');
-            return $this->redirectToRoute('app_cliente_cart_index');
+            return $this->redirectToRoute('app_cliente_carrito_index');
         }
 
         return $this->render('cliente/checkout/index.html.twig', [
-            'cart' => $cart,
-            'total' => $this->cartService->getTotal()
+            'carrito' => $carrito,
+            'total' => $this->carritoManager->getTotal()
         ]);
     }
 
     #[Route('/confirmar', name: 'app_cliente_checkout_confirm', methods: ['POST'])]
     public function confirm(Request $request): Response
     {
-        $cart = $this->cartService->getCart();
-        if (empty($cart)) {
+        $carrito = $this->carritoManager->getItems();
+        if (empty($carrito)) {
             $this->addFlash('warning', 'El carrito está vacío');
-            return $this->redirectToRoute('app_cliente_cart_index');
+            return $this->redirectToRoute('app_cliente_carrito_index');
         }
 
         /** @var \App\Entity\Cliente $cliente */
@@ -70,11 +70,11 @@ class CheckoutController extends AbstractController
         $this->entityManager->flush();
 
         // Enviar emails
-        $this->emailService->sendPedidoConfirmation($pedido);
-        $this->emailService->sendPedidoNotification($pedido);
+        //$this->emailService->sendPedidoConfirmation($pedido);
+        //$this->emailService->sendPedidoNotification($pedido);
 
         // Limpiar el carrito después de crear el pedido
-        $this->cartService->clear();
+        $this->carritoManager->limpiar();
 
         $this->addFlash('success', 'Pedido realizado correctamente');
         return $this->redirectToRoute('app_cliente_pedido_show', ['id' => $pedido->getId()]);

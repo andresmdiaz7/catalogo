@@ -25,8 +25,8 @@ class UsuarioController extends AbstractController
         ]);
     }
 
-    #[Route('/nuevo', name: 'app_admin_usuario_new', methods: ['GET', 'POST'])]
-    public function new(
+    #[Route('/nuevo', name: 'app_admin_usuario_nuevo', methods: ['GET', 'POST'])]
+    public function nuevo(
         Request $request, 
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
@@ -69,14 +69,14 @@ class UsuarioController extends AbstractController
             }
         }
 
-        return $this->render('admin/usuario/new.html.twig', [
+        return $this->render('admin/usuario/nuevo.html.twig', [
             'usuario' => $usuario,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}/editar', name: 'app_admin_usuario_edit', methods: ['GET', 'POST'])]
-    public function edit(
+    #[Route('/{id}/editar', name: 'app_admin_usuario_editar', methods: ['GET', 'POST'])]
+    public function editar(
         Request $request, 
         Usuario $usuario, 
         EntityManagerInterface $entityManager,
@@ -98,7 +98,7 @@ class UsuarioController extends AbstractController
                     $emailExistente = $usuarioRepository->findOneBy(['email' => $usuario->getEmail()]);
                     if ($emailExistente && $emailExistente->getId() !== $usuario->getId()) {
                         $this->addFlash('error', 'Este correo electrónico ya está registrado en el sistema.');
-                        return $this->render('admin/usuario/edit.html.twig', [
+                        return $this->render('admin/usuario/editar.html.twig', [
                             'usuario' => $usuario,
                             'form' => $form,
                         ]);
@@ -128,14 +128,14 @@ class UsuarioController extends AbstractController
             }
         }
 
-        return $this->render('admin/usuario/edit.html.twig', [
+        return $this->render('admin/usuario/editar.html.twig', [
             'usuario' => $usuario,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_admin_usuario_delete', methods: ['POST'])]
-    public function delete(
+    #[Route('/{id}', name: 'app_admin_usuario_eliminar', methods: ['POST'])]
+    public function eliminar(
         Request $request, 
         Usuario $usuario, 
         EntityManagerInterface $entityManager

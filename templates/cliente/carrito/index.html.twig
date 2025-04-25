@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mi Carrito{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h1>Mi Carrito</h1>
+    
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
+    {% if carrito and carrito.items.count > 0 %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Artículo</th>
+                        <th>Marca</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in carrito.items %}
+                        <tr>
+                            <td>{{ item.articulo.codigo }}</td>
+                            <td>{{ item.articulo.detalle }}</td>
+                            <td>{{ item.articulo.marca.nombre }}</td>
+                            <td>{{ item.precioUnitario|number_format(2, ',', '.') }}</td>
+                            <td>
+                                <form action="{{ path('app_cliente_carrito_actualizar', {'id': item.id}) }}" method="post" class="quantity-form">
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" class="form-control" style="max-width: 70px;">
+                                        <button type="submit" class="btn btn-outline-secondary">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td>{{ (item.precioUnitario * item.cantidad)|number_format(2, ',', '.') }}</td>
+                            <td>
+                                <form action="{{ path('app_cliente_carrito_eliminar', {'id': item.id}) }}" method="post" onsubmit="return confirm('¿Está seguro de eliminar este artículo?')">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="table-info">
+                        <th colspan="4" class="text-end">Total:</th>
+                        <th>{{ carrito.total|number_format(2, ',', '.') }}</th>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="d-flex justify-content-between mt-4">
+            <form action="{{ path('app_cliente_carrito_vaciar') }}" method="post" onsubmit="return confirm('¿Está seguro de vaciar el carrito?')">
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Vaciar Carrito
+                </button>
+            </form>
+            
+            <form action="{{ path('app_cliente_pedido_confirmar') }}" method="post">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Confirmar Pedido
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p>Su carrito está vacío.</p>
+            <a href="{{ path('app_catalogo_index') }}" class="btn btn-primary">
+                <i class="bi bi-cart-plus"></i> Continuar Comprando
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -21,6 +21,8 @@ class ComprobanteVentaRepository extends ServiceEntityRepository
     
     /**
      * Obtiene el total pendiente de un cliente en cuenta corriente
+     * 
+     * @todo Esta funcion no se usa por ahora, ver si la implementamos en el servicio de Mssql
      */
     public function getSumaPendienteCuentaCorriente(int $codigo): float
     {
@@ -43,6 +45,7 @@ class ComprobanteVentaRepository extends ServiceEntityRepository
     
     /**
      * Alternativa usando SQL nativo si DQL da problemas
+     * @todo Esta funcion no se usa por ahora, ver si la implementamos en el servicio de Mssql
      */
     public function getSumaPendienteCuentaCorrienteNativo(int $codigo): float
     {

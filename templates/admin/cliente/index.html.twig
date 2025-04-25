@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Clientes</h1>
-        <a href="{{ path('app_admin_cliente_new') }}" class="btn btn-primary">
+        <a href="{{ path('app_admin_cliente_nuevo') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Nuevo Cliente
         </a>
     </div>
@@ -114,7 +114,7 @@
                                 <td>{{ cliente.categoria ? cliente.categoria.nombre : 'Sin categoría' }}</td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a href="{{ path('app_admin_cliente_edit', {'id': cliente.id}) }}" 
+                                        <a href="{{ path('app_admin_cliente_editar', {'id': cliente.id}) }}" 
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-pencil"></i> Editar
                                         </a>
@@ -132,7 +132,7 @@
                                             </button>
                                         </form>
                                         <form method="post" 
-                                              action="{{ path('app_admin_cliente_delete', {'id': cliente.id}) }}"
+                                              action="{{ path('app_admin_cliente_eliminar', {'id': cliente.id}) }}"
                                               onsubmit="return confirm('¿Está seguro que desea eliminar este cliente?');"
                                               style="display: inline;">
                                             <input type="hidden" name="_token" 

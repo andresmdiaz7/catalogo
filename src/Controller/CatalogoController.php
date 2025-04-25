@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
-use App\Service\CartService;
+use App\Services\CartManager;
 use App\Entity\Articulo;
 use App\Entity\Cliente;
 use App\Service\ArticuloPrecioService;

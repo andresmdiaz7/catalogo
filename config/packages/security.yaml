@@ -20,6 +20,7 @@ security:
             pattern: ^/
             provider: app_user_provider
             custom_authenticator: App\Security\LoginFormAuthenticator
+            user_checker: App\Security\UserChecker # Agregado para verificar el estado del usuario (activo o inactivo)
             logout:
                 path: app_logout
                 target: app_catalogo_index

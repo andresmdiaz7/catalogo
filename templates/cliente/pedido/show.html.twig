@@ -1,95 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Detalle de Pedido{% endblock %}
+{% block title %}Detalles del Pedido{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h4>Pedido #{{ pedido.id }}</h4>
-        <a href="{{ path('app_cliente_pedidos') }}" class="btn btn-sm btn-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Volver a Mis Pedidos
+<div class="container py-4">
+    <h1>Detalles del Pedido #{{ pedido.id }}</h1>
+
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="mb-0">Información del Pedido</h5>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <span class="badge bg-{{ pedido.estado == 'pendiente' ? 'warning' : (pedido.estado == 'leido' ? 'info' : 'success') }}">
+                        {{ pedido.estado|capitalize }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Fecha:</strong> {{ pedido.fecha|date('d/m/Y H:i') }}</p>
+                    <p><strong>Cliente:</strong> {{ pedido.cliente.razonSocial }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p><strong>Estado:</strong> {{ pedido.estado|capitalize }}</p>
+                    <p><strong>Total:</strong> ${{ pedido.total|number_format(2, ',', '.') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Artículo</th>
+                    <th class="text-end">Precio Unitario</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-end">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in pedido.detalles %}
+                    <tr>
+                        <td>{{ detalle.articulo.codigo }}</td>
+                        <td>{{ detalle.articulo.detalle }}</td>
+                        <td class="text-end">${{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
+                        <td class="text-center">{{ detalle.cantidad }}</td>
+                        <td class="text-end">${{ detalle.subtotal|number_format(2, ',', '.') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="table-info">
+                    <th colspan="4" class="text-end">Total:</th>
+                    <th class="text-end">${{ pedido.total|number_format(2, ',', '.') }}</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{ path('app_cliente_pedido_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a Mis Pedidos
+        </a>
+        
+        {# Si quieres permitir hacer un pedido similar #}
+        <a href="#" class="btn btn-outline-primary ms-2">
+            <i class="bi bi-arrow-repeat"></i> Repetir Pedido
         </a>
     </div>
-
-    <div class="row">
-        <div class="col-md-9">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Detalles del Pedido</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Artículo</th>
-                                    <th>Marca</th>
-                                    <th class="text-center">Cantidad</th>
-                                    <th class="text-end">Precio</th>
-                                    <th class="text-end">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for detalle in pedido.detalles %}
-                                    <tr>
-                                        <td>{{ detalle.articulo.codigo }}</td>
-                                        <td>{{ detalle.articulo.detalle }}</td>
-                                        <td>{{ detalle.articulo.marca }}</td>
-                                        <td class="text-center">{{ detalle.cantidad }}</td>
-                                        <td class="text-end">${{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
-                                        <td class="text-end">${{ (detalle.precioUnitario * detalle.cantidad)|number_format(2, ',', '.') }}</td>
-                                    </tr>
-                                {% endfor %}
-
-                            </tbody>
-
-                            <tfoot>
-                                <tr>
-                                    <td colspan="5" class="text-end"><strong>Total:</strong></td>
-                                    <td class="text-end"><strong>${{ pedido.total|number_format(2, ',', '.') }}</strong></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Información del Pedido</h5>
-                </div>
-                <div class="card-body">
-                    <p><strong>Fecha:</strong> {{ pedido.fecha|date('d/m/Y H:i') }}</p>
-                    <p><strong>Estado:</strong> 
-                        {% if pedido.estado == 'leido' %}
-                            <span class="badge bg-success">Leido</span>
-                        {% else %}
-                            <span class="badge bg-warning">Pendiente</span>
-                        {% endif %}
-                    </p>
-                    {% if pedido.observaciones %}
-                        <strong>Observación</strong>
-                            <div class="p-3 mt-1 rounded-2" style="background-color: var(--bs-warning-bg-subtle)">
-                            {{ pedido.observaciones|nl2br }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {% if pedido.estado != 'leido' %}
-        <form method="post" action="{{ path('app_cliente_pedido_delete', {'id': pedido.id}) }}" 
-              onsubmit="return confirm('¿Está seguro que desea eliminar este pedido?');" 
-              style="display: inline;">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pedido.id) }}">
-            <button type="submit" class="btn btn-sm btn-danger">
-                <i class="bi bi-trash me-2"></i>Eliminar Pedido
-            </button>
-        </form>
-    {% endif %}
 </div>
 {% endblock %} 

@@ -6,23 +6,23 @@
 <div class="container-fluid p-0" id="puntoEntrada">
 
     <!-- Banner principal -->
-    <div class="position-relative">
-        <div class="bg-dark text-white py-5" style="background-image: url('{{ asset('images/divisiones/industria/banner.jpg') }}'); background-size: cover; background-position: center; min-height: 500px;">
-            <div class="container position-relative" style="z-index: 1;">
-                <div class="row">
-                    <div class="col-lg-6 offset-lg-3 text-center py-5">
-                        <img src="{{ asset('images/logo.png') }}" width="246" height="246" alt="Logo Ciardi" class="mb-4">
-                        <h1 class="display-4 fw-bold mb-4">SOLUCIONES PARA TODO TIPO DE INDUSTRIAS</h1>
-                        <h2 class="h3 mb-4">MATERIALES ELÉCTRICOS PARA CADA PROYECTO</h2>
-                        <a href="https://api.whatsapp.com/send?phone=542235940094&text=Hola%20buen%20d%C3%ADa,%20quiero%20hacer%20una%20consulta%20sobre%20industria." target="_blank" class="btn btn-success btn-lg">
-                            <i class="bi bi-whatsapp me-2"></i>
-                            Contáctanos
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.6;"></div>
+    <div id="carouselExampleIndicators" class="carousel slide">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
         </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{{ asset('images/divisiones/industria/banner_1.jpg') }}" class="d-block w-100" alt="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 
     <!-- Rubros especializados -->

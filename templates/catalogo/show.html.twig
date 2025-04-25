@@ -150,14 +150,14 @@
                     <p class="lead text-muted">precioBase: {{ articulo.precios.precioBase }}</p>  
                     <p class="lead text-muted">precioSinIVA: {{ articulo.precios.precioBaseSIVA }}</p>
                     <p class="lead text-muted">precioConDescuento: {{ articulo.precios.precioConDescuento }}</p>
-                    <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioConDescuentoRecargo }}</p>
+                    <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioConDescuentoRentabilidad }}</p>
                     <p class="lead text-muted">precioConDescuentoyRecargo: {{ articulo.precios.precioFinal }}</p>
                     -->
 
                         <div class="d-flex justify-content-between align-top mb-3">
-                            <span class="h2 mb-0">${{ articulo.precios.precioBase|number_format(2, ',', '.') }}</span>
+                            <span class="h2 mb-0">${{ articulo.precios.precioFinal|number_format(2, ',', '.') }}</span>
                             {% if is_granted('ROLE_CLIENTE') %}
-                                <form action="{{ path('app_cliente_cart_add') }}" method="POST" style="display: inline;">
+                                <form action="{{ path('app_cliente_carrito_agregar') }}" method="POST" style="display: inline;">
                                     <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
                                     <div class="input-group mb-0">
                                         <input type="text" name="cantidad" value="1" class="form-control" placeholder="Cantidad" aria-label="Cantidad" aria-describedby="agregar-al-carrito"/>

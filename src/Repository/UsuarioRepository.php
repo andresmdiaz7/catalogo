@@ -17,6 +17,11 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         parent::__construct($registry, Usuario::class);
     }
 
+    /**
+     * Actualiza la contraseña de un usuario
+     * @param PasswordAuthenticatedUserInterface $user Usuario a actualizar
+     * @param string $newHashedPassword Nueva contraseña hasheada
+     */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof Usuario) {
@@ -28,11 +33,31 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         $this->_em->flush();
     }
 
+
+    /**
+     * Busca un usuario por email
+     * @param string $email Email del usuario a buscar
+     * @return Usuario|null Usuario encontrado o null si no existe
+     * 
+     * TODO: Mejorar la logica de la búsqueda por email
+     *       - Ver si esto sirve para armar el padron de usuarios en el panel de administración
+     *       - Si no sirve, mejorar la logica para que sirva para el padron de usuarios
+     */
     public function findByEmail(string $email): ?Usuario
     {
         return $this->findOneBy(['email' => $email]);
     }
 
+
+    /**
+     * Busca usuarios por tipo de usuario
+     * @param TipoUsuario $tipoUsuario Tipo de usuario a buscar
+     * @return array Lista de usuarios encontrados
+     * 
+     * TODO: Mejorar la logica de la búsqueda por tipo de usuario
+     *       - Ver si esto sirve para armar el padron de usuarios en el panel de administración
+     *       - Si no sirve, mejorar la logica para que sirva para el padron de usuarios
+     */
     public function findByTipo(TipoUsuario $tipoUsuario)
     {
         return $this->createQueryBuilder('u')
@@ -43,6 +68,12 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
             ->getResult();
     }
 
+    /**
+     * Verifica si un email ya existe en la base de datos
+     * @param string $email Email a verificar
+     * @param int|null $excludeId ID del usuario a excluir de la búsqueda
+     * @return bool True si el email existe, false en caso contrario
+     */
     public function existeEmail(string $email, ?int $excludeId = null): bool
     {
         $qb = $this->createQueryBuilder('u')

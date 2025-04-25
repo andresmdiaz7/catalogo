@@ -40,7 +40,7 @@
             #{{ articulo.codigo }}
         </p>
         <p class="card-text fs-5 text-end">
-            ${{ articulo.precioLista|number_format(0, ',', '.') }}
+            ${{ articulo.precios.precioFinal|number_format(0, ',', '.') }} nuevo!
         </p>
         
         {% if articulo.destacado %}
@@ -59,7 +59,7 @@
                     Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
                 </p>
             {% endif %}
-            <form action="{{ path('app_cliente_cart_add') }}" method="POST" style="display: inline;">
+            <form action="{{ path('app_cliente_carrito_agregar') }}" method="POST" style="display: inline;">
                 <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
                 <div class="input-group">
                     <input type="text" name="cantidad" value="1" class="form-control border border-primary border-end-0" placeholder="Cantidad" aria-label="Cantidad" aria-describedby="button-addon2"/>

@@ -7,6 +7,7 @@ use App\Entity\Localidad;
 use App\Entity\TipoCliente;
 use App\Entity\Vendedor;
 use App\Entity\ResponsableLogistica;
+use App\Entity\Usuario;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -24,8 +25,10 @@ use App\Repository\CategoriaImpositivaRepository;
 use Doctrine\ORM\EntityRepository;
 use App\Entity\Categoria;
 use App\Repository\CategoriaRepository;
-use App\Entity\Usuario;
 use App\Repository\UsuarioRepository;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 
 class ClienteType extends AbstractType
 {
@@ -37,9 +40,9 @@ class ClienteType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => [
                     'maxlength' => 50,
-                    
+                    'readonly' => true,
+                    'class' => 'form-control'
                 ],
-                'attr' => ['class' => 'form-control','readonly' => true],
                 'row_attr' => ['class' => 'mb-3']
             ])
             ->add('razonSocial', TextType::class, [
@@ -108,7 +111,6 @@ class ClienteType extends AbstractType
                 'choice_label' => 'nombre',
                 'required' => false,
                 'placeholder' => 'Seleccione una categoría',
-                'attr' => ['class' => 'form-select'],
                 'query_builder' => function (CategoriaRepository $cr) {
                     return $cr->createQueryBuilder('c')
                         ->where('c.activo = :activo')
@@ -195,10 +197,23 @@ class ClienteType extends AbstractType
                 ],
                 'row_attr' => ['class' => 'mb-3']
             ])
+            ->add('crearNuevoUsuario', CheckboxType::class, [
+                'label' => 'Crear nuevo usuario para este cliente',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-check-input',
+                    'data-toggle' => 'usuario-toggle'
+                ],
+                'label_attr' => [
+                    'class' => 'form-check-label'
+                ],
+                'row_attr' => ['class' => 'mb-3']
+            ])
             ->add('usuario', EntityType::class, [
                 'class' => Usuario::class,
                 'choice_label' => function(Usuario $usuario) {
-                    return $usuario->getEmail() . ' (' . $usuario->getNombreCompleto() . ')';
+                    return $usuario->getNombreReferencia() ? $usuario->getNombreReferencia() . ' (' . $usuario->getEmail() . ')' : $usuario->getEmail();
                 },
                 'query_builder' => function(UsuarioRepository $repo) {
                     return $repo->createQueryBuilder('u')
@@ -207,24 +222,52 @@ class ClienteType extends AbstractType
                         ->setParameter('tipo', 'Cliente')
                         ->andWhere('u.activo = :activo')
                         ->setParameter('activo', true)
-                        ->orderBy('u.email', 'ASC');
+                        ->orderBy('u.nombreReferencia', 'ASC');
                 },
                 'required' => false,
-                'placeholder' => 'Seleccione un usuario',
-                'attr' => ['class' => 'form-select'],
-                'row_attr' => ['class' => 'mb-3'],
+                'placeholder' => 'Seleccione un usuario existente',
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-existing-user' => 'true'
+                ],
+                'row_attr' => [
+                    'class' => 'mb-3',
+                    'id' => 'existing-user-row'
+                ],
                 'label' => 'Usuario del Sistema',
                 'label_attr' => ['class' => 'form-label'],
-                'help' => 'Selecciona un usuario existente o déjalo en blanco para crear solo el cliente sin acceso al sistema',
+            ])
+            ->add('nuevoUsuario', NuevoUsuarioClienteType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => false,
+                'row_attr' => [
+                    'class' => 'mb-3 nuevo-usuario-container',
+                    'style' => 'display: none;'
+                ]
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
+            $form = $event->getForm();
+
+            if (isset($data['crearNuevoUsuario']) && $data['crearNuevoUsuario']) {
+                $data['usuario'] = null;
+                $event->setData($data);
+            } elseif (isset($data['usuario']) && $data['usuario']) {
+                if (isset($data['nuevoUsuario'])) {
+                    $data['nuevoUsuario'] = null;
+                }
+                $event->setData($data);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Cliente::class,
-            'current_password' => null,
         ]);
     }
 }

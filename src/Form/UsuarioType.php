@@ -19,14 +19,7 @@ class UsuarioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('apellido', TextType::class, [
-                'label' => 'Apellido',
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => [
-                    'class' => 'mb-3'
-                ]
-            ])
-            ->add('nombre', TextType::class, [
+            ->add('nombreReferencia', TextType::class, [
                 'label' => 'Nombre',
                 'attr' => ['class' => 'form-control'],
                 'row_attr' => [

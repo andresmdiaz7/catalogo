@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Vendedor;
+use App\Entity\Usuario;
+use App\Repository\UsuarioRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -69,14 +72,22 @@ class VendedorType extends AbstractType
                     'class' => 'mb-3'
                 ]
             ])
-            ->add('plainPassword', PasswordType::class, [
-                'label' => 'Contraseña',
-                'required' => $options['require_password'],
-                'mapped' => true,
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => [
-                    'class' => 'mb-3'
-                ]
+            ->add('usuario', EntityType::class, [
+                'class' => Usuario::class,
+                'choice_label' => function(Usuario $usuario) {
+                    return $usuario->getEmail() . ' (' . ($usuario->getNombreCompleto() ?: 'Sin nombre') . ')';
+                },
+                'required' => false,
+                'placeholder' => 'Seleccione un usuario (opcional)',
+                'query_builder' => function(UsuarioRepository $repository) {
+                    return $repository->createQueryBuilder('u')
+                        ->join('u.tipoUsuario', 't')
+                        ->where('t.codigo = :tipo')
+                        ->setParameter('tipo', 'vendedor')
+                        ->orderBy('u.email', 'ASC');
+                },
+                'attr' => ['class' => 'form-select'],
+                'help' => 'Asocie este vendedor con un usuario para permitir el acceso al sistema'
             ])
             ->add('activo', CheckboxType::class, [
                 'label' => 'Activo',

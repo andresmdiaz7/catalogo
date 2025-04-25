@@ -1,0 +1,48 @@
+{% set carrito = carritoManager.obtenerCarritoActivo() %}
+<div class="dropdown">
+    <a class="btn btn-outline-primary position-relative" href="#" role="button" id="dropdownCarrito" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-cart3"></i>
+        {% if carrito and carrito.items.count > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ carrito.items.count }}
+            </span>
+        {% endif %}
+    </a>
+    
+    <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="dropdownCarrito" style="width: 320px; max-height: 500px; overflow-y: auto;">
+        <h6 class="dropdown-header">Mi Carrito</h6>
+        
+        {% if carrito and carrito.items.count > 0 %}
+            <ul class="list-group list-group-flush mb-3">
+                {% for item in carrito.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="d-block text-muted">{{ item.articulo.codigo }}</small>
+                            <span>{{ item.articulo.descripcion|length > 20 ? item.articulo.descripcion|slice(0, 20) ~ '...' : item.articulo.descripcion }}</span>
+                            <small class="d-block">{{ item.cantidad }} x ${{ item.precioUnitario|number_format(2, ',', '.') }}</small>
+                        </div>
+                        <span>${{ (item.precioUnitario * item.cantidad)|number_format(2, ',', '.') }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+            
+            <div class="d-flex justify-content-between fw-bold mb-3">
+                <span>Total:</span>
+                <span>${{ carrito.total|number_format(2, ',', '.') }}</span>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <a href="{{ path('app_cliente_carrito_index') }}" class="btn btn-primary">
+                    Ver Carrito
+                </a>
+                <a href="{{ path('app_cliente_pedido_confirmar') }}" class="btn btn-success">
+                    Confirmar Pedido
+                </a>
+            </div>
+        {% else %}
+            <div class="text-center py-3">
+                <p class="mb-0">Su carrito está vacío</p>
+            </div>
+        {% endif %}
+    </div>
+</div>

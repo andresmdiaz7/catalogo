@@ -73,7 +73,7 @@ class ClienteMssqlService
     /**
      * Obtiene el monto pendiente de cobro en cuenta corriente para un cliente
      */
-    public function getDeudaCuentaCorriente(int $codigo): float
+    public function getDeudaCuentaCorriente(string $codigo): float
     {
         try {
             $conn = $this->getMssqlConnection();
@@ -102,7 +102,7 @@ class ClienteMssqlService
     /**
      * Obtiene todos los comprobantes pendientes de un cliente
      */
-    public function getComprobantesPendientes(int $codigo): array
+    public function getComprobantesPendientes(string $codigo): array
     {
         try {
             $conn = $this->getMssqlConnection();
@@ -135,7 +135,7 @@ class ClienteMssqlService
     /**
      * Obtiene un resumen de la cuenta corriente del cliente
      */
-    public function getResumenCuentaCorriente(int $codigo): array
+    public function getResumenCuentaCorriente(string $codigo): array
     {
         try {
             $totalAdeudado = $this->getDeudaCuentaCorriente($codigo);
@@ -159,7 +159,7 @@ class ClienteMssqlService
     /**
      * Obtiene el historial de compras del cliente
      */
-    public function getHistorialCompras(int $codigo, \DateTime $fechaDesde = null, \DateTime $fechaHasta = null): array
+    public function getHistorialCompras(string $codigo, \DateTime $fechaDesde = null, \DateTime $fechaHasta = null): array
     {
         try {
             $conn = $this->getMssqlConnection();

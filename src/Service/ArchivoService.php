@@ -21,6 +21,10 @@ class ArchivoService
     
     /**
      * Guarda un archivo y lo asocia con un artículo
+     * @param UploadedFile $file
+     * @param Articulo $articulo
+     * @param bool $esPrincipal
+     * @return ArticuloArchivo
      */
     public function guardarArchivo(UploadedFile $file, Articulo $articulo, bool $esPrincipal = false): ArticuloArchivo
     {
@@ -29,7 +33,7 @@ class ArchivoService
         
         // Buscar si ya existe un archivo con el mismo hash
         $archivoExistente = $this->entityManager->getRepository(Archivo::class)
-            ->findOneBy(['hash' => $hash]);
+                                                ->findOneBy(['hash' => $hash]);
         
         if (!$archivoExistente) {
             // Generar nombre único

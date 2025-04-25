@@ -14,6 +14,10 @@ class MenuService
         private Security $security
     ) {}
 
+    /**
+     * Obtiene el menú disponible para el usuario autenticado
+     * @return Menu
+     */
     public function obtenerMenuDisponible(): Menu
     {
         $user = $this->security->getUser();
@@ -26,6 +30,11 @@ class MenuService
             ->findOneBy(['porDefecto' => true, 'activo' => true]);
     }
 
+    /**
+     * Obtiene las secciones de un menú
+     * @param Menu $menu
+     * @return MenuSeccion[]
+     */
     public function obtenerSeccionesMenu(Menu $menu): array
     {
         return $this->entityManager->getRepository(MenuSeccion::class)

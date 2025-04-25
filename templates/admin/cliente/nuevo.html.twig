@@ -1,0 +1,323 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nuevo Cliente{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Nuevo Cliente</h1>
+        <a href="{{ path('app_admin_cliente_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al listado
+        </a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Consultar cliente en GB</h5>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-end">
+                <div class="col-md-3">
+                    <label for="codigo_mssql" class="form-label">Código de cliente en GB</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="codigo_mssql" class="form-control form-control-sm" placeholder="Ingrese código">
+                        <button class="btn btn-primary" type="button" id="buscar_cliente_btn">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div id="resultado_busqueda" class="d-none alert alert-info">
+                        <span id="mensaje_busqueda"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Datos del cliente</h5>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+                <div class="row g-3">
+                    <!-- Primera columna -->
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            {{ form_label(form.codigo, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.codigo, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.codigo) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.razonSocial, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.razonSocial, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.razonSocial) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.cuit, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.cuit, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.cuit) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.direccion, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.direccion, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.direccion) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.telefono, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.telefono, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.telefono) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.email, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.email) }}
+                        </div>
+                    </div>
+                    
+                    <!-- Segunda columna -->
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            {{ form_label(form.tipoCliente, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.tipoCliente, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                            {{ form_errors(form.tipoCliente) }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form_label(form.categoriaImpositiva, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.categoriaImpositiva, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                            {{ form_errors(form.categoriaImpositiva) }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form_label(form.localidad, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.localidad, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                            {{ form_errors(form.localidad) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.vendedor, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.vendedor, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                            {{ form_errors(form.vendedor) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.responsableLogistica, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.responsableLogistica, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                            {{ form_errors(form.responsableLogistica) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.categoria, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.categoria, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                            {{ form_errors(form.categoria) }}
+                        </div>
+                    </div>
+                    
+                    <!-- Tercera columna -->
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            {{ form_label(form.web, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.web, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.web) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.porcentajeDescuento, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.porcentajeDescuento, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.porcentajeDescuento) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.rentabilidad, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.rentabilidad, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                            {{ form_errors(form.rentabilidad) }}
+                        </div>
+                        
+                        <!-- Sección de usuario con toggle -->
+                        <div class="card border-info mb-3">
+                            <div class="card-header bg-info bg-opacity-10">
+                                <h6 class="mb-0">Datos de acceso al sistema</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    {{ form_widget(form.crearNuevoUsuario) }}
+                                    {{ form_label(form.crearNuevoUsuario) }}
+                                </div>
+                                
+                                <div id="existing-user-container">
+                                    {{ form_label(form.usuario, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.usuario, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                                    {{ form_errors(form.usuario) }}
+                                </div>
+                                
+                                <div id="new-user-container" style="display: none;">
+                                    <h6 class="mt-3 mb-2">Datos del nuevo usuario</h6>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.nuevoUsuario.nombreReferencia, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                        {{ form_widget(form.nuevoUsuario.nombreReferencia, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                        {{ form_errors(form.nuevoUsuario.nombreReferencia) }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.nuevoUsuario.email, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                        {{ form_widget(form.nuevoUsuario.email, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                        {{ form_errors(form.nuevoUsuario.email) }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.nuevoUsuario.plainPassword, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                        {{ form_widget(form.nuevoUsuario.plainPassword, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                        {{ form_errors(form.nuevoUsuario.plainPassword) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            {{ form_label(form.observaciones, null, {'label_attr': {'class': 'form-label small'}}) }}
+                            {{ form_widget(form.observaciones, {'attr': {'class': 'form-control form-control-sm', 'rows': 3}}) }}
+                            {{ form_errors(form.observaciones) }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-check mb-3">
+                            {{ form_widget(form.habilitado, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(form.habilitado, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar
+                    </button>
+                    </div>
+                </div>
+
+                
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buscarClienteBtn = document.getElementById('buscar_cliente_btn');
+    const codigoInput = document.getElementById('codigo_mssql');
+    const resultadoBusqueda = document.getElementById('resultado_busqueda');
+    const mensajeBusqueda = document.getElementById('mensaje_busqueda');
+    
+    buscarClienteBtn.addEventListener('click', function() {
+        const codigo = codigoInput.value.trim();
+        
+        if (!codigo) {
+            mostrarMensaje('Por favor, ingrese un código de cliente', 'alert-danger');
+            return;
+        }
+        
+        // Mostrar mensaje de carga
+        mostrarMensaje('Buscando cliente...', 'alert-info');
+        
+        // Realizar la petición AJAX
+        fetch(`{{ path('app_admin_cliente_buscar_mssql') }}?codigo=${codigo}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    mostrarMensaje(data.error, 'alert-danger');
+                    return;
+                }
+                
+                // Cliente encontrado, llenar el formulario
+                document.querySelector('[name="cliente[razonSocial]"]').value = data.razonSocial || '';
+                document.querySelector('[name="cliente[cuit]"]').value = data.cuit || '';
+                document.querySelector('[name="cliente[direccion]"]').value = data.direccion || '';
+                document.querySelector('[name="cliente[telefono]"]').value = data.telefono || '';
+                document.querySelector('[name="cliente[email]"]').value = data.email || '';
+                //document.querySelector('[name="cliente[observaciones]"]').value = data.observaciones || '';
+                
+                // Si tenemos la localidad, seleccionarla
+                if (data.localidad) {
+                    const localidadSelect = document.querySelector('[name="cliente[localidad]"]');
+                    for (let i = 0; i < localidadSelect.options.length; i++) {
+                        if (localidadSelect.options[i].value == data.localidad) {
+                            localidadSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                
+                // Código del cliente
+                document.querySelector('[name="cliente[codigo]"]').value = data.codigo || '';
+                
+                mostrarMensaje('Cliente encontrado en GB. Datos cargados en el formulario.', 'alert-success');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarMensaje('Error al buscar el cliente. Intente nuevamente.', 'alert-danger');
+            });
+    });
+    
+    // Permitir buscar con Enter en el input
+    codigoInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            buscarClienteBtn.click();
+        }
+    });
+    
+    function mostrarMensaje(mensaje, tipo) {
+        resultadoBusqueda.className = 'd-block alert ' + tipo;
+        mensajeBusqueda.textContent = mensaje;
+    }
+
+    // Código nuevo para manejar el toggle de creación de usuario
+    const crearNuevoUsuarioCheckbox = document.querySelector('[name="cliente[crearNuevoUsuario]"]');
+    const existingUserContainer = document.getElementById('existing-user-container');
+    const newUserContainer = document.getElementById('new-user-container');
+    
+    crearNuevoUsuarioCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            existingUserContainer.style.display = 'none';
+            newUserContainer.style.display = 'block';
+            // Limpiar el selector de usuario existente
+            document.querySelector('[name="cliente[usuario]"]').value = '';
+        } else {
+            existingUserContainer.style.display = 'block';
+            newUserContainer.style.display = 'none';
+            // Limpiar los campos de nuevo usuario
+            document.querySelector('[name="cliente[nuevoUsuario][nombreReferencia]"]').value = '';
+            document.querySelector('[name="cliente[nuevoUsuario][email]"]').value = '';
+            document.querySelector('[name="cliente[nuevoUsuario][plainPassword]"]').value = '';
+        }
+    });
+
+    // Auto-rellenar el email del nuevo usuario con el email del cliente
+    const clienteEmailInput = document.querySelector('[name="cliente[email]"]');
+    const nuevoUsuarioEmailInput = document.querySelector('[name="cliente[nuevoUsuario][email]"]');
+    
+    clienteEmailInput.addEventListener('change', function() {
+        if (nuevoUsuarioEmailInput.value === '') {
+            nuevoUsuarioEmailInput.value = this.value;
+        }
+    });
+
+    // Auto-rellenar el nombre de referencia con la razón social del cliente
+    const clienteRazonSocialInput = document.querySelector('[name="cliente[razonSocial]"]');
+    const nuevoUsuarioNombreInput = document.querySelector('[name="cliente[nuevoUsuario][nombreReferencia]"]');
+    
+    clienteRazonSocialInput.addEventListener('change', function() {
+        if (nuevoUsuarioNombreInput.value === '') {
+            nuevoUsuarioNombreInput.value = this.value;
+        }
+    });
+});
+</script>
+{% endblock %} 

@@ -1,24 +1,53 @@
 <div class="btn-group" role="group" aria-label="Opciones de cliente">
+
+    {% if app.session.get('cliente_activo_data') %}
+    <button type="button" class="btn btn-outline-secondary d-flex align-items-center" style="pointer-events: none;">
+        <i class="bi bi-building me-2"></i>
+        <span class="text-truncate d-none d-sm-inline" style="max-width: 200px;" title="{{ app.session.get('cliente_activo_data').razonSocial }}">
+            {{ app.session.get('cliente_activo_data').razonSocial }}
+        </span>
+    </button>
+    {% endif %}
+
     {# Botón del carrito #}
-    <a class="btn btn-outline-primary position-relative" href="{{ path('app_cliente_cart_index') }}">
+    <a class="btn btn-outline-primary position-relative" href="{{ path('app_cliente_carrito_index') }}">
         <i class="bi bi-cart me-1"></i>
         <span class="badge text-bg-secondary badge rounded-pill bg-danger">{{ carrito_articulos_totales }}</span>
     </a>
     
     {# Dropdown para opciones de usuario #}
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-person-circle me-2"></i>Mi Cuenta
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="{{ path('app_cliente_dashboard') }}">
-            <i class="bi bi-person me-2"></i>Mis Datos
-        </a></li>
-        <li><a class="dropdown-item" href="{{ path('app_cliente_pedidos') }}">
-            <i class="bi bi-bag me-2"></i>Mis Pedidos
-        </a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
-            <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
-        </a></li>
-    </ul>
-</div>
+    <div class="btn-group" role="group">
+        
+        
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        </button>
+        
+        <ul class="dropdown-menu dropdown-menu-end">
+            {% if app.session.get('cliente_activo_data') %}
+            <li class="d-sm-none">
+                <span class="dropdown-item-text">
+                    <small class="text-muted">Cliente actual:</small><br>
+                    <strong>{{ app.session.get('cliente_activo_data').razonSocial }}</strong>
+                </span>
+            </li>
+            <li class="d-sm-none"><hr class="dropdown-divider"></li>
+            {% endif %}
+            
+            <li><a class="dropdown-item" href="{{ path('app_cliente_dashboard') }}">
+                <i class="bi bi-person me-2"></i>Datos de cliente
+            </a></li>
+            <li><a class="dropdown-item" href="{{ path('app_cliente_pedido_index') }}">
+                <i class="bi bi-bag me-2"></i>Mis Pedidos
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            {% if app.user.hasMultiplesClientes() %}
+            <li><a class="dropdown-item" href="{{ path('app_cliente_seleccionar') }}">
+                <i class="bi bi-arrow-repeat me-2"></i>Cambiar Cliente
+            </a></li>
+            {% endif %}
+            
+            <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+            </a></li>
+        </ul>
+    </div>

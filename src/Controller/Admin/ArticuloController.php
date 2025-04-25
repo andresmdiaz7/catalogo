@@ -29,7 +29,6 @@ class ArticuloController extends AbstractController
 {
     /**
      * Muestra el listado de articulos para administrarlos, buscador, filtros y paginación.
-     *
      * @param Request $request
      * @param ArticuloRepository $articuloRepository
      * @param RubroRepository $rubroRepository

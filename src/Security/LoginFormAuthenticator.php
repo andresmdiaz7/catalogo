@@ -46,7 +46,8 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     }
 
     /**
-     * Redirige al usuario al dashboard correspondiente después de iniciar sesión
+     * Redirige al usuario a la ruta app_login que contiene toda la lógica de redirección
+     * según el tipo de usuario y clientes disponibles
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
@@ -54,23 +55,8 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // Si el usuario está autenticado, redirigir al dashboard correspondiente
-        $user = $token->getUser();
-        $roles = $user->getRoles();
-        
-        if (in_array('ROLE_ADMIN', $roles)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_admin_dashboard'));
-        }
-        if (in_array('ROLE_VENDEDOR', $roles)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_vendedor_dashboard'));
-        }
-        if (in_array('ROLE_CLIENTE', $roles)) {  
-            // Aquí necesitarás buscar el cliente asociado al usuario
-            // y establecer el ID en la sesión
-            return new RedirectResponse($this->urlGenerator->generate('app_cliente_dashboard'));
-        }
-        
-        return new RedirectResponse($this->urlGenerator->generate('app_catalogo_index'));
+        // Redirigir al controlador de login que maneja toda la lógica de redirección
+        return new RedirectResponse($this->urlGenerator->generate('app_login'));
     }
 
     protected function getLoginUrl(Request $request): string

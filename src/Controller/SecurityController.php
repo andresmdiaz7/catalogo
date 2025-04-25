@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Bundle\SecurityBundle\Security;
+use App\Service\ClienteManager;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 
 class SecurityController extends AbstractController
 {
@@ -26,18 +29,58 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Muestra el formulario de login
+     * Muestra el formulario de login y maneja la redirección post-login
      */
     #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
-    {
-        if ($this->security->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('app_post_login_redirect');
+    public function login(
+        AuthenticationUtils $authenticationUtils,
+        EntityManagerInterface $entityManager,
+        ClienteManager $clienteManager
+    ): Response {
+        // Verificar si el usuario ya está autenticado
+        $usuario = $this->security->getUser();
+        if ($usuario instanceof Usuario) {
+            // Actualizar último acceso
+            $usuario->setUltimoAcceso(new \DateTime());
+            $entityManager->flush();
+
+            // Verificar roles y redirigir según corresponda
+            $tipoUsuario = $usuario->getTipoUsuario();
+            if ($tipoUsuario) {
+                switch ($tipoUsuario->getCodigo()) {
+                    case 'admin':
+                        return $this->redirectToRoute('app_admin_dashboard');
+                        
+                    case 'cliente':
+                        // Verificar si el usuario tiene clientes asociados
+                        if ($usuario->hasUnicoCliente()) {
+                            // Si solo tiene un cliente, establecerlo como activo automáticamente
+                            $clienteManager->setClienteActivo($usuario->getUnicoCliente());
+                            return $this->redirectToRoute('app_cliente_dashboard');
+                        } elseif ($usuario->hasMultiplesClientes()) {
+                            // Si tiene múltiples clientes, mostrar pantalla de selección
+                            return $this->redirectToRoute('app_cliente_seleccionar');
+                        } else {
+                            $this->addFlash('danger', 'No hay clientes asociados a este usuario');
+                            return $this->redirectToRoute('app_login');
+                        }
+                        
+                    case 'vendedor':
+                        return $this->redirectToRoute('app_vendedor_dashboard');
+                        
+                    case 'responsable_logistica':
+                        return $this->redirectToRoute('app_logistica_dashboard');
+                        
+                    default:
+                        return $this->redirectToRoute('app_login');
+                }
+            }
         }
 
-        // get the login error if there is one
+        // Obtener error de login si existe
         $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
+        
+        // Obtener último username ingresado
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', [
@@ -55,54 +98,13 @@ class SecurityController extends AbstractController
         // El logout es manejado por Symfony Security
     }
 
+    /**
+     * Esta ruta ya no es necesaria porque toda la lógica está en el método login
+     * Se mantiene por compatibilidad, pero redirige al método login
+     */
     #[Route('/post-login-redirect', name: 'app_post_login_redirect')]
     public function postLoginRedirect(): Response
     {
-        $user = $this->security->getUser();
-        
-        if (!$user instanceof Usuario) {
-            return $this->redirectToRoute('app_login');
-        }
-        
-        // Actualizar último acceso
-        $user->setUltimoAcceso(new \DateTime());
-        
-        // Redirigir según el tipo de usuario
-        $tipoUsuario = $user->getTipoUsuario();
-        
-        if (!$tipoUsuario) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        switch ($tipoUsuario->getCodigo()) {
-            case 'admin':
-                return $this->redirectToRoute('app_admin_dashboard');
-            
-            case 'cliente':
-                // Buscar la entidad Cliente asociada a este usuario
-                $clientes = $this->clienteRepository->findBy(['usuario' => $user]);
-                
-                if (count($clientes) > 1) {
-                    // Redirigir a la selección de cliente
-                    return $this->redirectToRoute('app_cliente_seleccionar');
-                } elseif (count($clientes) === 1) {
-                    // Establecer el cliente activo en sesión
-                    $this->get('session')->set('cliente_activo_id', $clientes[0]->getId());
-                    return $this->redirectToRoute('app_cliente_dashboard');
-                } else {
-                    return $this->redirectToRoute('app_login', [
-                        'error' => 'No hay clientes asociados a este usuario'
-                    ]);
-                }
-            
-            case 'vendedor':
-                return $this->redirectToRoute('app_vendedor_dashboard');
-            
-            case 'responsable_logistica':
-                return $this->redirectToRoute('app_logistica_dashboard');
-            
-            default:
-                return $this->redirectToRoute('app_login');
-        }
+        return $this->redirectToRoute('app_login');
     }
 } 

@@ -21,6 +21,7 @@ class ArchivoRepository extends ServiceEntityRepository
         parent::__construct($registry, Archivo::class);
     }
 
+
     /**
      * Guarda un nuevo archivo en la base de datos
      */
@@ -33,6 +34,7 @@ class ArchivoRepository extends ServiceEntityRepository
         }
     }
 
+
     /**
      * Elimina un archivo de la base de datos
      */
@@ -44,97 +46,7 @@ class ArchivoRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-    /**
-     * Encuentra un archivo por su hash MD5
-     */
-    public function findOneByHash(string $hash): ?Archivo
-    {
-        return $this->findOneBy(['hash' => $hash]);
-    }
-
-    /**
-     * Encuentra archivos no asociados a ningún artículo
-     */
-    public function findHuerfanos(): array
-    {
-        return $this->createQueryBuilder('a')
-            ->leftJoin('a.articuloArchivos', 'aa')
-            ->groupBy('a.id')
-            ->having('COUNT(aa.id) = 0')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Busca archivos por nombre o tipo
-     */
-    public function buscarPorNombre(string $termino): array
-    {
-        return $this->createQueryBuilder('a')
-            ->where('a.file_name LIKE :termino')
-            ->setParameter('termino', '%' . $termino . '%')
-            ->orderBy('a.id', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Encuentra los archivos más utilizados (con más asociaciones a artículos)
-     */
-    public function findMasUtilizados(int $limit = 10): array
-    {
-        return $this->createQueryBuilder('a')
-            ->select('a, COUNT(aa.id) as total')
-            ->leftJoin('a.articuloArchivos', 'aa')
-            ->groupBy('a.id')
-            ->orderBy('total', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Encuentra archivos por tipo MIME (ej: 'image/%' para todas las imágenes)
-     */
-    public function findByTipoMime(string $tipoMime): array
-    {
-        return $this->createQueryBuilder('a')
-            ->where('a.tipoArchivo LIKE :tipo')
-            ->setParameter('tipo', $tipoMime)
-            ->orderBy('a.id', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Encuentra archivos potencialmente duplicados (mismos nombres pero diferentes hash)
-     */
-    public function findPosiblesDuplicados(): array
-    {
-        return $this->createQueryBuilder('a1')
-            ->select('a1.nombreArchivo, COUNT(a1.id) as total')
-            ->groupBy('a1.nombreArchivo')
-            ->having('total > 1')
-            ->orderBy('total', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Estadísticas de archivos por tipo
-     */
-    public function estadisticasPorTipo(): array
-    {
-        $tipos = $this->createQueryBuilder('a')
-            ->select('SUBSTRING(a.tipoArchivo, 1, LOCATE(\'/\', a.tipoArchivo) - 1) as tipo, COUNT(a.id) as total')
-            ->groupBy('tipo')
-            ->orderBy('total', 'DESC')
-            ->getQuery()
-            ->getResult();
-            
-        return $tipos;
-    }
+    
 
     /**
      * Buscar archivos por filtros y paginados

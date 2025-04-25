@@ -12,12 +12,4 @@ class RubroRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Rubro::class);
     }
-
-    public function findAllOrdered(): array
-    {
-        return $this->createQueryBuilder('r')
-            ->orderBy('r.nombre', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
 } 

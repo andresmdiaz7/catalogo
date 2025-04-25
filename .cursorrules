@@ -1,0 +1,192 @@
+# Catalogo - Reglas para Cursor
+
+## Estructura del Proyecto
+
+Este es un proyecto Symfony 7.2 que implementa un catálogo de productos y gestión de clientes/vendedores.
+
+### Arquitectura MVC
+
+- `src/Controller/`: Controladores organizados por sección (Admin, Cliente, Vendedor)
+- `src/Entity/`: Entidades de Doctrine que mapean a tablas de la base de datos
+- `src/Repository/`: Repositorios para consultas a la base de datos
+- `src/Form/`: Tipos de formularios para crear/editar entidades
+- `src/Service/`: Servicios de la aplicación con lógica de negocio
+- `src/EventSubscriber/`: Suscriptores de eventos para hook en el ciclo de vida de Symfony
+- `src/Command/`: Comandos personalizados para tareas programadas e importación de datos
+- `templates/`: Plantillas Twig organizadas por sección
+
+### Entidades Principales
+
+- `Usuario`: Gestión de usuarios del sistema con autenticación
+- `Cliente`: Clientes de la empresa
+- `Vendedor`: Vendedores asociados a clientes
+- `TipoUsuario`: Define tipos de usuarios (admin, cliente, vendedor)
+- `Articulo`: Productos del catálogo
+- `Pedido`: Pedidos de clientes
+- `Slider`: Carruseles de imágenes con periodo de vigencia
+- `SliderUbicacion`: Ubicaciones donde se muestran los sliders
+- `Seccion/Rubro/Subrubro`: Estructura jerárquica para clasificación de artículos
+- `Categoria`: Clasificación de clientes que determina qué menú y secciones se muestran
+- `Menu`: Conjunto de secciones configurables asociadas a una categoría de cliente
+
+### Configuración de Bases de Datos
+
+El proyecto utiliza dos conexiones de base de datos:
+
+1. **MySQL (Conexión Principal)**
+   - Gestiona todas las entidades principales de la aplicación
+   - Configurada como `default` en doctrine.yaml
+   - Almacena usuarios, clientes, vendedores, pedidos, etc.
+   - Repositorios en `src/Repository/`
+   - Entidades en `src/Entity/`
+
+2. **MSSQL (Conexión Secundaria)**
+   - Conecta con un sistema ERP externo (legacy)
+   - Configurada como `mssql` en doctrine.yaml
+   - Principalmente utilizada para sincronización de artículos e inventario
+   - Repositorios en `src/Repository/Mssql/`
+   - Entidades en `src/Entity/Mssql/`
+   - Accedida a través del EntityManager específico: `doctrine.orm.mssql_entity_manager`
+
+El acceso a la base de datos MSSQL está abstraído a través de servicios dedicados para mantener limpio el código de los controladores. Se utiliza principalmente para:
+- Sincronización de artículos
+- Consultas de precios y stock en tiempo real
+- Verificación de disponibilidad
+
+### Relaciones Clave
+
+- Un `Usuario` puede tener múltiples `Cliente`s asociados
+- Un `Cliente` pertenece a un `Vendedor`
+- Un `Cliente` pertenece a un `Responsable de Logistica`
+- Un `Cliente` puede pertenecer a una `Categoria` (opcional)
+- Un `Pedido` pertenece a un `Cliente`
+- Un `Articulo` pertenece a un `Subrubro`
+- Un `Subrubro` pertenece a un `Rubro`
+- Un `Rubro` pertenece a una `Seccion`
+- Un `Slider` pertenece a una `SliderUbicacion`
+- Una `Categoria` tiene asociado un `Menu`
+- Un `Menu` contiene múltiples `Seccion`es en orden configurable
+
+### Servicios Importantes
+
+- `ClienteManager`: Gestiona el cliente activo en la sesión y proporciona métodos para acceder y cambiar el cliente actual
+- `CartService`: Maneja los carritos de compra con operaciones para agregar, modificar y eliminar items
+- `ArticuloPrecioService`: Calcula precios personalizados según el tipo de cliente, descuentos y rentabilidad
+- `EmailService`: Envía correos electrónicos a clientes, vendedores y responsables de logística
+- `ArchivoService`: Gestiona el manejo de archivos generales en el sistema
+- `ClienteMssqlService`: Interactúa con la base de datos MSSQL para obtener información de clientes del sistema legacy
+- `EmailVerificationService`: Gestiona la verificación de correos electrónicos para nuevos usuarios
+- `FileUploader`: Servicio especializado en la carga y procesamiento de archivos
+- `MenuService`: Administra la estructura y visualización de menús personalizados según la categoría del cliente
+- `SliderArchivoService`: Gestiona los archivos (imágenes) asociados a los sliders del sistema
+
+### Sistema de Precios
+
+El servicio `ArticuloPrecioService` implementa una lógica de precios personalizada:
+- Cada cliente puede tener su porcentaje de descuento propio
+- El sistema calcula precios considerando:
+  - Que Tipo de cliente tiene asignado cliente
+  - Para tipo de cliente 'Mayorista' toma como precio base la columna 'Precio400' de la tabla articulo.
+  - Para otro tipo de cliente que no sea 'Mayorista'toma como precio base la columna 'PrecioLista' de la tabla articulo. 
+  - Precio base del artículo
+  - Descuentos personalizados del cliente
+  - Rentabilidad asignada al cliente
+- El flujo de cálculo de precio:
+  1. Se obtiene el precio base del artículo
+  2. Se descuenta los impuestos
+  3. Se aplican descuentos personalizados del cliente
+  4. Se añade la rentabilidad si corresponde
+  5. Se calcula el precio final del producto mas impuestos
+
+### Sistema de Navegación Personalizada por Cliente
+
+- Cada `Cliente` puede pertenecer a una `Categoria`
+- La `Categoria` determina qué `Menu` se muestra al cliente
+- El `Menu` contiene un conjunto específico de `Seccion`es en un orden configurable
+- Este sistema permite personalizar la experiencia de navegación según el tipo de cliente
+- Los clientes sin categoría asignada ven el menú predeterminado
+
+### Flujos de Autenticación
+
+1. El usuario inicia sesión mediante `SecurityController`
+2. Si es tipo cliente, se le asigna automáticamente un cliente o se le muestra la pantalla de selección
+3. Se guarda el cliente seleccionado en la sesión para su uso en toda la aplicación
+4. El sistema determina la categoría del cliente y carga el menú correspondiente
+
+### Dashboards Específicos
+
+Cada tipo de usuario tiene su propio dashboard personalizado:
+- **Admin**: Vista general de todos los pedidos, clientes y métricas del sistema
+- **Cliente**: Historial de pedidos, catálogo personalizado y estado de cuenta
+- **Vendedor**: Clientes asignados, sus pedidos y actividad reciente
+- **Responsable de Logística**: Gestión de pedidos pendientes y seguimiento de envíos
+
+### Sistema de Catálogo y Presentación
+
+- **Estructura jerárquica**: Sección > Rubro > Subrubro > Artículo
+- **Sliders dinámicos**: Carruseles de imágenes con vigencia temporal configurada
+- **Ubicaciones de slider**: Diferentes secciones de la web donde aparecen los carruseles
+- **Filtrado por jerarquía**: Navegación de productos por secciones, rubros y subrubros
+
+### Flujo de Pedidos
+
+1. El cliente agrega artículos al carrito
+2. Al confirmar, se crea un pedido en estado "pendiente"
+3. El sistema envía notificaciones por correo electrónico mediante `EmailService`:
+   - Al cliente confirmando su pedido
+   - Al vendedor asignado al cliente
+   - Al responsable de logística para la gestión del pedido
+4. El responsable de logística revisa el pedido y cambia su estado a "leído"
+5. Posteriormente el pedido avanza por otros estados según el proceso de negocio
+6. Cada cambio de estado puede generar notificaciones adicionales a las partes involucradas
+
+### Sistema de Notificaciones
+
+- Las notificaciones se envían por correo electrónico a través del `EmailService`
+- Se utilizan plantillas Twig personalizadas para cada tipo de notificación
+- Los destinatarios dependen del contexto:
+  - Confirmación de pedido: Cliente, Vendedor, Responsable de Logística
+  - Cambio de estado: Cliente, Vendedor
+  - Alertas administrativas: Administradores
+- Las plantillas incluyen información detallada y relevante para cada destinatario
+
+### Tareas Programadas
+
+El sistema incluye varios comandos para tareas programadas:
+- Importación de artículos desde la base de datos MSSQL
+- Actualización de precios y stock
+- Limpieza de archivos temporales
+- Sincronización de información con el sistema ERP
+
+### Entorno de Desarrollo
+
+- **Sistema Operativo**: Windows 11
+- **Servidor Web**: WAMPServer 3.7.7
+- **PHP**: Versión 8.3.14
+- **MySQL**: Versión 9.1.0
+- **MSSQL**: Conexión a servidor externo
+
+### Convenciones de Código
+
+- PSR-12 para formato de código
+- Doctrine Annotations/Attributes para mapeo ORM
+- Symfony Security para autenticación/autorización
+- Bootstrap 5.3.3 para frontend
+- Bootstrap utiliza la libreria de icononos bootstrap-icons@1.11.3
+
+### Versiones de las tecnologías principales
+
+- **Framework**: Symfony 7.2
+- **PHP**: 8.3.14
+- **Base de datos principal**: MySQL 9.1.0
+- **Base de datos secundaria**: Microsoft SQL Server
+- **Frontend**: 
+  - Bootstrap 5.3.3
+  - Bootstrap Icons 1.11.3
+  - jQuery 3.6.4
+- **Dependencias clave**:
+  - Doctrine ORM
+  - Symfony Security Bundle
+  - Symfony Mailer
+  - Twig Template Engine
+  - Symfony Form

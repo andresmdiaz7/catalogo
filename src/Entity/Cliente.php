@@ -80,13 +80,9 @@ class Cliente
     private bool $habilitado = true;
 
     // Nueva relación con Usuario
-    #[ORM\ManyToOne(targetEntity: Usuario::class)]
+    #[ORM\ManyToOne(inversedBy: 'clientes')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Usuario $usuario = null;
-
-    #[ORM\ManyToOne(targetEntity: TipoUsuario::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?TipoUsuario $tipoUsuario = null;
 
     public function __construct()
     {
@@ -342,16 +338,5 @@ class Cliente
     public function __toString(): string
     {
         return $this->razonSocial ?: '';
-    }
-
-    public function getTipoUsuario(): ?TipoUsuario
-    {
-        return $this->tipoUsuario;
-    }
-
-    public function setTipoUsuario(?TipoUsuario $tipoUsuario): static
-    {
-        $this->tipoUsuario = $tipoUsuario;
-        return $this;
     }
 }

@@ -3,3 +3,29 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+
+# Rutas de páginas estáticas
+app_division_iluminacion:
+    path: /division-iluminacion
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template: 'pages/division_iluminacion.html.twig'
+        context:
+            title: 'División Iluminación'
+
+app_division_industria:
+    path: /division-industria
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template: 'pages/division_industria.html.twig'
+        context:
+            title: 'División Industria'
+
+app_division_telecomunicaciones:
+    path: /division-telecomunicaciones
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template: 'pages/division_telecomunicaciones.html.twig'
+        context:
+            title: 'División Telecomunicaciones'

@@ -13,10 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[ORM\Table(name: 'usuario')]
-//#[UniqueEntity(
-//    fields: ['email'],
-//    message: 'Este correo electrónico ya está registrado en el sistema'
-//)]
+#[UniqueEntity(
+    fields: ['email'],
+    message: 'Este correo electrónico ya está registrado en el sistema'
+)]
 class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -35,7 +35,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\ManyToOne(inversedBy: 'usuarios')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?TipoUsuario $tipoUsuario = null;
 
@@ -45,15 +45,16 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $ultimoAcceso = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $nombre = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nombreReferencia = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $apellido = null;
+    #[ORM\OneToMany(mappedBy: 'usuario', targetEntity: Cliente::class)]
+    private Collection $clientes;
 
     public function __construct()
     {
         $this->roles = ['ROLE_USER'];
+        $this->clientes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,33 +147,83 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getNombre(): ?string
+    public function getNombreReferencia(): ?string
     {
-        return $this->nombre;
+        return $this->nombreReferencia;
     }
 
-    public function setNombre(?string $nombre): self
+    public function setNombreReferencia(?string $nombreReferencia): self
     {
-        $this->nombre = $nombre;
+        $this->nombreReferencia = $nombreReferencia;
         return $this;
     }
 
-    public function getApellido(): ?string
+    /**
+     * @return Collection<int, Cliente>
+     */
+    public function getClientes(): Collection
     {
-        return $this->apellido;
+        return $this->clientes;
     }
 
-    public function setApellido(?string $apellido): self
+    public function addCliente(Cliente $cliente): self
     {
-        $this->apellido = $apellido;
-        return $this;
-    }
-
-    public function getNombreCompleto(): ?string
-    {
-        if ($this->nombre || $this->apellido) {
-            return trim($this->nombre . ' ' . $this->apellido);
+        if (!$this->clientes->contains($cliente)) {
+            $this->clientes->add($cliente);
+            $cliente->setUsuario($this);
         }
-        return null;
+        
+        return $this;
+    }
+
+    public function removeCliente(Cliente $cliente): self
+    {
+        if ($this->clientes->removeElement($cliente)) {
+            if ($cliente->getUsuario() === $this) {
+                $cliente->setUsuario(null);
+            }
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Retorna true si el usuario tiene al menos un cliente asociado
+     */
+    public function hasClientes(): bool
+    {
+        return !$this->clientes->isEmpty();
+    }
+
+    /**
+     * Retorna el número de clientes asociados
+     */
+    public function getClientesCount(): int
+    {
+        return $this->clientes->count();
+    }
+
+    /**
+     * Retorna el primer cliente si solo hay uno
+     */
+    public function getUnicoCliente(): ?Cliente
+    {
+        return $this->clientes->count() === 1 ? $this->clientes->first() : null;
+    }
+
+    /**
+     * Retorna true si el usuario tiene un solo cliente
+     */
+    public function hasUnicoCliente(): bool
+    {
+        return $this->clientes->count() === 1;
+    }
+
+    /**
+     * Retorna true si el usuario tiene múltiples clientes
+     */
+    public function hasMultiplesClientes(): bool
+    {
+        return $this->clientes->count() > 1;
     }
 }

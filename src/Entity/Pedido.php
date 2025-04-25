@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PedidoRepository::class)]
+#[ORM\Table(name: 'pedido')]
 class Pedido
 {
     #[ORM\Id]
@@ -17,24 +18,28 @@ class Pedido
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $fecha = null;
-
-    #[ORM\ManyToOne(inversedBy: 'pedidos')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Cliente $cliente = null;
+
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $fecha;
+
+    #[ORM\Column(length: 20)]
+    private string $estado = 'pendiente';
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $fechaLeido = null; // Renombrado de fechaPedido a fechaLeido
 
-    #[ORM\Column(length: 20)]
-    #[Assert\Choice(choices: ['Pendiente', 'Leído'])]
-    private ?string $estado = 'Pendiente';
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $observaciones = null;
 
-    #[ORM\OneToMany(mappedBy: 'pedido', targetEntity: PedidoDetalle::class, cascade: ['remove'])]
+    #[ORM\OneToMany(
+        mappedBy: 'pedido', 
+        targetEntity: PedidoDetalle::class, 
+        orphanRemoval: true, 
+        cascade: ['persist']
+    )]
     private Collection $detalles;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
@@ -58,25 +63,36 @@ class Pedido
         return $this->id;
     }
 
-    public function getFecha(): ?\DateTimeInterface
-    {
-        return $this->fecha;
-    }
-
-    public function setFecha(\DateTimeInterface $fecha): static
-    {
-        $this->fecha = $fecha;
-        return $this;
-    }
-
     public function getCliente(): ?Cliente
     {
         return $this->cliente;
     }
 
-    public function setCliente(?Cliente $cliente): static
+    public function setCliente(?Cliente $cliente): self
     {
         $this->cliente = $cliente;
+        return $this;
+    }
+
+    public function getFecha(): \DateTimeInterface
+    {
+        return $this->fecha;
+    }
+
+    public function setFecha(\DateTimeInterface $fecha): self
+    {
+        $this->fecha = $fecha;
+        return $this;
+    }
+
+    public function getEstado(): string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): self
+    {
+        $this->estado = $estado;
         return $this;
     }
 
@@ -88,17 +104,6 @@ class Pedido
     public function setFechaLeido(?\DateTimeInterface $fechaLeido): static
     {
         $this->fechaLeido = $fechaLeido;
-        return $this;
-    }
-
-    public function getEstado(): ?string
-    {
-        return $this->estado;
-    }
-
-    public function setEstado(string $estado): static
-    {
-        $this->estado = $estado;
         return $this;
     }
 
@@ -121,7 +126,7 @@ class Pedido
         return $this->detalles;
     }
 
-    public function addDetalle(PedidoDetalle $detalle): static
+    public function addDetalle(PedidoDetalle $detalle): self
     {
         if (!$this->detalles->contains($detalle)) {
             $this->detalles->add($detalle);
@@ -131,7 +136,7 @@ class Pedido
         return $this;
     }
 
-    public function removeDetalle(PedidoDetalle $detalle): static
+    public function removeDetalle(PedidoDetalle $detalle): self
     {
         if ($this->detalles->removeElement($detalle)) {
             // set the owning side to null (unless already changed)

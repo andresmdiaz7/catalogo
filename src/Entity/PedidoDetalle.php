@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PedidoDetalleRepository::class)]
+#[ORM\Table(name: 'pedido_detalle')]
 class PedidoDetalle
 {
     #[ORM\Id]
@@ -48,6 +49,9 @@ class PedidoDetalle
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $precioUnitario = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $notas = null;
 
     public function getId(): ?int
     {
@@ -173,5 +177,21 @@ class PedidoDetalle
     {
         $this->articuloPrecioLista = $articuloPrecioLista;
         return $this;
+    }
+
+    public function getNotas(): ?string
+    {
+        return $this->notas;
+    }
+
+    public function setNotas(?string $notas): self
+    {
+        $this->notas = $notas;
+        return $this;
+    }
+    
+    public function getSubtotal()
+    {
+        return $this->precioUnitario * $this->cantidad;
     }
 }

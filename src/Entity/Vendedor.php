@@ -41,9 +41,9 @@ class Vendedor
     #[ORM\OneToMany(mappedBy: 'vendedor', targetEntity: Cliente::class)]
     private Collection $clientes;
 
-    #[ORM\ManyToOne(targetEntity: TipoUsuario::class)]
+    #[ORM\ManyToOne(targetEntity: Usuario::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?TipoUsuario $tipoUsuario = null;
+    private ?Usuario $usuario = null;
 
     public function __construct()
     {
@@ -150,14 +150,14 @@ class Vendedor
         return $this->getNombreCompleto();
     }
 
-    public function getTipoUsuario(): ?TipoUsuario
+    public function getUsuario(): ?Usuario
     {
-        return $this->tipoUsuario;
+        return $this->usuario;
     }
 
-    public function setTipoUsuario(?TipoUsuario $tipoUsuario): static
+    public function setUsuario(?Usuario $usuario): self
     {
-        $this->tipoUsuario = $tipoUsuario;
+        $this->usuario = $usuario;
         return $this;
     }
 }

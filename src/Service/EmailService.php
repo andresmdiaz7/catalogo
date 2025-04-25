@@ -18,6 +18,10 @@ class EmailService
         $this->emailFrom = $emailFrom;
     }
 
+    /**
+     * Envia un correo electrónico de confirmación de pedido
+     * @param Pedido $pedido
+     */
     public function sendPedidoConfirmation(Pedido $pedido): void
     {
         $email = (new TemplatedEmail())
@@ -32,6 +36,10 @@ class EmailService
         $this->mailer->send($email);
     }
 
+    /**
+     * Envia un correo electrónico de notificación de pedido
+     * @param Pedido $pedido
+     */
     public function sendPedidoNotification(Pedido $pedido): void
     {
         $cliente = $pedido->getCliente();
@@ -51,7 +59,10 @@ class EmailService
             $this->mailer->send($emailVendedor);
         }
 
-        // Enviar notificación al responsable de logística si existe
+        /**
+         * Envia un correo electrónico de notificación de pedido al responsable de logística
+         * @param Pedido $pedido
+         */
         if ($cliente->getResponsableLogistica() && $cliente->getResponsableLogistica()->getEmail()) {
             $emailLogistica = (new TemplatedEmail())
                 ->from(new Address($this->emailFrom, 'Ciardi Hnos'))

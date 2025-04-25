@@ -4,7 +4,7 @@ namespace App\Controller\Cliente;
 
 use App\Entity\Pedido;
 use App\Entity\PedidoDetalle;
-use App\Service\CartService;
+use App\Services\CartManager;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,91 +13,52 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Knp\Component\Pager\PaginatorInterface;
+use App\Service\ClienteManager;
+use App\Service\CarritoManager;
+use App\Repository\PedidoRepository;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+
 
 /**
  * Controlador para gestionar los pedidos de los clientes
  */
-#[Route('/cliente/pedidos')]
+#[Route('/cliente/pedido')]
 #[IsGranted('ROLE_CLIENTE')]
 class PedidoController extends AbstractController
 {
-    /**
-     * Crea un nuevo pedido con los items del carrito y luego limpia el carro
-     *
-     * @param CartService $cartService
-     * @param EntityManagerInterface $entityManager
-     * @return Response
-     */
-    #[Route('/create', name: 'app_cliente_pedido_create', methods: ['POST'])]
-    public function create(
-        CartService $cartService,
-        EmailService $emailService,
+    private $clienteManager;
+    private $carritoManager;
+    private $pedidoRepository;
+    private $entityManager;
+
+    public function __construct(
+        ClienteManager $clienteManager,
+        CarritoManager $carritoManager,
+        PedidoRepository $pedidoRepository,
         EntityManagerInterface $entityManager
-    ): Response {
-        try {
-            $items = $cartService->getItems();
-            if (empty($items)) {
-                $this->addFlash('error', 'El carrito está vacío');
-                return $this->redirectToRoute('app_cliente_cart_index');
-            }
-
-            // Crear el pedido
-            // $retVal = ($this->getUser()->getTipoCliente()->getNombre())=='Mayorista' ? 'Lista 400' : 'Lista Venta';
-            $NombreListaPrecio = ($this->getUser()->getTipoCliente()->getNombre()) == 'Mayorista' ? 'Lista 400' : 'Lista Venta';
-            $pedido = new Pedido();
-            $pedido->setCliente($this->getUser());
-            $pedido->setDescuento($this->getUser()->getPorcentajeDescuento());
-            $pedido->setListaPrecio($NombreListaPrecio);
-            $pedido->setFecha(new \DateTime());
-
-            $totalPedido = 0;
-            foreach ($items as $item) {
-                $articulo = $entityManager->getRepository('App\Entity\Articulo')->find($item['codigo']);
-                
-                $detalle = new PedidoDetalle();
-                $detalle->setArticulo($articulo);
-                $detalle->setCantidad($item['cantidad']);
-                $detalle->setPrecioUnitario($item['precio']);
-                $pedido->addDetalle($detalle);
-                $entityManager->persist($detalle);
-                $totalPedido += $item['precio'] * $item['cantidad'];
-            }
-
-            $pedido->setTotal($totalPedido);
-
-            $entityManager->persist($pedido);
-            $entityManager->flush();
-
-            
-            // En tu método que confirma el pedido (después de persistirlo)
-            $emailService->sendPedidoConfirmation($pedido); // Para notificar al cliente
-            $emailService->sendPedidoNotification($pedido); // Para notificar al vendedor y logística
-
-            
-            //$entityManager->flush();
-            //$cartService->clear();
-            $this->addFlash('success', 'Pedido creado correctamente');
-            return $this->redirectToRoute('app_cliente_pedidos');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Ocurrió un error al crear el pedido: ' . $e->getMessage());
-            return $this->redirectToRoute('app_cliente_cart_index');
-        }
+    ) {
+        $this->clienteManager = $clienteManager;
+        $this->carritoManager = $carritoManager;
+        $this->pedidoRepository = $pedidoRepository;
+        $this->entityManager = $entityManager;
     }
+
+    
     /**
-     * Muestra un listado de los pedidos del cliente actual
+     * Muestra un listado de los pedidos del cliente en la sesion actual
      *
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @return Response
      */
-    #[Route('/', name: 'app_cliente_pedidos')]
+    #[Route('/', name: 'app_cliente_pedido_index')]
     public function index(
         EntityManagerInterface $entityManager, 
         PaginatorInterface $paginator, 
         Request $request
     ): Response {
         
-        $cliente = $this->getUser();
+        $cliente = $this->clienteManager->getClienteActivo();
         
         // Crear la consulta
         $query = $entityManager->getRepository(Pedido::class)
@@ -120,26 +81,39 @@ class PedidoController extends AbstractController
     }
 
     /**
-     * Muestra los detalles de un pedido
+     * Muestra los detalles de un pedido del cliente en la sesion actual
      *
      * @param Pedido $pedido
      * @return Response
      */
-    #[Route('/{id}', name: 'app_cliente_pedido_show')]
-    public function show(Pedido $pedido): Response
+    #[Route('/show/{id}', name: 'app_cliente_pedido_show', methods: ['GET'])]
+    public function show(Request $request, Pedido $pedido): Response
     {
-        // Verificar que el pedido pertenezca al cliente actual
-        if ($pedido->getCliente() !== $this->getUser()) {
-            throw $this->createAccessDeniedException('No tiene permiso para ver este pedido.');
+        try {
+            
+            if (!$pedido) {
+                throw $this->createNotFoundException('El pedido solicitado no existe');
+            }
+            
+            // Verificamos que el pedido pertenezca al cliente activo
+            $clienteActivo = $this->carritoManager->getClienteManager()->getClienteActivo();
+            
+            
+            if ($pedido->getCliente() !== $clienteActivo) {
+                throw $this->createAccessDeniedException('No tienes permiso para ver este pedido');
+            }
+            
+            return $this->render('cliente/pedido/show.html.twig', [
+                'pedido' => $pedido
+            ]);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Errorrrrr: ' . $e->getMessage());
+            return $this->redirectToRoute('app_cliente_pedido_index');
         }
-
-        return $this->render('cliente/pedido/show.html.twig', [
-            'pedido' => $pedido,
-        ]);
     }
 
     /**
-     * Elimina un pedido
+     * Elimina un pedido del cliente en la sesion actual
      *
      * @param Request $request
      * @param Pedido $pedido
@@ -149,15 +123,16 @@ class PedidoController extends AbstractController
     #[Route('/{id}/eliminar', name: 'app_cliente_pedido_delete', methods: ['POST'])]
     public function delete(Request $request, Pedido $pedido, EntityManagerInterface $entityManager): Response
     {
-        // Verificar que el pedido pertenezca al cliente actual
-        if ($pedido->getCliente() !== $this->getUser()) {
+        // Verificar que el pedido pertenezca al cliente activo de la sesión
+        $clienteActivo = $this->clienteManager->getClienteActivo();
+        if ($pedido->getCliente() !== $clienteActivo) {
             throw $this->createAccessDeniedException('No tiene permiso para eliminar este pedido.');
         }
 
         // Verificar que el pedido no esté enviado
         if ($pedido->getEstado() === 'enviado') {
             $this->addFlash('error', 'No se puede eliminar un pedido que ya ha sido enviado.');
-            return $this->redirectToRoute('app_cliente_pedidos');
+            return $this->redirectToRoute('app_cliente_pedido_index');
         }
         
         if ($this->isCsrfTokenValid('delete'.$pedido->getId(), $request->request->get('_token'))) {
@@ -170,6 +145,49 @@ class PedidoController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('app_cliente_pedidos');
+        return $this->redirectToRoute('app_cliente_pedido_index');
+    }
+
+    /**
+     * Confirma el pedido del cliente en la sesion actual
+     *
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/confirmar', name: 'app_cliente_pedido_confirmar', methods: ['GET', 'POST'])]
+    public function confirmar(Request $request): Response
+    {
+        try {
+            $carrito = $this->carritoManager->obtenerCarritoActivo();
+            
+            if (!$carrito || $carrito->getItems()->isEmpty()) {
+                $this->addFlash('error', 'No hay artículos en el carrito');
+                return $this->redirectToRoute('app_cliente_carrito_index');
+            }
+            
+            // Si es una solicitud POST, crear el pedido
+            if ($request->isMethod('POST')) {
+                try {
+                    $pedido = $this->carritoManager->convertirAPedido();
+
+                    if ($pedido && $pedido->getId()) {
+                        $this->addFlash('success', 'Pedido confirmado correctamente');
+                        return $this->redirectToRoute('app_cliente_pedido_show', [
+                            'id' => $pedido->getId()
+                        ]);
+                    } else {
+                        $this->addFlash('error', 'No se pudo crear el pedido');
+                    }
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Error al crear el pedido: ' . $e->getMessage());
+                }
+            }
+            
+            return $this->redirectToRoute('app_cliente_carrito_index');
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Error: ' . $e->getMessage());
+            return $this->redirectToRoute('app_cliente_carrito_index');
+        }
     }
 }

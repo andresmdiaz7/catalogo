@@ -14,16 +14,11 @@ class ClienteRepository extends ServiceEntityRepository
         parent::__construct($registry, Cliente::class);
     }
 
-    public function findByUsuario(Usuario $usuario)
-    {
-        return $this->createQueryBuilder('c')
-            ->where('c.usuario = :usuario')
-            ->setParameter('usuario', $usuario)
-            ->orderBy('c.razonSocial', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
+    /**
+     * Busca clientes por filtros, en el panel de administración, padron de clientes
+     * @param array $filters Filtros para la búsqueda
+     * @return array Lista de clientes encontrados
+     */
     public function findByFilters(array $filters = [])
     {
         $qb = $this->createQueryBuilder('c')
