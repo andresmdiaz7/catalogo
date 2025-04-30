@@ -22,8 +22,8 @@
         </div>
 
         {# Header de la página #}
-        <div class="container-fluid">
-            <div class="row py-3 align-items-center">
+        <div class="container-fluid px-0">
+            <div class="row align-items-center py-2 py-lg-3 px-2 px-lg-3">
                 <!-- Logo - Columna izquierda -->
                 <div class="col-12 col-lg-3 text-center text-lg-start mb-3 my-lg-3">
                     <a class="navbar-brand" href="/">
@@ -92,9 +92,10 @@
                 </div>
             </div>
         </nav>
-            {% block sliders %}{% endblock %}
         
-            {% block body %}{% endblock %}
+        {% block sliders %}{% endblock %}
+        
+        {% block body %}{% endblock %}
         
         <footer class="bg-dark text-white pt-5 mt-5">
             <div class="container">

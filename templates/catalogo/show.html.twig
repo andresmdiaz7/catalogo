@@ -110,27 +110,53 @@
                     {% endif %}
                     
                     {# Lista de documentos adjuntos #}
-                    <ul class="list-group list-group-flush mt-3">
-                        <h5>Documentos adjuntos</h5>
+                    <div class="mt-4">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-file-earmark-text text-primary"></i>
+                            Documentos adjuntos
+                        </h5>
                         {% set tiene_documentos = false %}
-                        {% for articuloArchivo in articulo.archivos %}
-                            {% if articuloArchivo.archivo.tipoMime == 'application/pdf' %}
-                                {% set tiene_documentos = true %}
-                                <li class="list-group-item">
-                                    <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.filePath) }}" 
-                                        target="_blank" 
-                                        class="text-decoration-none">
-                                        <i class="bi {{ articuloArchivo.archivo.tipoIcono }} pe-1"></i>
-                                        
-                                        {{ articuloArchivo.archivo.fileName }}
-                                    </a>
-                                </li>
+                        <div class="row g-3">
+                            {% for articuloArchivo in articulo.archivos %}
+                                {% if articuloArchivo.archivo.tipoMime == 'application/pdf' %}
+                                    {% set tiene_documentos = true %}
+                                    <div class="col-md-6">
+                                        <div class="card h-100 border-1 shadow-sm">
+                                            <div class="card-body d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <i class="bi bi-file-earmark-pdf text-danger fs-3"></i>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="card-title mb-1 text-truncate" title="{{ articuloArchivo.archivo.fileName }}">
+                                                        {{ articuloArchivo.archivo.fileName }}
+                                                    </h6>
+                                                    <small class="text-muted">
+                                                        {{ articuloArchivo.archivo.tamanioFormateado }}
+                                                    </small>
+                                                </div>
+                                                <div class="flex-shrink-0 ms-3">
+                                                    <a href="{{ asset(directorio_archivos ~ articuloArchivo.archivo.filePath) }}" 
+                                                        target="_blank" 
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        title="Ver documento">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            {% if not tiene_documentos %}
+                                <div class="col-12">
+                                    <div class="alert alert-info d-flex align-items-center">
+                                        <i class="bi bi-info-circle-fill me-2"></i>
+                                        No hay documentos adjuntos disponibles
+                                    </div>
+                                </div>
                             {% endif %}
-                        {% endfor %}
-                        {% if not tiene_documentos %}
-                            <li class="list-group-item text-muted">No hay documentos adjuntos</li>
-                        {% endif %}
-                    </ul>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="col-md-5">
@@ -165,6 +191,7 @@
                                             <i class="bi bi-cart-plus"></i> Agregar al carrito
                                         </button>
                                     </div>
+                                    {# carrito_articulos se define en CarritoSubscriber.php como variable global de Twig #}
                                     {% if carrito_articulos[articulo.codigo] is defined %}
                                         <div  id="agregar-al-carrito" class="form-text fw-semibold text-danger mt-0 text-end">
                                             Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.

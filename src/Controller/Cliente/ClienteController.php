@@ -10,13 +10,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/cliente')]
 #[IsGranted('ROLE_CLIENTE')]
 class ClienteController extends AbstractController
 {
     #[Route('/seleccionar', name: 'app_cliente_seleccionar')]
-    public function seleccionar(Request $request, ClienteManager $clienteManager): Response
+    public function seleccionar(Request $request, ClienteManager $clienteManager, EntityManagerInterface $entityManager): Response
     {
         /** @var Usuario $user */
         $user = $this->getUser();
@@ -29,7 +30,12 @@ class ClienteController extends AbstractController
         
         // Si solo hay un cliente, configurarlo automáticamente y redirigir
         if ($user->hasUnicoCliente()) {
-            $clienteManager->setClienteActivo($user->getUnicoCliente());
+            $cliente = $user->getUnicoCliente();
+            $clienteManager->setClienteActivo($cliente);
+            // Incrementar cantidad de ingresos y actualizar última visita
+            $cliente->incrementarCantidadIngresos();
+            $cliente->setUltimaVisita(new \DateTime());
+            $entityManager->flush();
             return $this->redirectToRoute('app_cliente_dashboard');
         }
         
@@ -40,6 +46,10 @@ class ClienteController extends AbstractController
             foreach ($user->getClientes() as $cliente) {
                 if ($cliente->getId() == $clienteId) {
                     $clienteManager->setClienteActivo($cliente);
+                    // Incrementar cantidad de ingresos y actualizar última visita
+                    $cliente->incrementarCantidadIngresos();
+                    $cliente->setUltimaVisita(new \DateTime());
+                    $entityManager->flush();
                     $this->addFlash('success', 'Cliente seleccionado: ' . $cliente->getRazonSocial());
                     return $this->redirectToRoute('app_cliente_dashboard');
                 }

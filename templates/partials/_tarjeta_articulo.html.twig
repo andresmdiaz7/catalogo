@@ -3,14 +3,6 @@
         {{ articulo.marca }}
     </div>
     
-    {# Badge #}
-    {% if articulo.destacado %}
-        <img src="/badge.png" 
-            class="position-absolute top-0 end-0 m-2 mt-5" 
-            alt="Badge"
-            style="width: 60px; z-index: 1;">
-    {% endif %}
- 
     
     {# Buscar imagen principal entre todos los articuloArchivos #}
     {% set imagen_principal = null %}
@@ -40,7 +32,7 @@
             #{{ articulo.codigo }}
         </p>
         <p class="card-text fs-5 text-end">
-            ${{ articulo.precios.precioFinal|number_format(0, ',', '.') }} nuevo!
+            ${{ articulo.precios.precioFinal|number_format(0, ',', '.') }}
         </p>
         
         {% if articulo.destacado %}
@@ -53,10 +45,23 @@
 
     <div class="card-footer">
         {% if is_granted('ROLE_CLIENTE') %}
+            
             {# Si existe en el carrito, mostrar la cantidad #}
-            {% if carrito_articulos[articulo.codigo] is defined %}
+            {% set item_carrito = null %}
+            {% for item in carrito_cliente.items %}
+                {% if item.articulo.codigo == articulo.codigo %}
+                    {% set item_carrito = item %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if item_carrito %}
                 <p class="fw-bold mb-1 text-center text-danger" style="font-size:12px">
-                    Actualmente tienes {{ carrito_articulos[articulo.codigo]['cantidad'] }} en tu carrito.
+                    Actualmente tienes {{ item_carrito.cantidad }} en tu carrito.....
+                </p>
+            {% endif %}
+            {% if carrito_cliente.items[articulo.codigo] is defined %}
+                <p class="fw-bold mb-1 text-center text-danger" style="font-size:12px">
+                    Actualmente tienes {{ carrito_cliente.items[articulo.codigo]['cantidad'] }} en tu carrito.
                 </p>
             {% endif %}
             <form action="{{ path('app_cliente_carrito_agregar') }}" method="POST" style="display: inline;">

@@ -55,7 +55,12 @@ class SecurityController extends AbstractController
                         // Verificar si el usuario tiene clientes asociados
                         if ($usuario->hasUnicoCliente()) {
                             // Si solo tiene un cliente, establecerlo como activo automáticamente
-                            $clienteManager->setClienteActivo($usuario->getUnicoCliente());
+                            $cliente = $usuario->getUnicoCliente();
+                            $clienteManager->setClienteActivo($cliente);
+                            // Incrementar cantidad de ingresos y actualizar última visita
+                            $cliente->incrementarCantidadIngresos();
+                            $cliente->setUltimaVisita(new \DateTime());
+                            $entityManager->flush();
                             return $this->redirectToRoute('app_cliente_dashboard');
                         } elseif ($usuario->hasMultiplesClientes()) {
                             // Si tiene múltiples clientes, mostrar pantalla de selección

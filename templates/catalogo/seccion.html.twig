@@ -14,72 +14,183 @@
                     'rubro_actual': rubro_actual|default(null),
                     'subrubro_actual': subrubro_actual|default(null)
                 } %}
-                
             {% endif %}
         </div>
 
         {# Contenido Principal #}
         <div class="col-md-10">
-            
             {# Muestra el slider de la sección si existe en las ubicaciones de sliders asociados por el ID de la sección y del slider #}
-                {% if seccion.id is defined and seccion.id is not null %}
-                    {% set sliders_home = get_sliders_por_ubicacion(seccion.id) %}
-                    {% if sliders_home|length > 0 %}
-                        <div class="container-fluid border border-primarydark-subtle rounded-4 p-0 overflow-hidden mb-3 shadow-sm">
-                            {% include 'partials/_slider.html.twig' with { 'sliders': sliders_home, 'ubicacion': 'home-principal' } %}
-                        </div>
-                    {% endif %}
+            {% if seccion.id is defined and seccion.id is not null %}
+                {% set sliders_home = get_sliders_por_ubicacion(seccion.id) %}
+                {% if sliders_home|length > 0 %}
+                    <div class="container-fluid border border-primarydark-subtle rounded-4 p-0 overflow-hidden mb-3 shadow-sm">
+                        {% include 'partials/_slider.html.twig' with { 'sliders': sliders_home, 'ubicacion': 'home-principal' } %}
+                    </div>
                 {% endif %}
-            
-            <div class="container-fluid">
-            
-            {# Breadcrumb #}
-            <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="{{ path('app_catalogo_index') }}" class="text-decoration-none">
-                            <i class="bi bi-house pe-2 text-decoration-none"></i> Inicio
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="{{ path('app_catalogo_seccion', {'id': seccion.id}) }}" class="text-decoration-none">
-                            {{ seccion.nombre }}
-                        </a>
-                    </li>
-                    {% if rubro_actual %}
-                        <li class="breadcrumb-item">
-                            <a href="{{ path('app_catalogo_seccion', { 'id': seccion.id, 'rubro': rubro_actual.codigo }) }}" class="text-decoration-none">
-                                {{ rubro_actual.nombre }}
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if subrubro_actual %}
-                        <li class="breadcrumb-item active class="text-decoration-none"" aria-current="page">
-                            {{ subrubro_actual.nombre }}
-                        </li>
-                    {% endif %}
-                </ol>
-            </nav>
-            
-            {% if articulos|length > 0 %}
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4">
-                    {% for articulo in articulos %}
-                        <div class="col">
-                            {% include 'partials/_tarjeta_articulo.html.twig' with {'articulo': articulo} %}
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {# Paginación #}
-                <div class="d-flex justify-content-center">
-                    {{ knp_pagination_render(articulos, 'pagination/custom_pagination.html.twig') }}
-                </div>
-            {% else %}
-                <div class="alert alert-info">
-                    No hay artículos disponibles.
-                </div>
             {% endif %}
+            
+            <div class="container-fluid ps-0">
+                
+                
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                
+                    {# Breadcrumb #}
+                    <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_catalogo_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-house pe-2 text-decoration-none"></i> Inicio
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_catalogo_seccion', {'id': seccion.id}) }}" class="text-decoration-none">
+                                    {{ seccion.nombre }}
+                                </a>
+                            </li>
+                            {% if rubro_actual %}
+                                <li class="breadcrumb-item">
+                                    <a href="{{ path('app_catalogo_seccion', { 'id': seccion.id, 'rubro': rubro_actual.codigo }) }}" class="text-decoration-none">
+                                        {{ rubro_actual.nombre }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if subrubro_actual %}
+                                <li class="breadcrumb-item active class="text-decoration-none"" aria-current="page">
+                                    {{ subrubro_actual.nombre }}
+                                </li>
+                            {% endif %}
+                        </ol>
+                    </nav>
+                    
+                    <div class="btn-group" role="group" aria-label="Vista de artículos">
+                        <input type="radio" class="btn-check" name="vista" id="vista-tarjetas" value="tarjetas" checked>
+                        <label class="btn btn-sm btn-outline-secondary" for="vista-tarjetas" title="Vista en tarjetas">
+                            <i class="bi bi-grid-3x3-gap"></i>
+                        </label>
+                        
+                        <input type="radio" class="btn-check" name="vista" id="vista-tabla" value="tabla">
+                        <label class="btn btn-sm btn-outline-secondary" for="vista-tabla" title="Vista en tabla">
+                            <i class="bi bi-table"></i>
+                        </label>
+                    </div>
+                </div>
+                
+                {% if articulos|length > 0 %}
+                    <div id="vista-tarjetas-container">
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4">
+                            {% for articulo in articulos %}
+                                <div class="col">
+                                    {% include 'partials/_tarjeta_articulo.html.twig' with {'articulo': articulo} %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div id="vista-tabla-container" style="display: none;">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="fw-semibold text-center" style="width: 80px;">Imagen</th>
+                                        <th class="fw-semibold">Artículo</th>
+                                        <th class="fw-semibold text-end pe-4">Precio</th>
+                                        <th class="fw-semibold text-end">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for articulo in articulos %}
+                                        {% include 'partials/_tabla_articulo.html.twig' with {'articulo': articulo} %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-4">
+                        <nav aria-label="Navegación de páginas">
+                            {{ knp_pagination_render(articulos) }}
+                        </nav>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        No hay artículos disponibles.
+                    </div>
+                {% endif %}
+            </div>
         </div>
-    </div>{# fin ROW #}
-</div>{# fin CONTAINER-FLUID #}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar popovers
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+    let popoverActual = null;
+
+    popoverTriggerList.forEach(function (popoverTriggerEl) {
+        const popover = new bootstrap.Popover(popoverTriggerEl, {
+            delay: {
+                show: 100,
+                hide: 100
+            }
+        });
+
+        // Cerrar popover anterior al hacer clic en uno nuevo
+        popoverTriggerEl.addEventListener('click', function() {
+            if (popoverActual && popoverActual !== popover) {
+                popoverActual.hide();
+            }
+            popoverActual = popover;
+        });
+    });
+
+    // Cerrar popover al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('[data-bs-toggle="popover"]')) {
+            if (popoverActual) {
+                popoverActual.hide();
+                popoverActual = null;
+            }
+        }
+    });
+
+    // Funcionalidad de cambio de vistas
+    const vistaTarjetasContainer = document.getElementById('vista-tarjetas-container');
+    const vistaTablaContainer = document.getElementById('vista-tabla-container');
+    const vistaInputs = document.querySelectorAll('input[name="vista"]');
+
+    // Función para cambiar la vista
+    function cambiarVista(vista) {
+        if (vista === 'tarjetas') {
+            vistaTarjetasContainer.style.display = 'block';
+            vistaTablaContainer.style.display = 'none';
+        } else {
+            vistaTarjetasContainer.style.display = 'none';
+            vistaTablaContainer.style.display = 'block';
+        }
+    }
+
+    // Recuperar la vista guardada del localStorage
+    const vistaGuardada = localStorage.getItem('vistaPreferida') || 'tarjetas';
+    
+    // Establecer el radio button correcto y mostrar la vista correspondiente
+    vistaInputs.forEach(input => {
+        if (input.value === vistaGuardada) {
+            input.checked = true;
+            cambiarVista(vistaGuardada);
+        }
+    });
+
+    // Agregar listener para cambios
+    vistaInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const vista = this.value;
+            localStorage.setItem('vistaPreferida', vista);
+            cambiarVista(vista);
+        });
+    });
+});
+</script>
 {% endblock %} 

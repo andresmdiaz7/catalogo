@@ -2,39 +2,102 @@
 
 {% block title %}Iniciar Sesión{% endblock %}
 
+{% block stylesheets %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+        margin: 0;
+        padding: 0;
+    }
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+    .login-logo {
+        max-width: 200px;
+        margin: 0 auto 2rem;
+        display: block;
+    }
+    .login-title {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+    .form-control {
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+    }
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    .btn-login {
+        background: #3498db;
+        border: none;
+        padding: 12px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .btn-login:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="text-center mb-4">Iniciar Sesión</h2>
+<div class="login-container">
+    <div class="login-card card shadow">
+        <div class="card-body p-4">
+            <img src="{{ asset('images/logo.jpg') }}" alt="Logo de la empresa" class="login-logo">
+            <h2 class="text-center login-title">Iniciar Sesión</h2>
 
-                {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                {% endif %}
+            {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
 
-                <form method="post">
-                    <div class="mb-3">
-                        <label for="inputEmail" class="form-label">Email</label>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="inputEmail" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                         <input type="email" value="{{ last_username }}" name="email" id="inputEmail" 
                                class="form-control" autocomplete="email" required autofocus>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="inputPassword" class="form-label">Contraseña</label>
+                <div class="mb-4">
+                    <label for="inputPassword" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
                         <input type="password" name="password" id="inputPassword" 
                                class="form-control" autocomplete="current-password" required>
                     </div>
+                </div>
 
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="submit">
-                            Iniciar Sesión
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-login text-white" type="submit">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

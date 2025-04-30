@@ -42,114 +42,140 @@
         <div class="card-body">
             {{ form_start(form) }}
                 <div class="row g-3">
-                    <!-- Primera columna -->
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            {{ form_label(form.codigo, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.codigo, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.codigo) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.razonSocial, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.razonSocial, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.razonSocial) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.cuit, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.cuit, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.cuit) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.direccion, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.direccion, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.direccion) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.telefono, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.telefono, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.telefono) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.email, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.email) }}
-                        </div>
-                    </div>
-                    
-                    <!-- Segunda columna -->
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            {{ form_label(form.tipoCliente, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.tipoCliente, {'attr': {'class': 'form-select form-select-sm'}}) }}
-                            {{ form_errors(form.tipoCliente) }}
-                        </div>
-                        
-                        <div class="mb-3">
-                            {{ form_label(form.categoriaImpositiva, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.categoriaImpositiva, {'attr': {'class': 'form-select form-select-sm'}}) }}
-                            {{ form_errors(form.categoriaImpositiva) }}
-                        </div>
-                        
-                        <div class="mb-3">
-                            {{ form_label(form.localidad, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.localidad, {'attr': {'class': 'form-select form-select-sm'}}) }}
-                            {{ form_errors(form.localidad) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.vendedor, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.vendedor, {'attr': {'class': 'form-select form-select-sm'}}) }}
-                            {{ form_errors(form.vendedor) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.responsableLogistica, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.responsableLogistica, {'attr': {'class': 'form-select form-select-sm'}}) }}
-                            {{ form_errors(form.responsableLogistica) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.categoria, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.categoria, {'attr': {'class': 'form-select form-select-sm'}}) }}
-                            {{ form_errors(form.categoria) }}
-                        </div>
-                    </div>
-                    
-                    <!-- Tercera columna -->
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            {{ form_label(form.web, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.web, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.web) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.porcentajeDescuento, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.porcentajeDescuento, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.porcentajeDescuento) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.rentabilidad, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.rentabilidad, {'attr': {'class': 'form-control form-control-sm'}}) }}
-                            {{ form_errors(form.rentabilidad) }}
-                        </div>
-                        
-                        <!-- Sección de usuario con toggle -->
-                        <div class="card border-info mb-3">
-                            <div class="card-header bg-info bg-opacity-10">
-                                <h6 class="mb-0">Datos de acceso al sistema</h6>
+                    <!-- Primera columna - Datos básicos -->
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="mb-0">Datos Básicos</h6>
                             </div>
                             <div class="card-body">
                                 <div class="mb-3">
-                                    {{ form_widget(form.crearNuevoUsuario) }}
-                                    {{ form_label(form.crearNuevoUsuario) }}
+                                    {{ form_label(form.codigo, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.codigo, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.codigo) }}
                                 </div>
-                                
-                                <div id="existing-user-container">
+                                <div class="mb-3">
+                                    {{ form_label(form.razonSocial, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.razonSocial, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.razonSocial) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.cuit, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.cuit, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.cuit) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.direccion, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.direccion, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.direccion) }}
+                                </div>
+                                 <div class="mb-3">
+                                    {{ form_label(form.telefono, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.telefono, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.telefono) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Segunda columna - Contacto y configuración -->
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="mb-0">Contacto y Configuración</h6>
+                            </div>
+                            <div class="card-body">
+                               
+                                <div class="mb-3">
+                                    {{ form_label(form.web, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.web, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.web) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.porcentajeDescuento, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.porcentajeDescuento, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.porcentajeDescuento) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.rentabilidad, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.rentabilidad, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                                    {{ form_errors(form.rentabilidad) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.observaciones, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.observaciones, {'attr': {'class': 'form-control form-control-sm', 'rows': 3}}) }}
+                                    {{ form_errors(form.observaciones) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tercera columna - Clasificación -->
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="mb-0">Clasificación</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    {{ form_label(form.tipoCliente, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.tipoCliente, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                                    {{ form_errors(form.tipoCliente) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.categoriaImpositiva, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.categoriaImpositiva, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                                    {{ form_errors(form.categoriaImpositiva) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.localidad, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.localidad, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                                    {{ form_errors(form.localidad) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.vendedor, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.vendedor, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                                    {{ form_errors(form.vendedor) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.responsableLogistica, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.responsableLogistica, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                                    {{ form_errors(form.responsableLogistica) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.categoria, null, {'label_attr': {'class': 'form-label small'}}) }}
+                                    {{ form_widget(form.categoria, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                                    {{ form_errors(form.categoria) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cuarta columna - Acceso y estado -->
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="mb-0">Acceso y Estado</h6>
+                            </div>
+                            <div class="card-body">
+                                <!-- Sección de usuario -->
+                                <div class="mb-3">
                                     {{ form_label(form.usuario, null, {'label_attr': {'class': 'form-label small'}}) }}
                                     {{ form_widget(form.usuario, {'attr': {'class': 'form-select form-select-sm'}}) }}
                                     {{ form_errors(form.usuario) }}
                                 </div>
                                 
+                                <div class="mb-3">
+                                    {{ form_widget(form.crearNuevoUsuario) }}
+                                    {{ form_label(form.crearNuevoUsuario) }}
+                                </div>
+                                
                                 <div id="new-user-container" style="display: none;">
-                                    <h6 class="mt-3 mb-2">Datos del nuevo usuario</h6>
-                                    
                                     <div class="mb-3">
                                         {{ form_label(form.nuevoUsuario.nombreReferencia, null, {'label_attr': {'class': 'form-label small'}}) }}
                                         {{ form_widget(form.nuevoUsuario.nombreReferencia, {'attr': {'class': 'form-control form-control-sm'}}) }}
@@ -168,38 +194,35 @@
                                         {{ form_errors(form.nuevoUsuario.plainPassword) }}
                                     </div>
                                 </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small">Habilitado en la web</label>
+                                    <div class="form-check">
+                                        {{ form_widget(form.habilitado, {'attr': {'class': 'form-check-input'}}) }}
+                                        {{ form_label(form.habilitado, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small">¿Puede ver su cuenta corriente?</label>
+                                    <div class="form-check">
+                                        {{ form_widget(form.habilitadoCuentaCorriente, {'attr': {'class': 'form-check-input'}}) }}
+                                        {{ form_label(form.habilitadoCuentaCorriente, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    </div>
+                                </div>
+
+                                
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="row">
-                    <div class="col-12">
-                        <div class="mb-3">
-                            {{ form_label(form.observaciones, null, {'label_attr': {'class': 'form-label small'}}) }}
-                            {{ form_widget(form.observaciones, {'attr': {'class': 'form-control form-control-sm', 'rows': 3}}) }}
-                            {{ form_errors(form.observaciones) }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-check mb-3">
-                            {{ form_widget(form.habilitado, {'attr': {'class': 'form-check-input'}}) }}
-                            {{ form_label(form.habilitado, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
+
+                <div class="row mt-4">
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Guardar
-                    </button>
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
                     </div>
                 </div>
-
-                
             {{ form_end(form) }}
         </div>
     </div>
@@ -241,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelector('[name="cliente[direccion]"]').value = data.direccion || '';
                 document.querySelector('[name="cliente[telefono]"]').value = data.telefono || '';
                 document.querySelector('[name="cliente[email]"]').value = data.email || '';
-                //document.querySelector('[name="cliente[observaciones]"]').value = data.observaciones || '';
                 
                 // Si tenemos la localidad, seleccionarla
                 if (data.localidad) {
@@ -278,19 +300,23 @@ document.addEventListener('DOMContentLoaded', function() {
         mensajeBusqueda.textContent = mensaje;
     }
 
-    // Código nuevo para manejar el toggle de creación de usuario
+    // Código para manejar el toggle de creación de usuario
     const crearNuevoUsuarioCheckbox = document.querySelector('[name="cliente[crearNuevoUsuario]"]');
-    const existingUserContainer = document.getElementById('existing-user-container');
+    const usuarioSelect = document.querySelector('[name="cliente[usuario]"]');
     const newUserContainer = document.getElementById('new-user-container');
     
     crearNuevoUsuarioCheckbox.addEventListener('change', function() {
         if (this.checked) {
-            existingUserContainer.style.display = 'none';
+            // Ocultar el selector de usuario existente
+            usuarioSelect.closest('.mb-3').style.display = 'none';
+            // Mostrar los campos de nuevo usuario
             newUserContainer.style.display = 'block';
             // Limpiar el selector de usuario existente
-            document.querySelector('[name="cliente[usuario]"]').value = '';
+            usuarioSelect.value = '';
         } else {
-            existingUserContainer.style.display = 'block';
+            // Mostrar el selector de usuario existente
+            usuarioSelect.closest('.mb-3').style.display = 'block';
+            // Ocultar los campos de nuevo usuario
             newUserContainer.style.display = 'none';
             // Limpiar los campos de nuevo usuario
             document.querySelector('[name="cliente[nuevoUsuario][nombreReferencia]"]').value = '';

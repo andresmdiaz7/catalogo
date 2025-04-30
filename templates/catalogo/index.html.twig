@@ -2,8 +2,10 @@
 
 {% block title %}Catálogo{% endblock %}
 
+
 {# Si no se está buscando, se muestra el slider de la home #}
 {% block sliders %}
+
     {% if app.request.query.get('buscar') is empty %}
         {% set sliders_home = get_sliders_por_ubicacion(100) %}
         {% include 'partials/_slider.html.twig' with { 'sliders': sliders_home, 'ubicacion': 'home-principal' } %}
@@ -80,6 +82,7 @@
 
 
 {% block body %}
+
     <div class="container-fluid px-4 py-3">
         <div class="row">
 

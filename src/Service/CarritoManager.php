@@ -205,7 +205,7 @@ class CarritoManager
 
         // Si no existe, crear nuevo item
         $cliente = $this->clienteManager->getClienteActivo();
-        $precioUnitario = $this->articuloPrecioService->precioFinal($articulo);
+        $precioUnitario = $this->articuloPrecioService->getPrecioFinal($articulo);
 
         $item = new CarritoItem();
         $item->setCarrito($carrito);

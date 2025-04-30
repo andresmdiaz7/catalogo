@@ -13,6 +13,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class NuevoUsuarioClienteType extends AbstractType
@@ -27,37 +30,80 @@ class NuevoUsuarioClienteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nombreReferencia', TextType::class, [
-                'label' => 'Nombre de referencia',
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => [
-                    'class' => 'mb-3'
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Ingrese el email'
+                ],
+                'constraints' => [
+                    new Callback([
+                        'callback' => function($value, ExecutionContextInterface $context) {
+                            $form = $context->getRoot();
+                            $parentForm = $form->getParent();
+                            
+                            if ($parentForm && $parentForm->get('crearNuevoUsuario')->getData()) {
+                                if (!$value) {
+                                    $context->buildViolation('Por favor ingrese un email')
+                                        ->atPath('email')
+                                        ->addViolation();
+                                }
+                            }
+                        }
+                    ]),
+                    new Email([
+                        'message' => 'El email no es válido',
+                    ])
                 ]
             ])
-            ->add('email', EmailType::class, [
-                'label' => 'Correo electrónico',
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => [
-                    'class' => 'mb-3'
+            ->add('nombreReferencia', TextType::class, [
+                'label' => 'Nombre de Referencia',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Ingrese el nombre de referencia'
+                ],
+                'constraints' => [
+                    new Callback([
+                        'callback' => function($value, ExecutionContextInterface $context) {
+                            $form = $context->getRoot();
+                            $parentForm = $form->getParent();
+                            
+                            if ($parentForm && $parentForm->get('crearNuevoUsuario')->getData()) {
+                                if (!$value) {
+                                    $context->buildViolation('Por favor ingrese un nombre de referencia')
+                                        ->atPath('nombreReferencia')
+                                        ->addViolation();
+                                }
+                            }
+                        }
+                    ])
                 ]
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Contraseña',
+                'required' => false,
                 'mapped' => false,
-                'required' => true,
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Por favor ingrese una contraseña',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'La contraseña debe tener al menos {{ limit }} caracteres',
-                        'max' => 4096,
-                    ]),
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Ingrese la contraseña'
                 ],
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => [
-                    'class' => 'mb-3'
+                'constraints' => [
+                    new Callback([
+                        'callback' => function($value, ExecutionContextInterface $context) {
+                            $form = $context->getRoot();
+                            $parentForm = $form->getParent();
+                            
+                            if ($parentForm && $parentForm->get('crearNuevoUsuario')->getData()) {
+                                if (!$value) {
+                                    $context->buildViolation('Por favor ingrese una contraseña')
+                                        ->atPath('plainPassword')
+                                        ->addViolation();
+                                }
+                            }
+                        }
+                    ])
                 ]
             ]);
     }

@@ -1,0 +1,94 @@
+{# Buscar imagen principal entre todos los articuloArchivos #}
+{% set imagen_principal = null %}
+{% for articuloArchivo in articulo.articuloArchivos %}
+    {% if articuloArchivo.esPrincipal and articuloArchivo.archivo.esImagen %}
+        {% set imagen_principal = articuloArchivo.archivo %}
+    {% endif %}
+{% endfor %}
+
+<tr>
+    <td class="align-middle" style="width: 80px;">
+        {% if imagen_principal %}
+            <img src="{{ asset('uploads/archivos/' ~ imagen_principal.filePath) }}"
+                 alt="{{ articulo.detalle }}" 
+                 class="img-thumbnail" 
+                 style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
+                 data-bs-toggle="popover"
+                 data-bs-trigger="click"
+                 data-bs-html="true"
+                 data-bs-content="<div class='text-center'>
+                                    <img src='{{ asset('uploads/archivos/' ~ imagen_principal.filePath) }}' 
+                                         alt='{{ articulo.detalle }}' 
+                                         class='img-fluid' 
+                                         style='max-height: 500px; max-width: 500px;'>
+                                    <div class='mt-2 small fw-semibold'>
+                                        {{ articulo.detalle }}
+                                    </div>
+                                </div>"
+                 data-bs-placement="right"
+                 data-bs-container="body"
+                 data-bs-custom-class="popover-imagen"
+                 data-bs-animation="true"
+                 data-bs-delay="{'show': 100, 'hide': 100}"
+                 data-bs-offset="[10, 10]">
+        {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center" 
+                 style="width: 60px; height: 60px;">
+                <i class="bi bi-image text-muted"></i>
+            </div>
+        {% endif %}
+    </td>
+    <td class="align-middle">
+        <div class="d-flex flex-column">
+            <span class="fw-semibold">{{ articulo.detalle }}</span>
+            <small class="text-muted">{{ articulo.marca.nombre }}</small>
+            <small class="text-muted">{{ articulo.codigo }}</small>
+        </div>
+    </td>
+    <td class="align-top">
+        <div class="d-flex flex-column text-end">
+            <span>
+                ${{ articulo.precios.precioFinal|number_format(2, ',', '.') }}
+            </span>    
+        </div>
+    </td>
+    {% if is_granted('ROLE_CLIENTE') %}
+    <td class="align-middle">
+        <div class="d-flex justify-content-end">
+        {# Si existe en el carrito, mostrar la cantidad #}
+            {% set item_carrito = null %}
+            {% for item in carrito_cliente.items %}
+                {% if item.articulo.codigo == articulo.codigo %}
+                    {% set item_carrito = item %}
+                {% endif %}
+            {% endfor %}
+            
+            
+            <form action="{{ path('app_cliente_carrito_agregar') }}" method="POST">
+                <input type="hidden" name="codigo" value="{{ articulo.codigo }}"/>
+
+                {% if item_carrito %}
+                    <label class="text-danger fw-semibold text-center w-100" style="font-size:12px">{{ item_carrito.cantidad }} en tu carrito</label>
+                {% endif %}
+
+                <div class="input-group input-group-sm">
+                    <input type="text" name="cantidad" value="1" class="form-control border border-primary border-end-0" placeholder="Cantidad" aria-label="Cantidad" aria-describedby="button-addon2" style="width: 50px;"/>
+                    <button class="btn btn-outline-primary" type="submit" id="button-addon2">
+                        <i class="bi bi-cart-plus"></i>
+                    </button>
+                    <a href="{{ path('app_catalogo_show', {codigo: articulo.codigo}) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </td>
+    {% else %}
+        <td class="align-middle">
+            <a href="{{ path('app_catalogo_show', {codigo: articulo.codigo}) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-eye"></i> Ver
+            </a>
+        </td>
+    {% endif %}
+
+</tr> 

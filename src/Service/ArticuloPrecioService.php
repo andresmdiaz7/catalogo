@@ -41,7 +41,7 @@ class ArticuloPrecioService
      * @param Articulo $articulo
      * @return float
      */
-    public function obtenerPrecioBase(Articulo $articulo): float
+    public function getPrecioBase(Articulo $articulo): float
     {
         $clienteActivo = $this->getClienteActivo();
         if ($clienteActivo && $clienteActivo->getTipoCliente()->getNombre() === 'Mayorista') {
@@ -58,12 +58,12 @@ class ArticuloPrecioService
      */
     public function getPrecioSinIVA(Articulo $articulo): float
     {
-        $precioBase = $this->obtenerPrecioBase($articulo);
+        $precioBase = $this->getPrecioBase($articulo);
         $calculo = $precioBase / (1 + ($articulo->getImpuesto() / 100));
         return number_format($calculo, 2, '.', '');
     }
 
-    public function getPrecioConDescuentoCalculado(Articulo $articulo): float
+    public function getPrecioConDescuento(Articulo $articulo): float
     {
         $clienteActivo = $this->getClienteActivo();
         if (!$clienteActivo) {
@@ -80,7 +80,7 @@ class ArticuloPrecioService
      * @param Articulo $articulo
      * @return float
      */
-    public function precioConDescuentoyRentabilidad(Articulo $articulo): float
+    public function getPrecioConDescuentoyRentabilidad(Articulo $articulo): float
     {
         $clienteActivo = $this->getClienteActivo();
         if (!$clienteActivo) {
@@ -88,7 +88,7 @@ class ArticuloPrecioService
         }
         
         $recargo = $clienteActivo->getRentabilidad();
-        $calculo = $this->getPrecioConDescuentoCalculado($articulo) * (1 + ($recargo / 100));
+        $calculo = $this->getPrecioConDescuento($articulo) * (1 + ($recargo / 100));
         return number_format($calculo, 2, '.', '');
     }
 
@@ -97,14 +97,14 @@ class ArticuloPrecioService
      * @param Articulo $articulo
      * @return float
      */
-    public function precioFinal(Articulo $articulo): float
+    public function getPrecioFinal(Articulo $articulo): float
     {
         if (!$this->getClienteActivo()) {
-            return 0;
+            return $this->getPrecioBase($articulo);
         }
         $impuesto = $articulo->getImpuesto();
         
-        $calculo = $this->precioConDescuentoyRentabilidad($articulo) * (1 + ($impuesto / 100));
+        $calculo = $this->getPrecioConDescuentoyRentabilidad($articulo) * (1 + ($impuesto / 100));
         return number_format($calculo, 2, '.', '');
     }
 
@@ -116,11 +116,11 @@ class ArticuloPrecioService
     public function getTodosLosPrecios(Articulo $articulo): array
     {
         return [
-            'precioBase' => $this->obtenerPrecioBase($articulo),
+            'precioBase' => $this->getPrecioBase($articulo),
             'precioBaseSIVA' => $this->getPrecioSinIVA($articulo),
-            'precioConDescuento' => $this->getPrecioConDescuentoCalculado($articulo),
-            'precioConDescuentoRentabilidad' => $this->precioConDescuentoyRentabilidad($articulo),
-            'precioFinal' => $this->precioFinal($articulo)
+            'precioConDescuento' => $this->getPrecioConDescuento($articulo),
+            'precioConDescuentoRentabilidad' => $this->getPrecioConDescuentoyRentabilidad($articulo),
+            'precioFinal' => $this->getPrecioFinal($articulo)
         ];
     }
 

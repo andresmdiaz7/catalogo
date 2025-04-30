@@ -59,49 +59,102 @@ class ClienteController extends AdminController
         TipoUsuarioRepository $tipoUsuarioRepository
     ): Response {
         $cliente = new Cliente();
-        $form = $this->createForm(ClienteType::class, $cliente);
+        $form = $this->createForm(ClienteType::class, $cliente, [
+            'is_new' => true
+        ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Verificar si se está creando un nuevo usuario
-            if ($form->get('crearNuevoUsuario')->getData()) {
-                $nuevoUsuarioData = $form->get('nuevoUsuario')->getData();
-                
-                if ($nuevoUsuarioData) {
-                    // Crear el nuevo usuario
-                    $usuario = new Usuario();
-                    $usuario->setEmail($nuevoUsuarioData->getEmail());
-                    $usuario->setNombreReferencia($nuevoUsuarioData->getNombreReferencia());
-                    
-                    // Obtener el tipo de usuario "Cliente"
-                    $tipoUsuarioCliente = $tipoUsuarioRepository->findOneBy(['codigo' => 'cliente']);
-                    if (!$tipoUsuarioCliente) {
-                        $this->addErrorFlash('No se pudo encontrar el tipo de usuario Cliente');
-                        return $this->redirectToRoute('app_admin_cliente_nuevo');
-                    }
-                    
-                    $usuario->setTipoUsuario($tipoUsuarioCliente);
-                    $usuario->addRole('ROLE_CLIENTE');
-                    
-                    // Codificar la contraseña
-                    $plainPassword = $form->get('nuevoUsuario')->get('plainPassword')->getData();
-                    $hashedPassword = $passwordHasher->hashPassword($usuario, $plainPassword);
-                    $usuario->setPassword($hashedPassword);
-                    
-                    // Guardar el usuario
-                    $entityManager->persist($usuario);
-                    
-                    // Asignar el usuario al cliente
-                    $cliente->setUsuario($usuario);
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[] = $error->getMessage();
                 }
+                $this->addFlash('danger', 'Errores en el formulario: ' . implode(', ', $errors));
+                return $this->render('admin/cliente/nuevo.html.twig', [
+                    'cliente' => $cliente,
+                    'form' => $form->createView(),
+                ]);
             }
-            
-            // Persistir el cliente
-            $entityManager->persist($cliente);
-            $entityManager->flush();
 
-            $this->addSuccessFlash('Cliente creado correctamente');
-            return $this->redirectToRoute('app_admin_cliente_index');
+            try {
+                // Verificar si se está creando un nuevo usuario
+                if ($form->get('crearNuevoUsuario')->getData()) {
+                    $nuevoUsuarioData = $form->get('nuevoUsuario')->getData();
+                    
+                    if ($nuevoUsuarioData) {
+                        // Crear el nuevo usuario
+                        $usuario = new Usuario();
+                        $usuario->setEmail($nuevoUsuarioData->getEmail());
+                        $usuario->setNombreReferencia($nuevoUsuarioData->getNombreReferencia());
+                        
+                        // Obtener el tipo de usuario "Cliente"
+                        $tipoUsuarioCliente = $tipoUsuarioRepository->findOneBy(['codigo' => 'cliente']);
+                        if (!$tipoUsuarioCliente) {
+                            $this->addFlash('danger', 'No se pudo encontrar el tipo de usuario Cliente');
+                            return $this->redirectToRoute('app_admin_cliente_nuevo');
+                        }
+                        
+                        $usuario->setTipoUsuario($tipoUsuarioCliente);
+                        $usuario->addRole('ROLE_CLIENTE');
+                        
+                        // Codificar la contraseña
+                        $plainPassword = $form->get('nuevoUsuario')->get('plainPassword')->getData();
+                        $hashedPassword = $passwordHasher->hashPassword($usuario, $plainPassword);
+                        $usuario->setPassword($hashedPassword);
+                        
+                        // Guardar el usuario
+                        $entityManager->persist($usuario);
+                        
+                        // Asignar el usuario al cliente
+                        $cliente->setUsuario($usuario);
+                    }
+                } else {
+                    // Verificar si se seleccionó un usuario existente
+                    $usuarioExistente = $form->get('usuario')->getData();
+                    if (!$usuarioExistente) {
+                        $this->addFlash('danger', 'Debe seleccionar un usuario existente o crear uno nuevo');
+                        return $this->render('admin/cliente/nuevo.html.twig', [
+                            'cliente' => $cliente,
+                            'form' => $form->createView(),
+                        ]);
+                    }
+                    $cliente->setUsuario($usuarioExistente);
+                }
+                
+                // Verificar campos requeridos
+                if (!$cliente->getCodigo() || !$cliente->getRazonSocial() || !$cliente->getCategoriaImpositiva() || 
+                    !$cliente->getCuit() || !$cliente->getTipoCliente() || !$cliente->getLocalidad()) {
+                    $this->addFlash('danger', 'Todos los campos requeridos deben estar completos');
+                    return $this->render('admin/cliente/nuevo.html.twig', [
+                        'cliente' => $cliente,
+                        'form' => $form->createView(),
+                    ]);
+                }
+
+                // Verificar si el usuario ya está asignado a otro cliente
+                $clienteExistente = $entityManager->getRepository(Cliente::class)->findOneBy(['usuario' => $cliente->getUsuario()]);
+                if ($clienteExistente) {
+                    $this->addFlash('danger', 'El usuario seleccionado ya está asignado a otro cliente');
+                    return $this->render('admin/cliente/nuevo.html.twig', [
+                        'cliente' => $cliente,
+                        'form' => $form->createView(),
+                    ]);
+                }
+
+                // Persistir el cliente
+                $entityManager->persist($cliente);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Cliente creado correctamente');
+                return $this->redirectToRoute('app_admin_cliente_index');
+            } catch (\Exception $e) {
+                $this->addFlash('danger', 'Error al crear el cliente: ' . $e->getMessage());
+                return $this->render('admin/cliente/nuevo.html.twig', [
+                    'cliente' => $cliente,
+                    'form' => $form->createView(),
+                ]);
+            }
         }
 
         return $this->render('admin/cliente/nuevo.html.twig', [
@@ -118,43 +171,12 @@ class ClienteController extends AdminController
         UserPasswordHasherInterface $passwordHasher,
         TipoUsuarioRepository $tipoUsuarioRepository
     ): Response {
-        $form = $this->createForm(ClienteType::class, $cliente);
+        $form = $this->createForm(ClienteType::class, $cliente, [
+            'is_new' => false
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Verificar si se está creando un nuevo usuario
-            if ($form->get('crearNuevoUsuario')->getData()) {
-                $nuevoUsuarioData = $form->get('nuevoUsuario')->getData();
-                
-                if ($nuevoUsuarioData) {
-                    // Crear el nuevo usuario
-                    $usuario = new Usuario();
-                    $usuario->setEmail($nuevoUsuarioData->getEmail());
-                    $usuario->setNombreReferencia($nuevoUsuarioData->getNombreReferencia());
-                    
-                    // Obtener el tipo de usuario "Cliente"
-                    $tipoUsuarioCliente = $tipoUsuarioRepository->findOneBy(['codigo' => 'cliente']);
-                    if (!$tipoUsuarioCliente) {
-                        $this->addErrorFlash('No se pudo encontrar el tipo de usuario Cliente');
-                        return $this->redirectToRoute('app_admin_cliente_editar', ['id' => $cliente->getId()]);
-                    }
-                    
-                    $usuario->setTipoUsuario($tipoUsuarioCliente);
-                    $usuario->addRole('ROLE_CLIENTE');
-                    
-                    // Codificar la contraseña
-                    $plainPassword = $form->get('nuevoUsuario')->get('plainPassword')->getData();
-                    $hashedPassword = $passwordHasher->hashPassword($usuario, $plainPassword);
-                    $usuario->setPassword($hashedPassword);
-                    
-                    // Guardar el usuario
-                    $entityManager->persist($usuario);
-                    
-                    // Asignar el usuario al cliente
-                    $cliente->setUsuario($usuario);
-                }
-            }
-
             $entityManager->flush();
 
             $this->addSuccessFlash('Cliente actualizado correctamente');
@@ -163,7 +185,7 @@ class ClienteController extends AdminController
 
         return $this->render('admin/cliente/editar.html.twig', [
             'cliente' => $cliente,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 

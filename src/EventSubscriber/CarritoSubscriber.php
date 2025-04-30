@@ -24,12 +24,11 @@ class CarritoSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Agrega la cantidad total de items en el carrito activo a la variable global carrito_articulos_totales
+     * Agrega el carrito activo a la variable global carrito_cliente
      * @param ControllerEvent $event
      */
     public function onKernelController(ControllerEvent $event): void
     {
-        $totalCantidad = $this->carritoManager->getItemsCantidadTotal();
-        $this->twig->addGlobal('carrito_articulos_totales', $totalCantidad);
+        $this->twig->addGlobal('carrito_cliente', $this->carritoManager->obtenerCarritoActivo());
     }
 }

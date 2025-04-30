@@ -57,7 +57,7 @@ class CarritoController extends AbstractController
         }
 
         $this->addFlash('success', 'Artículo agregado al carrito');
-        return $this->redirectToRoute('app_cliente_carrito_index');
+        return $this->redirect($request->headers->get('referer', $this->generateUrl('app_cliente_carrito_index')));
     }
 
 

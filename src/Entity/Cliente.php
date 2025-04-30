@@ -79,10 +79,16 @@ class Cliente
     #[ORM\Column(type: 'boolean')]
     private bool $habilitado = true;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $habilitadoCuentaCorriente = false;
+
     // Nueva relación con Usuario
     #[ORM\ManyToOne(inversedBy: 'clientes')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Usuario $usuario = null;
+
+    #[ORM\Column(type: 'integer')]
+    private int $cantidadIngresos = 0;
 
     public function __construct()
     {
@@ -322,6 +328,17 @@ class Cliente
         return $this;
     }
 
+    public function isHabilitadoCuentaCorriente(): bool
+    {
+        return $this->habilitadoCuentaCorriente;
+    }
+
+    public function setHabilitadoCuentaCorriente(bool $habilitadoCuentaCorriente): self
+    {
+        $this->habilitadoCuentaCorriente = $habilitadoCuentaCorriente;
+        return $this;
+    }
+
     // Métodos para la nueva relación con Usuario
     public function getUsuario(): ?Usuario
     {
@@ -338,5 +355,22 @@ class Cliente
     public function __toString(): string
     {
         return $this->razonSocial ?: '';
+    }
+
+    public function getCantidadIngresos(): int
+    {
+        return $this->cantidadIngresos;
+    }
+
+    public function setCantidadIngresos(int $cantidadIngresos): self
+    {
+        $this->cantidadIngresos = $cantidadIngresos;
+        return $this;
+    }
+
+    public function incrementarCantidadIngresos(): self
+    {
+        $this->cantidadIngresos++;
+        return $this;
     }
 }
