@@ -29,7 +29,19 @@ class ConfiguracionPromptsChatGPT
     public static function obtenerMensaje(string $clave, ?string $porDefecto = null): string
     {
         self::cargarConfig();
-        return self::$config[$clave] ?? $porDefecto ?? "Mensaje no definido.";
+        
+        // Si la clave es 'prompt_base' o alguna otra clave de nivel principal
+        if (isset(self::$config[$clave])) {
+            return self::$config[$clave];
+        }
+        
+        // Buscar en la sección 'mensajes'
+        if (isset(self::$config['mensajes'][$clave])) {
+            return self::$config['mensajes'][$clave];
+        }
+        
+        // Devolver el valor por defecto o "Mensaje no definido"
+        return $porDefecto ?? "Mensaje no definido.";
     }
 
     // Puedes agregar más métodos para otros prompts o mensajes frecuentes.

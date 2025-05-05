@@ -25,6 +25,7 @@ class ServicioOpenAIChat
      */
     public function consultarChatGPT(string $prompt, array $mensajesPrevios = []): string
     {
+        // Endpoint actualizado para la API de OpenAI
         $endpoint = 'https://api.openai.com/v1/chat/completions';
 
         // Estructura de mensajes para el modelo de chat
@@ -42,12 +43,20 @@ class ServicioOpenAIChat
             'json' => [
                 'model' => $this->modelo,
                 'messages' => $mensajes,
-                'temperature' => 0.4,
+                'temperature' => 0.7,
                 'max_tokens' => 800,
+                'top_p' => 1,
+                'frequency_penalty' => 0,
+                'presence_penalty' => 0,
             ],
         ]);
 
         $data = $response->toArray(false);
+
+        // Verificar la respuesta y manejar posibles errores
+        if (isset($data['error'])) {
+            throw new \RuntimeException('Error de OpenAI: ' . ($data['error']['message'] ?? 'Error desconocido'));
+        }
 
         return $data['choices'][0]['message']['content'] ?? '';
     }

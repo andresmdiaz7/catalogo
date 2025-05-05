@@ -11,6 +11,9 @@ parameters:
     # datos de OPENAI
     openai_api_key: '%env(OPENAI_API_KEY)%'
     openai_model: '%env(OPENAI_MODEL)%'
+    
+    # Parámetro para controlar si se usa el servicio mock o real
+    usar_mock_openai: true
 
 services:
     # default configuration for services in *this* file

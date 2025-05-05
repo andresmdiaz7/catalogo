@@ -57,12 +57,12 @@ class ServicioConversacionAsistente
 
                 if (count($productos) > 0) {
                     return [
-                        'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('productos_encontrados'),
+                        'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('productos_encontrados', 'Estos son los productos que encontré:'),
                         'productos' => array_map(fn($producto) => RespuestaProductoDTO::fromEntity($producto), $productos),
                     ];
                 } else {
                     return [
-                        'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('sin_resultados'),
+                        'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('sin_resultados', 'No encontré productos que coincidan con tu búsqueda.'),
                         'productos' => [],
                     ];
                 }
@@ -77,12 +77,12 @@ class ServicioConversacionAsistente
 
             if (count($productos) > 0) {
                 return [
-                    'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('productos_encontrados'),
+                    'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('productos_encontrados', 'Estos son los productos que encontré:'),
                     'productos' => array_map(fn($producto) => RespuestaProductoDTO::fromEntity($producto), $productos),
                 ];
             } else {
                 return [
-                    'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('sin_resultados'),
+                    'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('sin_resultados', 'No encontré productos que coincidan con tu búsqueda.'),
                     'productos' => [],
                 ];
             }

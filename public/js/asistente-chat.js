@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('inputMensaje');
     const chatContainer = document.getElementById('chatContainer');
     const usuarioId = window.usuarioId || 1; // Ajusta según tu sistema de login
+    
+    // Guardar historial de conversación
+    let historialChat = [];
 
     // Mostrar mensaje en el chat
     function mostrarMensaje(origen, texto) {
@@ -20,6 +23,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         chatContainer.appendChild(div);
         chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+        // Guardar mensaje en el historial
+        if (origen === 'usuario') {
+            historialChat.push({ role: 'user', content: texto });
+        } else if (origen === 'asistente') {
+            historialChat.push({ role: 'assistant', content: texto });
+        }
     }
 
     // Mostrar animación "Tito está escribiendo..."
@@ -60,7 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Enviar mensaje al backend
-    function enviarMensajeAlAsistente(mensaje, usuarioId, historial, contextoUsuario) {
+    function enviarMensajeAlAsistente(mensaje, usuarioId, contextoUsuario) {
+        // Mostrar el mensaje del usuario pero NO lo agregamos al historial aquí
+        // porque lo agregaremos en mostrarMensaje
         mostrarMensaje('usuario', mensaje);
         input.value = '';
         mostrarEscribiendo();
@@ -71,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({
                     mensaje: mensaje,
                     usuario_id: usuarioId,
-                    historial: historial, // array de {role, content}
+                    historial: historialChat, // Enviamos el historial completo
                     contexto_usuario: contextoUsuario // objeto con info relevante
                 })
             })
@@ -94,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const mensaje = input.value.trim();
         if (mensaje) {
-            enviarMensajeAlAsistente(mensaje, usuarioId, [], {});
+            enviarMensajeAlAsistente(mensaje, usuarioId, {});
         }
     });
 

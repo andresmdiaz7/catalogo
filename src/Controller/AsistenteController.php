@@ -27,8 +27,24 @@ class AsistenteController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $mensaje = $data['mensaje'] ?? '';
         $usuarioId = $data['usuario_id'] ?? null;
+        $historial = $data['historial'] ?? [];
+        $contextoUsuario = $data['contexto_usuario'] ?? [];
 
-        $respuesta = $servicioConversacion->procesarConsulta($mensaje, $usuarioId);
+        // Obtener el usuario autenticado y el cliente activo
+        $usuario = $this->getUser();
+        if ($usuario && method_exists($usuario, 'getClienteActivo')) {
+            $cliente = $usuario->getClienteActivo();
+            if ($cliente) {
+                if (method_exists($cliente, 'getNombre')) {
+                    $contextoUsuario['nombre_cliente'] = $cliente->getNombre();
+                }
+                if (method_exists($cliente, 'getId')) {
+                    $contextoUsuario['id_cliente'] = $cliente->getId();
+                }
+            }
+        }
+
+        $respuesta = $servicioConversacion->procesarConsulta($mensaje, $usuarioId, $historial, $contextoUsuario);
 
         return $this->json([
             'respuesta' => $respuesta['respuesta'],
