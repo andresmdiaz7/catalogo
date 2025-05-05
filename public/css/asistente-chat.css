@@ -1,0 +1,46 @@
+.asistente-chat-container {
+    min-height: 350px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 1rem;
+    background: #f8f9fa;
+}
+
+.mensaje-usuario {
+    text-align: right;
+    margin-bottom: 0.5rem;
+}
+
+.mensaje-asistente {
+    text-align: left;
+    margin-bottom: 0.5rem;
+}
+
+.burbuja {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 1.2rem;
+    max-width: 80%;
+    word-break: break-word;
+}
+
+.burbuja-usuario {
+    background: #0d6efd;
+    color: #fff;
+    border-bottom-right-radius: 0.2rem;
+}
+
+.burbuja-asistente {
+    background: #e9ecef;
+    color: #212529;
+    border-bottom-left-radius: 0.2rem;
+}
+
+.card-producto {
+    max-width: 320px;
+    margin-bottom: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}

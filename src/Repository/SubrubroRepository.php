@@ -12,4 +12,14 @@ class SubrubroRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Subrubro::class);
     }
+    
+    public function findOneByNombreSimilar(string $nombre): ?\App\Entity\Subrubro
+    {
+        return $this->createQueryBuilder('sr')
+            ->where('LOWER(sr.nombre) LIKE :nombre')
+            ->setParameter('nombre', '%' . mb_strtolower($nombre) . '%')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 } 

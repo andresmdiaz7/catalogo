@@ -8,6 +8,10 @@ parameters:
     directorio_archivos: '/uploads/archivos/'
     slider_directory: '%kernel.project_dir%/public/uploads/sliders'
 
+    # datos de OPENAI
+    openai_api_key: '%env(OPENAI_API_KEY)%'
+    openai_model: '%env(OPENAI_MODEL)%'
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -46,3 +50,8 @@ services:
     App\Command\CrearDirectorioSliderCommand:
         arguments:
             $sliderDirectory: '%slider_directory%'
+
+    App\Asistente\ServicioOpenAIChat:
+        arguments:
+            $apiKey: '%openai_api_key%'
+            $modelo: '%openai_model%'

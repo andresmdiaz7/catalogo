@@ -87,7 +87,7 @@ class Articulo
 
     public function getDetalle(): ?string
     {
-        return $this->detalle;
+        return $this->detalleWeb ?: $this->detalle;
     }
 
     public function setDetalle(string $detalle): self
@@ -259,14 +259,14 @@ class Articulo
     {
         foreach ($this->archivos as $articuloArchivo) {
             if ($articuloArchivo->isEsPrincipal() && 
-                strpos($articuloArchivo->getArchivo()->getTipoArchivo(), 'image/') === 0) {
+                strpos($articuloArchivo->getArchivo()->getTipoMime(), 'image/') === 0) {
                 return $articuloArchivo->getArchivo();
             }
         }
         
         // Si no hay imagen principal, buscar primera imagen
         foreach ($this->archivos as $articuloArchivo) {
-            if (strpos($articuloArchivo->getArchivo()->getTipoArchivo(), 'image/') === 0) {
+            if (strpos($articuloArchivo->getArchivo()->getTipoMime(), 'image/') === 0) {
                 return $articuloArchivo->getArchivo();
             }
         }
