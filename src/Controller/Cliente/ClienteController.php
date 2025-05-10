@@ -3,6 +3,7 @@
 namespace App\Controller\Cliente;
 
 use App\Entity\Usuario;
+use App\Entity\EstadoPedido;
 use App\Service\ClienteManager;
 use App\Repository\ClienteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
+
 
 #[Route('/cliente')]
 #[IsGranted('ROLE_CLIENTE')]
@@ -63,6 +65,10 @@ class ClienteController extends AbstractController
         ]);
     }
     
+    /**
+     * @todo ver si esto se puede eliminar
+     */
+    /*
     #[Route('/dashboard', name: 'app_cliente_dashboard')]
     public function dashboard(ClienteManager $clienteManager): Response
     {
@@ -82,10 +88,11 @@ class ClienteController extends AbstractController
         
         $clienteActivo = $clienteManager->getClienteActivo();
         
-        return $this->render('cliente/dashboard/index.html.twig', [
+        return $this->render('cliente/panel/index.html.twig', [
             'cliente' => $clienteActivo
         ]);
     }
+    */
     
     #[Route('/cambiar-cliente', name: 'app_cliente_cambiar')]
     public function cambiarCliente(ClienteManager $clienteManager): Response

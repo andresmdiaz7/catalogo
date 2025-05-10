@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Cliente;
+use App\Entity\Pedido;
+use App\Entity\EstadoPedido;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -10,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 
 class PedidoFilterType extends AbstractType
 {
@@ -37,13 +40,13 @@ class PedidoFilterType extends AbstractType
                     'class' => 'form-control'
                 ]
             ])
-            ->add('estado', ChoiceType::class, [
-                'choices' => [
-                    'Pendiente' => 'pendiente',
-                    'Procesando' => 'procesando',
-                    'Enviado' => 'enviado',
-                    'Entregado' => 'entregado',
-                    'Cancelado' => 'cancelado',
+            ->add('estado', EnumType::class, [
+                'class' => EstadoPedido::class,
+                'choice_label' => fn(EstadoPedido $estado) => $estado->getLabel(),
+                'choice_attr' => fn(EstadoPedido $estado) => [
+                    'data-description' => $estado->getDescription(),
+                    'data-badge-class' => $estado->getBadgeClass(),
+                    'data-icon' => $estado->getIcon()
                 ],
                 'required' => false,
                 'placeholder' => 'Todos los estados',

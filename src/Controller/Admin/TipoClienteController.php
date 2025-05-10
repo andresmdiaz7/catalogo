@@ -10,6 +10,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Controlador para la gestión de tipos de clientes.
+ * 
+ * Este controlador maneja la configuración de los diferentes tipos de clientes:
+ * - Listado de tipos de clientes
+ * - Creación de nuevos tipos
+ * - Edición de tipos existentes
+ * - Eliminación de tipos
+ * - Configuración de precios y descuentos por tipo
+ * 
+ * @package App\Controller\Admin
+ * @see AdminController
+ */
 #[Route('/admin/tipos-cliente')]
 class TipoClienteController extends AdminController
 {

@@ -11,15 +11,15 @@
                 <i class="bi bi-arrow-left"></i> Volver al listado
             </a>
             <form method="post" 
-                  action="{{ path('app_admin_pedido_cambiar_estado', {'id': pedido.id, 'estado': pedido.estado == 'enviado' ? 'pendiente' : 'enviado'}) }}" 
+                  action="{{ path('app_admin_pedido_cambiar_estado', {'id': pedido.id, 'estado': pedido.estado == estado_pedido().REVISADO ? estado_pedido().PENDIENTE : estado_pedido().REVISADO}) }}" 
                   style="display: inline;">
                 <input type="hidden" name="_token" 
                        value="{{ csrf_token('cambiar-estado' ~ pedido.id) }}">
                 <button type="submit" class="btn btn-success">
-                    {% if pedido.estado == 'leido' %}
+                    {% if pedido.estado == estado_pedido().REVISADO %}
                         <i class="bi bi-x-circle"></i> Marcar como Pendiente
                     {% else %}
-                        <i class="bi bi-check-circle"></i> Marcar como Leido
+                        <i class="bi bi-check-circle"></i> Marcar como Revisado
                     {% endif %}
                 </button>
             </form>

@@ -10,6 +10,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Controlador para la gestión de rubros.
+ * 
+ * Este controlador maneja la organización de los rubros del catálogo:
+ * - Listado de rubros
+ * - Creación de nuevos rubros
+ * - Edición de rubros existentes
+ * - Eliminación de rubros
+ * - Asignación de rubros a secciones
+ * - Gestión de subrubros por rubro
+ * 
+ * @package App\Controller\Admin
+ * @see AdminController
+ */
 #[Route('/admin/rubros')]
 class RubroController extends AdminController
 {

@@ -10,6 +10,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Controlador para la gestión de pedidos.
+ * 
+ * Este controlador maneja todas las operaciones relacionadas con los pedidos:
+ * - Listado de pedidos
+ * - Visualización de detalles de pedidos
+ * - Actualización de estados de pedidos
+ * - Gestión de envíos
+ * - Asignación de pedidos a vendedores
+ * - Generación de reportes de pedidos
+ * 
+ * @package App\Controller\Admin
+ * @see AdminController
+ */
 #[Route('/admin/pedidos')]
 class PedidoController extends AdminController
 {

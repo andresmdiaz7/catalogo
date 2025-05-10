@@ -60,17 +60,7 @@
                     <td>{{ pedido.fecha|date('d/m/Y H:i') }}</td>
                     <td>${{ pedido.total|number_format(2, ',', '.') }}</td>
                     <td>
-                        {% if pedido.estado == 'pendiente' %}
-                        <span class="badge bg-warning text-dark">Pendiente</span>
-                        {% elseif pedido.estado == 'procesando' %}
-                        <span class="badge bg-info">Procesando</span>
-                        {% elseif pedido.estado == 'enviado' %}
-                        <span class="badge bg-primary">Enviado</span>
-                        {% elseif pedido.estado == 'entregado' %}
-                        <span class="badge bg-success">Entregado</span>
-                        {% elseif pedido.estado == 'cancelado' %}
-                        <span class="badge bg-danger">Cancelado</span>
-                        {% endif %}
+                        {% include 'partials/_estado_pedido.html.twig' with { pedido: pedido } %}
                     </td>
                     <td>
                         <a href="{{ path('app_vendedor_clientes_pedido_show', {'id': pedido.id}) }}" class="btn btn-sm btn-info">Ver</a>

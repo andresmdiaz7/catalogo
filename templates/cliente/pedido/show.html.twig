@@ -14,9 +14,7 @@
                     <h5 class="mb-0">Información del Pedido</h5>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <span class="badge bg-{{ pedido.estado == 'pendiente' ? 'warning' : (pedido.estado == 'leido' ? 'info' : 'success') }}">
-                        {{ pedido.estado|capitalize }}
-                    </span>
+                    {% include 'partials/_estado_pedido.html.twig' with { pedido: pedido } %}
                 </div>
             </div>
         </div>
@@ -27,7 +25,6 @@
                     <p><strong>Cliente:</strong> {{ pedido.cliente.razonSocial }}</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p><strong>Estado:</strong> {{ pedido.estado|capitalize }}</p>
                     <p><strong>Total:</strong> ${{ pedido.total|number_format(2, ',', '.') }}</p>
                 </div>
             </div>

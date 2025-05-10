@@ -19,6 +19,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/**
+ * Controlador para la gestión de clientes.
+ * 
+ * Este controlador maneja todas las operaciones relacionadas con los clientes:
+ * - Listado de clientes
+ * - Creación de nuevos clientes
+ * - Edición de clientes existentes
+ * - Eliminación de clientes
+ * - Asignación de vendedores
+ * - Gestión de categorías de clientes
+ * 
+ * @package App\Controller\Admin
+ * @see AdminController
+ */
 #[Route('/admin/clientes')]
 class ClienteController extends AdminController
 {

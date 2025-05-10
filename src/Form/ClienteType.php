@@ -206,14 +206,14 @@ class ClienteType extends AbstractType
                 'row_attr' => ['class' => 'mb-3']
             ])
             ->add('habilitado', CheckboxType::class, [
-                'label' => 'Habilitado',
+                'label' => 'Habilitado web',
                 'label_attr' => ['class' => 'form-check-label'],
                 'required' => false,
                 'attr' => ['class' => 'form-check-input'],
                 'row_attr' => ['class' => 'mb-3 form-check']
             ])
             ->add('habilitadoCuentaCorriente', CheckboxType::class, [
-                'label' => 'Habilitado',
+                'label' => 'Habilitado Cuenta Corriente GB',
                 'label_attr' => ['class' => 'form-check-label'],
                 'required' => false,
                 'attr' => ['class' => 'form-check-input'],

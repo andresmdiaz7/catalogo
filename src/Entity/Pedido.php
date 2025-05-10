@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Entity;
-
 use App\Repository\PedidoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\EstadoPedido;
 
 #[ORM\Entity(repositoryClass: PedidoRepository::class)]
 #[ORM\Table(name: 'pedido')]
@@ -25,8 +25,8 @@ class Pedido
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $fecha;
 
-    #[ORM\Column(length: 20)]
-    private string $estado = 'pendiente';
+    #[ORM\Column(type: 'string', enumType: EstadoPedido::class)]
+    private EstadoPedido $estado = EstadoPedido::PENDIENTE;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $fechaLeido = null; // Renombrado de fechaPedido a fechaLeido
@@ -85,12 +85,12 @@ class Pedido
         return $this;
     }
 
-    public function getEstado(): string
+    public function getEstado(): EstadoPedido
     {
         return $this->estado;
     }
 
-    public function setEstado(string $estado): self
+    public function setEstado(EstadoPedido $estado): self
     {
         $this->estado = $estado;
         return $this;
@@ -197,3 +197,4 @@ class Pedido
         $this->total = (string) $total;
     }
 }
+

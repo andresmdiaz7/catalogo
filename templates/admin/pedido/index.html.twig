@@ -54,11 +54,7 @@
                                 <td>{{ pedido.fecha|date('d/m/Y H:i') }}</td>
                                 <td>${{ pedido.total|number_format(2, ',', '.') }}</td>
                                 <td>
-                                    {% if pedido.estado == 'leido' %}
-                                        <span class="badge bg-success">Leído</span>
-                                    {% else %}
-                                        <span class="badge bg-warning">Pendiente</span>
-                                    {% endif %}
+                                    {% include 'partials/_estado_pedido.html.twig' with { pedido: pedido } %}
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">

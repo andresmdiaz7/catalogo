@@ -3,7 +3,8 @@
 {% block title %}Mis Pedidos{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
+    <div class="container-fluid py-4 px-1 px-xl-4 px-lg-4">
+
         {# Título #}
         <div class="d-flex justify-content-between align-items-center mb-1">
             <h4><i class="bi bi-card-list me-2"></i>Mis pedidos</h4>
@@ -38,19 +39,7 @@
                                 <td class="text-center">{{ pedido.id }}</td>
                                 <td class="text-center">{{ pedido.fecha|date('d/m/Y H:i') }}</td>
                                 <td class="text-center">
-                                    {% if pedido.estado == 'leido' %}
-                                        <span class="badge text-white" 
-                                              style="background-color: var(--bs-success);
-                                              ">
-                                            <i class="bi bi-check-circle me-2"></i>Recibido
-                                        </span>
-                                    {% else %}
-                                        <span class="badge text-dark"
-                                              style="background-color: var(--bs-dark-bg-subtle);
-                                              ">
-                                              <i class="bi bi-hourglass-split me-2"></i>En espera
-                                        </span>
-                                    {% endif %}
+                                    {% include 'partials/_estado_pedido.html.twig' with { pedido: pedido } %}
                                 </td>
                                 <td class="text-center">
                                     {% if pedido.fechaLeido %}
@@ -77,18 +66,25 @@
                                         class="btn btn-sm btn-info">
                                         <i class="bi bi-file-earmark-text me-2"></i>Ver pedido
                                     </a>
+
                                     {# Eliminar pedido #}
+                                    
                                     <form method="post" 
                                             action="{{ path('app_cliente_pedido_delete', {'id': pedido.id}) }}" 
                                             style="display: inline;">
                                         <input type="hidden" name="_token" 
                                                 value="{{ csrf_token('delete' ~ pedido.id) }}">
                                         <button type="submit" class="btn btn-sm
-                                            {% if pedido.estado == 'leido' %} btn-secondary disabled {% else%} btn-danger {% endif %}"
+                                            {% if pedido.estado.value == estado_pedido().REVISADO.value %} 
+                                                btn-secondary disabled 
+                                            {% else%} 
+                                                btn-danger 
+                                            {% endif %}"
                                                 onclick="return confirm('¿Está seguro que desea eliminar este pedido?')">
                                             <i class="bi bi-trash me-2"></i>Eliminar
                                         </button>
                                     </form>
+                                
                                 </td>
                             </tr>
                         {% else %}

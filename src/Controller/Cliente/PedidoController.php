@@ -4,6 +4,7 @@ namespace App\Controller\Cliente;
 
 use App\Entity\Pedido;
 use App\Entity\PedidoDetalle;
+use App\Entity\EstadoPedido;
 use App\Services\CartManager;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -107,7 +108,7 @@ class PedidoController extends AbstractController
                 'pedido' => $pedido
             ]);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Errorrrrr: ' . $e->getMessage());
+            $this->addFlash('error', 'Error: ' . $e->getMessage());
             return $this->redirectToRoute('app_cliente_pedido_index');
         }
     }
@@ -130,7 +131,7 @@ class PedidoController extends AbstractController
         }
 
         // Verificar que el pedido no esté enviado
-        if ($pedido->getEstado() === 'enviado') {
+        if ($pedido->getEstado() === EstadoPedido::ENVIADO) {
             $this->addFlash('error', 'No se puede eliminar un pedido que ya ha sido enviado.');
             return $this->redirectToRoute('app_cliente_pedido_index');
         }

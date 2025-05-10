@@ -62,11 +62,7 @@
                 <div class="card-body">
                     <p><strong>Fecha:</strong> {{ pedido.fecha|date('d/m/Y H:i') }}</p>
                     <p><strong>Estado:</strong> 
-                        {% if pedido.estado == 'enviado' %}
-                            <span class="badge bg-success">Enviado</span>
-                        {% else %}
-                            <span class="badge bg-warning">{{ pedido.estado }}</span>
-                        {% endif %}
+                        {% include 'partials/_estado_pedido.html.twig' with { pedido: pedido } %}
                     </p>
                     {% if pedido.observaciones %}
                         <p><strong>Observaciones:</strong><br>

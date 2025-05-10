@@ -49,7 +49,7 @@ class SecurityController extends AbstractController
             if ($tipoUsuario) {
                 switch ($tipoUsuario->getCodigo()) {
                     case 'admin':
-                        return $this->redirectToRoute('app_admin_dashboard');
+                        return $this->redirectToRoute('app_admin_panel');
                         
                     case 'cliente':
                         // Verificar si el usuario tiene clientes asociados
@@ -61,7 +61,7 @@ class SecurityController extends AbstractController
                             $cliente->incrementarCantidadIngresos();
                             $cliente->setUltimaVisita(new \DateTime());
                             $entityManager->flush();
-                            return $this->redirectToRoute('app_cliente_dashboard');
+                            return $this->redirectToRoute('app_cliente_panel');
                         } elseif ($usuario->hasMultiplesClientes()) {
                             // Si tiene múltiples clientes, mostrar pantalla de selección
                             return $this->redirectToRoute('app_cliente_seleccionar');
@@ -71,10 +71,10 @@ class SecurityController extends AbstractController
                         }
                         
                     case 'vendedor':
-                        return $this->redirectToRoute('app_vendedor_dashboard');
+                        return $this->redirectToRoute('app_vendedor_panel');
                         
                     case 'responsable_logistica':
-                        return $this->redirectToRoute('app_logistica_dashboard');
+                        return $this->redirectToRoute('app_logistica_panel');
                         
                     default:
                         return $this->redirectToRoute('app_login');

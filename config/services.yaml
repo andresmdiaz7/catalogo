@@ -58,3 +58,6 @@ services:
         arguments:
             $apiKey: '%openai_api_key%'
             $modelo: '%openai_model%'
+
+    App\Twig\AppExtension:
+        tags: ['twig.extension']

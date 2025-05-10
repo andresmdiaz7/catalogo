@@ -1,0 +1,17 @@
+{# Partial para mostrar el estado del pedido de forma estandarizada #}
+<span class="badge {{ pedido.estado.getBadgeClass() }}" 
+      data-bs-toggle="tooltip" 
+      data-bs-placement="top" 
+      data-bs-title="{{ pedido.estado.getDescription() }}"
+      data-bs-custom-class="custom-tooltip">
+    <i class="bi {{ pedido.estado.getIcon() }} me-1"></i>
+    {{ pedido.estado.getLabel() }}
+</span>
+
+{# Inicializar tooltips #}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    });
+</script>

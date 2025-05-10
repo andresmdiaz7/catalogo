@@ -13,6 +13,20 @@ use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 
+/**
+ * Controlador para la gestión de subrubros.
+ * 
+ * Este controlador maneja la organización de los subrubros del catálogo:
+ * - Listado de subrubros
+ * - Creación de nuevos subrubros
+ * - Edición de subrubros existentes
+ * - Eliminación de subrubros
+ * - Asignación de subrubros a rubros
+ * - Gestión de artículos por subrubro
+ * 
+ * @package App\Controller\Admin
+ * @see AdminController
+ */
 #[Route('/admin/subrubros')]
 class SubrubroController extends AdminController
 {

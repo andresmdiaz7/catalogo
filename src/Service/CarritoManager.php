@@ -8,6 +8,7 @@ use App\Entity\CarritoItem;
 use App\Entity\Cliente;
 use App\Entity\Pedido;
 use App\Entity\PedidoDetalle;
+use App\Entity\EstadoPedido;
 use App\Repository\CarritoItemRepository;
 use App\Repository\CarritoRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -291,9 +292,10 @@ class CarritoManager
         $pedido = new Pedido();
         $pedido->setCliente($cliente);
         $pedido->setFecha(new \DateTime());
-        $pedido->setEstado('pendiente');
+        $pedido->setEstado(EstadoPedido::PENDIENTE);
         
         // Agregar los items del carrito al pedido
+        $total = 0;
         foreach ($carrito->getItems() as $item) {
             $pedidoDetalle = new PedidoDetalle();
             $pedidoDetalle->setPedido($pedido);
@@ -301,8 +303,15 @@ class CarritoManager
             $pedidoDetalle->setCantidad($item->getCantidad());
             $pedidoDetalle->setPrecioUnitario($item->getPrecioUnitario());
             
+            // Calcular subtotal del item
+            $subtotal = $item->getCantidad() * $item->getPrecioUnitario();
+            $total += $subtotal;
+            
             $pedido->addDetalle($pedidoDetalle);
         }
+        
+        // Establecer el total del pedido
+        $pedido->setTotal($total);
         
         // Persistir el pedido
         $this->entityManager->persist($pedido);

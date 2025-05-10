@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Pedido;
+use App\Entity\EstadoPedido;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,7 +40,7 @@ class PedidoRepository extends ServiceEntityRepository
 
         if (!empty($filters['estado'])) {
             $qb->andWhere('p.estado = :estado')
-                ->setParameter('estado', $filters['estado']);
+                ->setParameter('estado', EstadoPedido::from($filters['estado']));
         }
 
         if (!empty($filters['desde'])) {

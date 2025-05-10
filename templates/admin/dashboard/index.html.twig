@@ -80,11 +80,7 @@
                                         <td>{{ pedido.cliente.razonSocial }}</td>
                                         <td>{{ pedido.fecha|date('d/m/Y H:i') }}</td>
                                         <td>
-                                            {% if pedido.estado %}
-                                                <span class="badge bg-success">Enviado</span>
-                                            {% else %}
-                                                <span class="badge bg-warning">Pendiente</span>
-                                            {% endif %}
+                                            {% include 'partials/_estado_pedido.html.twig' with { pedido: pedido } %}
                                         </td>
                                         <td>${{ pedido.total|number_format(2, ',', '.') }}</td>
                                     </tr>
