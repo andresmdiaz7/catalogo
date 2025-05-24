@@ -68,6 +68,15 @@ class Articulo
 
     private $precios;
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $hashSinc = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $fechaActualizacion = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $fechaCreacion = null;
+
     public function __construct()
     {
         $this->archivos = new ArrayCollection();
@@ -313,5 +322,38 @@ class Articulo
     public function getPrecios(): array
     {
         return $this->precios ?? [];
+    }
+
+    public function getHashSinc(): ?string
+    {
+        return $this->hashSinc;
+    }
+
+    public function setHashSinc(?string $hashSinc): self
+    {
+        $this->hashSinc = $hashSinc;
+        return $this;
+    }
+
+    public function getFechaActualizacion(): ?\DateTimeInterface
+    {
+        return $this->fechaActualizacion;
+    }
+
+    public function setFechaActualizacion(?\DateTimeInterface $fechaActualizacion): self
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+        return $this;
+    }
+
+    public function getFechaCreacion(): ?\DateTimeInterface
+    {
+        return $this->fechaCreacion;
+    }
+
+    public function setFechaCreacion(?\DateTimeInterface $fechaCreacion): self
+    {
+        $this->fechaCreacion = $fechaCreacion;
+        return $this;
     }
 }

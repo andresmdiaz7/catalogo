@@ -73,6 +73,46 @@ class ArticuloController extends AbstractController
     }
 
     /**
+     * Muestra el listado de artículos que no tienen imagen cargada.
+     * Diseñado específicamente para que el data entry pueda identificar y completar artículos.
+     */
+    #[Route('/sin-imagen', name: 'app_admin_articulo_sin_imagen', methods: ['GET'])]
+    public function sinImagen(
+        Request $request, 
+        ArticuloRepository $articuloRepository,
+        RubroRepository $rubroRepository,
+        MarcaRepository $marcaRepository,
+        PaginatorInterface $paginator
+    ): Response {
+        $filters = $request->query->all();
+        
+        // Establecer el límite de resultados por página desde los filtros
+        $limit = isset($filters['limit']) ? (int)$filters['limit'] : 25;
+
+        $queryBuilder = $articuloRepository->createQueryBuilderArticulosSinImagen($filters);
+        
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            $limit
+        );
+
+        $subrubros = !empty($filters['rubro']) 
+            ? $rubroRepository->find($filters['rubro'])?->getSubrubros() ?? []
+            : $rubroRepository->findAll();
+
+        $marcas = $marcaRepository->findBy([], ['nombre' => 'ASC']);
+
+        return $this->render('admin/articulo/sin_imagen.html.twig', [
+            'articulos' => $pagination,
+            'filtros' => $filters,
+            'rubros' => $rubroRepository->findAll(),
+            'subrubros' => $subrubros,
+            'marcas' => $marcas
+        ]);
+    }
+
+    /**
      * Edita el artículo seleccionado.
      * @param Request $request
      * @param Articulo $articulo

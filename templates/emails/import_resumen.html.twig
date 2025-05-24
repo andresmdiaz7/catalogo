@@ -1,0 +1,55 @@
+{% extends 'emails/base.html.twig' %}
+{% set show_logo = false %}
+
+{% block title %}Resumen de importación de artículos{% endblock %}
+
+{% block body %}
+    <div class="email-container">
+        <h2 class="mb-4">Resumen de importación de artículos</h2>
+        
+        <p>Se ha completado el proceso de importación de artículos con los siguientes resultados:</p>
+        
+        <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse;">
+            <tr style="background-color: #f8f9fa;">
+                <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left;">Detalle</th>
+                <th style="padding: 10px; border: 1px solid #dee2e6; text-align: right;">Valor</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">Artículos nuevos</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6; text-align: right;">{{ estadisticas.nuevos }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">Artículos actualizados</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6; text-align: right;">{{ estadisticas.actualizados }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">Errores</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6; text-align: right;">{{ estadisticas.errores }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">Total procesados</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6; text-align: right;">{{ estadisticas.total }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #dee2e6;">Tiempo de ejecución</td>
+                <td style="padding: 10px; border: 1px solid #dee2e6; text-align: right;">{{ estadisticas.tiempo }} segundos</td>
+            </tr>
+        </table>
+        
+        {% if estadisticas.error is defined %}
+            <div style="padding: 15px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24; margin-bottom: 20px;">
+                <h4 style="margin-top: 0;">Error durante la importación:</h4>
+                <p>{{ estadisticas.error }}</p>
+            </div>
+        {% endif %}
+        
+        {% if estadisticas.mensaje is defined %}
+            <div style="padding: 15px; background-color: #cce5ff; border: 1px solid #b8daff; border-radius: 5px; color: #004085; margin-bottom: 20px;">
+                <h4 style="margin-top: 0;">Información:</h4>
+                <p>{{ estadisticas.mensaje }}</p>
+            </div>
+        {% endif %}
+        
+        <p>Fecha de ejecución: {{ fecha|date('d/m/Y H:i:s') }}</p>
+    </div>
+{% endblock %} 

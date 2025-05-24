@@ -1,6 +1,7 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - importacion_articulos # Canal específico para la importación de artículos
     
     handlers:
         mailer:
@@ -8,6 +9,14 @@ monolog:
             path: "%kernel.logs_dir%/mailer.%kernel.environment%.log"
             level: debug
             channels: ["mailer"]
+        
+        importacion_articulos:
+            type: stream
+            path: "%kernel.project_dir%/var/log/importacionArticulos.log"
+            level: debug
+            channels: ["importacion_articulos"]
+            formatter: monolog.formatter.importacion
+            
 when@dev:
     monolog:
         handlers:

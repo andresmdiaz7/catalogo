@@ -1,0 +1,271 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Artículos sin Imagen{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        {# Título #}
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <h4>
+                <i class="bi bi-image text-warning"></i>
+                Artículos sin Imagen
+            </h4>
+            <div class="d-flex gap-3 align-items-center">
+                <span class="d-inline-flex px-2 py-0 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-2">
+                    Pendientes: {{ articulos.getTotalItemCount }}
+                </span>
+                <a href="{{ path('app_admin_articulo_index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Volver a todos los artículos
+                </a>
+            </div>
+        </div>
+
+        {# Información útil #}
+        <div class="alert alert-info mb-3">
+            <i class="bi bi-info-circle"></i>
+            <strong>Panel de Data Entry:</strong> Esta página muestra únicamente artículos que no tienen imagen cargada, 
+            ordenados por fecha de creación (más recientes primero). Utiliza los filtros para encontrar artículos específicos y 
+            las acciones para cargar imágenes o habilitar artículos rápidamente.
+        </div>
+
+        {# Filtros #}
+        <div class="card mb-4 bg-light shadow-sm">
+            <div class="card-body pt-2">
+                <form method="get" class="row g-3">
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-2">
+                            <label for="buscar" class="form-label mb-1">Buscar</label>
+                            <input type="text" name="buscar" class="form-control form-control-sm" 
+                                placeholder="Código, detalle, marca..." value="{{ app.request.query.get('buscar') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="rubro" class="form-label mb-1">Rubro</label>
+                            <select class="form-select form-select-sm" id="rubro" name="rubro">
+                                <option value="">Todos</option>
+                                {% for rubro in rubros %}
+                                    <option value="{{ rubro.codigo }}" 
+                                            {% if app.request.query.get('rubro') == rubro.codigo %}selected{% endif %}>
+                                        {{ rubro.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="marca" class="form-label mb-1">Marca</label>
+                            <select class="form-select form-select-sm" id="marca" name="marca">
+                                <option value="">Todas</option>
+                                {% for marcaItem in marcas %}
+                                    <option value="{{ marcaItem.codigo }}" 
+                                            {% if app.request.query.get('marca') == marcaItem.codigo %}selected{% endif %}>
+                                        {{ marcaItem.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="fechaDesde" class="form-label mb-1">Desde</label>
+                            <input type="date" name="fechaDesde" class="form-control form-control-sm" 
+                                value="{{ app.request.query.get('fechaDesde') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="fechaHasta" class="form-label mb-1">Hasta</label>
+                            <input type="date" name="fechaHasta" class="form-control form-control-sm" 
+                                value="{{ app.request.query.get('fechaHasta') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="limit" class="form-label mb-1">Por página</label>
+                            <select class="form-select form-select-sm" id="limit" name="limit">
+                                <option value="25" {% if app.request.query.get('limit') == '25' %}selected{% endif %}>25</option>
+                                <option value="50" {% if app.request.query.get('limit') == '50' %}selected{% endif %}>50</option>
+                                <option value="100" {% if app.request.query.get('limit') == '100' %}selected{% endif %}>100</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-2">
+                            <label for="habilitadoWeb" class="form-label mb-1">Estado Web</label>
+                            <select class="form-select form-select-sm" id="habilitadoWeb" name="habilitadoWeb">
+                                <option value="" {% if app.request.query.get('habilitadoWeb') is null %}selected{% endif %}>Todos</option>
+                                <option value="1" {% if app.request.query.get('habilitadoWeb') == '1' %}selected{% endif %}>Habilitados</option>
+                                <option value="0" {% if app.request.query.get('habilitadoWeb') == '0' %}selected{% endif %}>Deshabilitados</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="habilitadoGestion" class="form-label mb-1">Estado Gestión</label>
+                            <select class="form-select form-select-sm" id="habilitadoGestion" name="habilitadoGestion">
+                                <option value="" {% if app.request.query.get('habilitadoGestion') is null %}selected{% endif %}>Todos</option>
+                                <option value="1" {% if app.request.query.get('habilitadoGestion') == '1' %}selected{% endif %}>Habilitados</option>
+                                <option value="0" {% if app.request.query.get('habilitadoGestion') == '0' %}selected{% endif %}>Deshabilitados</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label mb-1">&nbsp;</label>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-search"></i> Buscar
+                                </button>
+                                <a href="{{ path('app_admin_articulo_sin_imagen') }}" class="btn btn-sm btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Limpiar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {# Tabla de resultados #}
+        <div class="border rounded-2 shadow-sm mb-3">
+            <table class="table table-responsive">
+                <thead class="table-light">
+                    <tr>
+                        <th>
+                            {{ knp_pagination_sortable(articulos, 'Código', 'a.codigo', {
+                                'class': 'text-decoration-none link-primary',
+                                'title': 'Ordenar por código'
+                            })}}
+                            {% if articulos.isSorted('a.codigo') %}
+                                <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
+                            {% endif %}
+                        </th>
+                        <th>
+                            {{ knp_pagination_sortable(articulos, 'Detalle', 'a.detalle', {
+                                'class': 'text-decoration-none link-primary',
+                                'title': 'Ordenar por detalle'
+                            })}}
+                            {% if articulos.isSorted('a.detalle') %}
+                                <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
+                            {% endif %}
+                        </th>
+                        <th>
+                            {{ knp_pagination_sortable(articulos, 'Marca', 'm.nombre', {
+                                'class': 'text-decoration-none link-primary',
+                                'title': 'Ordenar por marca'
+                            })}}
+                            {% if articulos.isSorted('m.nombre') %}
+                                <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
+                            {% endif %}
+                        </th>
+                        <th>
+                            {{ knp_pagination_sortable(articulos, 'Fecha Creación', 'a.fechaCreacion', {
+                                'class': 'text-decoration-none link-primary',
+                                'title': 'Ordenar por fecha de creación'
+                            })}}
+                            {% if articulos.isSorted('a.fechaCreacion') %}
+                                <i class="bi bi-arrow-{{ articulos.direction == 'desc' ? 'down' : 'up' }}-square-fill text-primary"></i>
+                            {% endif %}
+                        </th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Imagen</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody class="table-group-divider">
+                    {% for articulo in articulos %}
+                        <tr>
+                            <td>
+                                <strong>{{ articulo.codigo }}</strong>
+                            </td>
+                            <td>
+                                <div>
+                                    <strong>{{ articulo.detalle }}</strong>
+                                    {% if articulo.marca %}
+                                        <br><small class="text-muted">{{ articulo.marca.nombre }}</small>
+                                    {% endif %}
+                                    {% if articulo.modelo %}
+                                        <br><small class="text-muted">Modelo: {{ articulo.modelo }}</small>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if articulo.marca %}
+                                    <span class="badge bg-light text-dark">{{ articulo.marca.nombre }}</span>
+                                {% else %}
+                                    <span class="text-muted">Sin marca</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if articulo.fechaCreacion %}
+                                    <small>
+                                        {{ articulo.fechaCreacion|date('d/m/Y') }}<br>
+                                        <span class="text-muted">{{ articulo.fechaCreacion|date('H:i') }}</span>
+                                    </small>
+                                {% else %}
+                                    <span class="text-muted">No disponible</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex flex-column gap-1">
+                                    {% if articulo.habilitadoWeb %}
+                                        <span class="badge bg-success">Hab. web</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Deshab. web</span>
+                                    {% endif %}
+                                    {% if articulo.habilitadoGestion %}
+                                        <span class="badge bg-success">Hab. gestión</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Deshab. gestión</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="bg-light border rounded p-2 justify-content-center" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-image text-muted" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <small class="text-danger">Sin imagen</small>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="input-group text-center justify-content-center" role="group">
+                                    <a href="{{ path('app_admin_articulo_edit', {'codigo': articulo.codigo}) }}" 
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil ps-1"></i> Editar
+                                    </a>
+                                    <form method="post" 
+                                            action="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}" 
+                                            style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('alternar-habilitado' ~ articulo.codigo) }}">
+                                            {% if articulo.habilitadoWeb %}
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-0 rounded-end-1">
+                                                    <i class="bi bi-x-circle ps-1"></i> Deshabilitar
+                                                </button>
+                                            {% else %}
+                                                <button type="submit" class="btn btn-sm btn-outline-success rounded-0 rounded-end-1">
+                                                    <i class="bi bi-check-circle ps-1"></i> Habilitar
+                                                </button>
+                                            {% endif %}
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="bi bi-check-circle-fill text-success" style="font-size: 2rem;"></i>
+                                    <h5 class="mt-2">¡Excelente trabajo!</h5>
+                                    <p>No hay artículos sin imagen que coincidan con los filtros aplicados.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# Paginación #}
+        <div class="d-flex justify-content-center">
+            {{ knp_pagination_render(articulos, './pagination/custom_pagination.html.twig') }}
+        </div>
+    </div> 
+
+    {# Script para filtros dinámicos #}
+    <script>
+        // Actualizar subrubros cuando cambia el rubro
+        document.getElementById('rubro').addEventListener('change', function() {
+            // Aquí podrías agregar AJAX para cargar subrubros dinámicamente si es necesario
+        });
+    </script>
+{% endblock %} 

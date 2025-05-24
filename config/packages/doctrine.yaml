@@ -13,13 +13,7 @@ doctrine:
                 charset: utf8mb4
                 
             mssql:
-                driver: '%env(resolve:MSSQL_DRIVER)%'
-                host: '%env(resolve:MSSQL_HOST)%'
-                port: '%env(resolve:MSSQL_PORT)%'
-                dbname: '%env(resolve:MSSQL_DATABASE)%'
-                user: '%env(resolve:MSSQL_USER)%'
-                password: '%env(resolve:MSSQL_PASSWORD)%'
-                server_version: '%env(resolve:MSSQL_SERVER_VERSION)%'
+                url: '%env(resolve:DATABASE_URL_MSSQL)%'
                 
         #identity_generation_preferences:
         #    sequence:

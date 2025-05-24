@@ -292,7 +292,7 @@ class ArticuloArchivoController extends AbstractController
         try {
             $articulo = $articuloArchivo->getArticulo();
             $articuloId = $articulo->getCodigo();
-            $eraPrincipal = $articuloArchivo->getEsPrincipal();
+            $eraPrincipal = $articuloArchivo->IsEsPrincipal();
             
             // Eliminar la relación
             $this->entityManager->remove($articuloArchivo);

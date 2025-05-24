@@ -12,8 +12,8 @@ class ComprobanteVenta
     #[ORM\Column(name: "ID", type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(name: "CODIGO", type: "integer")]
-    private ?int $codigo = null;
+    #[ORM\Column(name: "CODIGO", type: "string", length: 20)]
+    private ?string $codigo = null;
 
     #[ORM\Column(name: "Tipo_Operacion", type: "string", length: 50)]
     private ?string $tipoOperacion = null;
@@ -27,12 +27,12 @@ class ComprobanteVenta
         return $this->id;
     }
 
-    public function getCodigo(): ?int
+    public function getCodigo(): ?string
     {
         return $this->codigo;
     }
 
-    public function setCodigo(int $codigo): self
+    public function setCodigo(string $codigo): self
     {
         $this->codigo = $codigo;
         return $this;

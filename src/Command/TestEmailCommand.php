@@ -26,11 +26,11 @@ class TestEmailCommand extends Command
         
         try {
             $email = (new Email())
-                ->from('andres.diaz@ciardi.com.ar')
-                ->to('andresmdiaz7@gmail.com') // Cambia esto a tu dirección
+                ->from('catalogo@ciardi.com.ar')
+                ->to('andres.diaz@ciardi.com.ar') // Cambia esto a tu dirección
                 ->subject('Correo de prueba desde Symfony')
                 ->text('Este es un correo de prueba enviado desde la aplicación Symfony.')
-                ->html('<p>Este es un correo de <b>prueba</b> enviado desde la aplicación Symfony.</p>');
+                ->html('<p>Este es un correo de <b>prueba</b> enviado desde la aplicación <strong>Symfony</strong>.</p>');
 
             $this->mailer->send($email);
             

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Doctrine\Persistence\ManagerRegistry;
+use \PDO;
 
 class ClienteMssqlService
 {
@@ -24,7 +25,7 @@ class ClienteMssqlService
     /**
      * Buscar un cliente por código en la base de datos MSSQL
      */
-    public function buscarClientePorCodigo(string $codigo): ?array
+    public function buscarClientePorCodigo(int $codigo): ?array
     {
         try {
             $conn = $this->getMssqlConnection();
@@ -43,26 +44,17 @@ class ClienteMssqlService
                 FROM Clientes
                 INNER JOIN Localidades ON Clientes.ID_LOCALIDAD = Localidades.ID_Localidad
                 WHERE Clientes.codigo = :codigo
-            ";
-            
+            ";            
             // Debug: Imprimir consulta con parámetros reemplazados
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue('codigo', $codigo);
-            
-            error_log("SQL: " . $sql);
-            
-            $result = $stmt->executeQuery();
-            
-            // Debug: Verificar si hay resultados
-            $cliente = $result->fetchAssociative();
-            
-            
-            // Debug: Verificar si hay cliente
-            if ($cliente === false) {
+
+            $result = $conn->executeQuery($sql, ['codigo' => $codigo])->fetchAssociative();
+
+            if ($result === false) {
                 return null;
             }
             
-            return $cliente;
+            return $result;
         } catch (\Exception $e) {
             error_log("Error en consulta MSSQL: " . $e->getMessage());
             $this->logError('Error consultando cliente MSSQL', $e);
@@ -87,7 +79,7 @@ class ClienteMssqlService
             ";
             
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue('codigo', $codigo);
+            $stmt->bindValue('codigo', $codigo, PDO::PARAM_STR);
             $stmt->bindValue('tipoOperacion', 'Cta.Cte.');
             $result = $stmt->executeQuery();
             
@@ -122,7 +114,7 @@ class ClienteMssqlService
             ";
             
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue('codigo', $codigo);
+            $stmt->bindValue('codigo', $codigo, PDO::PARAM_STR);
             $result = $stmt->executeQuery();
             
             return $result->fetchAllAssociative();
@@ -190,7 +182,11 @@ class ClienteMssqlService
             
             $stmt = $conn->prepare($sql);
             foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
+                if ($key === 'codigo') {
+                    $stmt->bindValue($key, $value, PDO::PARAM_STR);
+                } else {
+                    $stmt->bindValue($key, $value);
+                }
             }
             $result = $stmt->executeQuery();
             

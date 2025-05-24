@@ -13,9 +13,25 @@ class EmailService
 
     public function __construct(
         private MailerInterface $mailer,
-        string $emailFrom = 'andresmdiaz7@gmail.com'
+        string $emailFrom = 'catalogo@ciardi.com.ar'
     ) {
         $this->emailFrom = $emailFrom;
+    }
+
+    /**
+     * Devuelve la dirección de correo de remitente configurada
+     */
+    public function getEmailFrom(): string
+    {
+        return $this->emailFrom;
+    }
+    
+    /**
+     * Devuelve el servicio mailer
+     */
+    public function getMailer(): MailerInterface
+    {
+        return $this->mailer;
     }
 
     /**

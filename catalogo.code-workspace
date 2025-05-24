@@ -1,0 +1,70 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"workbench.editor.showTabs": "multiple",
+		"workbench.editor.tabSizing": "shrink",
+		"workbench.editor.wrapTabs": true,
+		"workbench.editor.scrollToSwitchTabs": false,
+		"workbench.editor.enablePreview": false,
+		"workbench.editor.enablePreviewFromQuickOpen": false,
+		"workbench.editor.enablePreviewFromCodeNavigation": false,
+		"todo-tree.general.revealBehaviour": "start of todo",
+		"todo-tree.general.rootFolder": "",
+		"todo-tree.general.showActivityBarBadge": false,
+		"todo-tree.general.statusBar": "tags",
+		"todo-tree.regex.subTagRegex": "",
+		"todo-tree.regex.enableMultiLine": true,
+		"todo-tree.general.tags": [
+			"bug",
+			"hack",
+			"fixme",
+			"todo"
+		],
+		"todo-tree.filtering.includeGlobs": [
+			"**/src/**",
+			"**/templates/**"
+		],
+		"todo-tree.filtering.excludeGlobs": [
+			"**/var/**",
+			"**/vendor/**",
+			"**/translations/**",
+			"**/tests/**",
+			"**/migrations/**",
+			"**/imports/**",
+			"**/bin/**",
+			"**/node_modules/**"
+		],
+		"todo-tree.highlights.defaultHighlight": {
+			"foreground": "#ffd700",
+			"background": "#2d3436",
+			"type": "text",
+			"opacity": 50,
+			"gutterIcon": true
+		},
+		"todo-tree.highlights.customHighlight": {
+			"todo": {
+				"icon": "comment",
+				"iconColour": "#ff6b6b"
+			},
+			"fixme": {
+				"icon": "flame",
+				"iconColour": "#ff9f43"
+			},
+			"bug": {
+				"icon": "bug",
+				"iconColour": "#ee5253",
+				"foreground": "#ff0000"
+			},
+			"hack": {
+				"icon": "tools",
+				"iconColour": "#a29bfe"
+			}
+		},
+		"todo-tree.tree.scanMode": "workspace",
+		"todo-tree.filtering.useBuiltInExcludes": "file excludes"
+	}
+}

@@ -24,7 +24,7 @@ class ComprobanteVentaRepository extends ServiceEntityRepository
      * 
      * @todo Esta funcion no se usa por ahora, ver si la implementamos en el servicio de Mssql
      */
-    public function getSumaPendienteCuentaCorriente(int $codigo): float
+    public function getSumaPendienteCuentaCorriente(string $codigo): float
     {
         // Usando DQL (Doctrine Query Language)
         $query = $this->getMssqlEntityManager()
@@ -47,7 +47,7 @@ class ComprobanteVentaRepository extends ServiceEntityRepository
      * Alternativa usando SQL nativo si DQL da problemas
      * @todo Esta funcion no se usa por ahora, ver si la implementamos en el servicio de Mssql
      */
-    public function getSumaPendienteCuentaCorrienteNativo(int $codigo): float
+    public function getSumaPendienteCuentaCorrienteNativo(string $codigo): float
     {
         $conn = $this->getMssqlEntityManager()->getConnection();
         $sql = "

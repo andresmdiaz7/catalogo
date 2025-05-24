@@ -14,6 +14,10 @@ parameters:
     
     # Parámetro para controlar si se usa el servicio mock o real
     usar_mock_openai: true
+    
+    # Configuración para importación de artículos
+    import_email_to: 'sistemas@ciardi.com.ar'
+    import_email_subject: 'Catalogo Ciardi - Importación de artículos'
 
 services:
     # default configuration for services in *this* file
@@ -36,6 +40,11 @@ services:
     App\Command\ImportarArticulosCommand:
         arguments:
             $doctrine: '@doctrine'
+            $projectDir: '%kernel.project_dir%'
+            $importLogger: '@monolog.logger.importacion_articulos'
+            
+    App\Command\ActualizarDescripcionesArticulosCommand:
+        arguments:
             $projectDir: '%kernel.project_dir%'
 
     App\EventListener\ArticuloPreciosListener:
@@ -61,3 +70,12 @@ services:
 
     App\Twig\AppExtension:
         tags: ['twig.extension']
+
+    # Servicio personalizado para el logger de importación con formato específico
+    monolog.formatter.importacion:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] %%message%%\n"
+            - "d-m-Y H:i:s"
+            - true  # allowInlineLineBreaks
+            - false # ignoreEmptyContextAndExtra

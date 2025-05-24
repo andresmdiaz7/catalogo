@@ -79,10 +79,12 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            {#<img src="{{ asset('/images/logo.jpg') }}" alt="Ciardi Logo">#}
-            <img src="https://clientes.ciardi.com.ar/css/img/Ciardi-logo.jpg" alt="Ciardi Logo">
-        </div>
+        {% if show_logo %}
+            <div class="logo">
+                <img src="https://clientes.ciardi.com.ar/css/img/Ciardi-logo.jpg" alt="Ciardi Logo">
+            </div>
+        {% endif %}
+
         {% block body %}{% endblock %}
         
         <div class="footer">

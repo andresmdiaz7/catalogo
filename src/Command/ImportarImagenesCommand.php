@@ -117,12 +117,12 @@ class ImportarImagenesCommand extends Command
                     $this->entityManager->persist($archivo);
                     $archivosCreados++;
                 } else {
-                    $extension = pathinfo($rutaArchivo, PATHINFO_EXTENSION);
-                    $mimeType = $this->mimeTypes->getMimeTypes($extension)[0] ?? 'application/octet-stream';
+                    //$extension = pathinfo($rutaArchivo, PATHINFO_EXTENSION);
+                    //$mimeType = $this->mimeTypes->getMimeTypes($extension)[0] ?? 'application/octet-stream';
                     $archivo = $archivoExistente;
-                    $archivo->setFileName(basename($rutaArchivo));
-                    $archivo->setFilePath($rutaArchivo);
-                    $archivo->setTamanio(filesize($rutaCompleta) );;  
+                    //$archivo->setFileName(basename($rutaArchivo));
+                    //$archivo->setFilePath($rutaArchivo);
+                    //$archivo->setTamanio(filesize($rutaCompleta) );;  
                     
                     $archivosReutilizados++;
                 }
