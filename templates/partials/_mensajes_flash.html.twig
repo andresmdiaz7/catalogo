@@ -2,12 +2,7 @@
     {% for message in messages %}
         <div aria-live="polite" aria-atomic="true" class="position-relative">
             <div class="toast-container top-0 end-0 p-3 position-fixed">
-                <div class="
-                    toast show fade 
-                    border 
-                    border-{{ label }}
-                    shadow
-                    " role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast border border-{{ label }} shadow" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header text-bg-{{ label }} ">
                         <i class="bi bi-check-circle-fill pe-2"></i>
                         <strong class="me-auto">Bootstrap</strong>
@@ -15,7 +10,7 @@
                     </div>
                     <div class="toast-body bg-{{ label }}-subtle rounded-bottom-3">
                         <div class="flash-{{ label }}">
-                            {{ message }}
+                            {{ message|raw }}
                         </div>
                     </div>
                 </div>
@@ -23,3 +18,18 @@
         </div>
     {% endfor %}
 {% endfor %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    var toastList = toastElList.map(function(toastEl) {
+        var toast = new bootstrap.Toast(toastEl, {
+            autohide: true,
+            delay: 7000,
+            animation: true
+        });
+        toast.show();
+        return toast;
+    });
+});
+</script>

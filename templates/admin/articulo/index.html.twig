@@ -11,9 +11,6 @@
                 <span class="d-inline-flex px-2 py-0 text-success-emphasis bg-success-subtle border border-success-subtle rounded-2">
                     Cantidad de artículos: {{ articulos.getTotalItemCount }}
                 </span>
-                <a href="{{ path('app_admin_articulo_sin_imagen') }}" class="btn btn-outline-warning btn-sm">
-                    <i class="bi bi-image"></i> Ver solo sin imagen
-                </a>
             </div>
         </div>
 
@@ -231,21 +228,21 @@
                             <td class="text-center">
                                 <div class="d-flex flex-column gap-1">
                                     {% if articulo.habilitadoWeb %}
-                                        <span class="badge text-dark" style="background-color: var(--bs-success-bg-subtle)">
-                                            <i class="bi bi-check-circle"></i> Web
+                                        <span class="badge text-dark fw-normal" style="background-color: var(--bs-success-bg-subtle)">
+                                            <i class="bi bi-check-circle"></i> Web Si
                                         </span>
                                     {% else %}
-                                        <span class="badge text-dark" style="background-color: var(--bs-danger-bg-subtle)">
-                                            <i class="bi bi-x-circle"></i> Web Off
+                                        <span class="badge text-dark fw-normal" style="background-color: var(--bs-danger-bg-subtle)">
+                                            <i class="bi bi-x-circle"></i> Web No
                                         </span>
                                     {% endif %}
                                     {% if articulo.habilitadoGestion %}
-                                        <span class="badge text-dark" style="background-color: var(--bs-success-bg-subtle)">
-                                            <i class="bi bi-check-circle"></i> GB
+                                        <span class="badge text-dark fw-normal" style="background-color: var(--bs-success-bg-subtle)">
+                                            <i class="bi bi-check-circle"></i> GB Si
                                         </span>
                                     {% else %}
-                                        <span class="badge text-dark" style="background-color: var(--bs-danger-bg-subtle)">
-                                            <i class="bi bi-x-circle"></i> GB Off
+                                        <span class="badge text-dark fw-normal" style="background-color: var(--bs-danger-bg-subtle)">
+                                            <i class="bi bi-x-circle"></i> GB No
                                         </span>
                                     {% endif %}
                                     {% if articulo.destacado %}
@@ -303,20 +300,17 @@
                                         class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-pencil"></i> Editar
                                     </a>
-                                    <form method="post" 
-                                            action="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}" 
-                                            style="display: inline;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('alternar-habilitado' ~ articulo.codigo) }}">
-                                            {% if articulo.habilitadoWeb %}
-                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-0 rounded-end-1">
-                                                    <i class="bi bi-x-circle"></i> Deshabilitar
-                                                </button>
-                                            {% else %}
-                                                <button type="submit" class="btn btn-sm btn-outline-success rounded-0 rounded-end-1">
-                                                    <i class="bi bi-check-circle"></i> Habilitar
-                                                </button>
-                                            {% endif %}
-                                    </form>
+                                    {% if articulo.habilitadoWeb %}
+                                        <a href="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}" 
+                                           class="btn btn-sm btn-outline-danger rounded-0 rounded-end-1">
+                                            <i class="bi bi-x-circle"></i> Deshabilitar
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('app_admin_articulo_alternar_habilitado', {'codigo': articulo.codigo}) }}"
+                                           class="btn btn-sm btn-outline-success rounded-0 rounded-end-1">
+                                            <i class="bi bi-check-circle"></i> Habilitar
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>

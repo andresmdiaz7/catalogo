@@ -71,46 +71,7 @@ class ArticuloController extends AbstractController
             'marcas' => $marcas
         ]);
     }
-
-    /**
-     * Muestra el listado de artículos que no tienen imagen cargada.
-     * Diseñado específicamente para que el data entry pueda identificar y completar artículos.
-     */
-    #[Route('/sin-imagen', name: 'app_admin_articulo_sin_imagen', methods: ['GET'])]
-    public function sinImagen(
-        Request $request, 
-        ArticuloRepository $articuloRepository,
-        RubroRepository $rubroRepository,
-        MarcaRepository $marcaRepository,
-        PaginatorInterface $paginator
-    ): Response {
-        $filters = $request->query->all();
-        
-        // Establecer el límite de resultados por página desde los filtros
-        $limit = isset($filters['limit']) ? (int)$filters['limit'] : 25;
-
-        $queryBuilder = $articuloRepository->createQueryBuilderArticulosSinImagen($filters);
-        
-        $pagination = $paginator->paginate(
-            $queryBuilder,
-            $request->query->getInt('page', 1),
-            $limit
-        );
-
-        $subrubros = !empty($filters['rubro']) 
-            ? $rubroRepository->find($filters['rubro'])?->getSubrubros() ?? []
-            : $rubroRepository->findAll();
-
-        $marcas = $marcaRepository->findBy([], ['nombre' => 'ASC']);
-
-        return $this->render('admin/articulo/sin_imagen.html.twig', [
-            'articulos' => $pagination,
-            'filtros' => $filters,
-            'rubros' => $rubroRepository->findAll(),
-            'subrubros' => $subrubros,
-            'marcas' => $marcas
-        ]);
-    }
+    
 
     /**
      * Edita el artículo seleccionado.
@@ -147,24 +108,28 @@ class ArticuloController extends AbstractController
      * Alterna el estado de habilitación del artículo.
      * Si el artículo está habilitado, se deshabilita y viceversa.
      */
-    #[Route('/{codigo}/alternar-habilitado', name: 'app_admin_articulo_alternar_habilitado', methods: ['POST'])]
+    #[Route('/{codigo}/alternar-habilitado', name: 'app_admin_articulo_alternar_habilitado', methods: ['POST','GET'])]
     public function toggleHabilitado(
         Request $request, 
         #[MapEntity(id: 'codigo')] Articulo $articulo, 
         EntityManagerInterface $entityManager
-
     ): Response {
-        if ($this->isCsrfTokenValid('alternar-habilitado'.$articulo->getCodigo(), $request->request->get('_token'))) {
-            $articulo->setHabilitadoWeb(!$articulo->isHabilitadoWeb());
-            $entityManager->flush();
+        $articulo->setHabilitadoWeb(!$articulo->isHabilitadoWeb());
+        $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'El artículo ha sido ' . ($articulo->isHabilitadoWeb() ? 'habilitado' : 'deshabilitado')
-            );
-        }
+        $this->addFlash(
+            'success',
+            'El artículo <strong>' . $articulo->getCodigo() .' - '. $articulo->getDetalle() . '</strong> 
+            ha sido ' . ($articulo->isHabilitadoWeb() ? '<span class="badge text-bg-success"><i class="bi bi-check-circle pe-1"></i> Habilitado</span>' : '<span class="badge text-bg-danger"><i class="bi bi-x-circle pe-1"></i> Deshabilitado</span>')
+        );
 
-        return $this->redirectToRoute('app_admin_articulo_index');
+        // Obtener los parámetros de la URL actual
+        $queryParams = $request->headers->get('referer') ? parse_url($request->headers->get('referer'), PHP_URL_QUERY) : '';
+        parse_str($queryParams, $queryParams);
+        
+        $url = $this->generateUrl('app_admin_articulo_index', $queryParams);
+        
+        return $this->redirect($url);
     }
 
     
