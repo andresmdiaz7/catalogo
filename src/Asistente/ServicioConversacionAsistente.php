@@ -179,7 +179,13 @@ class ServicioConversacionAsistente
         // Log temporal para debugging
         error_log("ASISTENTE DEBUG - Buscando productos con: " . $palabrasClave);
         
-        $productos = $this->servicioBusquedaProductos->buscarPorDetalleYMarca($palabrasClave);
+        // Usar el método mejorado que busca por código, detalle, detalleweb, modelo y marca
+        $productos = $this->servicioBusquedaProductos->buscarPorCriteriosMultiples($palabrasClave);
+        
+        // Si no encuentra nada con el método mejorado, usar el método tradicional como fallback
+        if (empty($productos)) {
+            $productos = $this->servicioBusquedaProductos->buscarPorDetalleYMarca($palabrasClave);
+        }
         
         error_log("ASISTENTE DEBUG - Productos encontrados: " . count($productos));
 
@@ -207,7 +213,7 @@ class ServicioConversacionAsistente
             ];
         } else {
             return [
-                'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('busqueda', 'sin_resultados', 'No encontré productos que coincidan con tu búsqueda. ¿Podrías darme más detalles?'),
+                'respuesta' => ConfiguracionPromptsChatGPT::obtenerMensaje('busqueda', 'sin_resultados', 'No encontré productos que coincidan con tu búsqueda. ¿Podrías darme más detalles o verificar el código del producto?'),
                 'productos' => [],
                 'tipo' => 'sin_resultados'
             ];
@@ -224,10 +230,10 @@ class ServicioConversacionAsistente
         
         // Si hay código específico, buscar por código usando las palabras clave
         if ($codigo) {
-            $productos = $this->servicioBusquedaProductos->buscarPorDetalleYMarca($codigo);
+            $productos = $this->servicioBusquedaProductos->buscarPorCriteriosMultiples($codigo);
         } elseif ($palabrasClave) {
             // Si hay palabras clave, buscar productos
-            $productos = $this->servicioBusquedaProductos->buscarPorDetalleYMarca($palabrasClave);
+            $productos = $this->servicioBusquedaProductos->buscarPorCriteriosMultiples($palabrasClave);
         } else {
             return $this->respuestaTexto("Por favor, especifica un código de producto o palabras clave para buscar el precio.");
         }

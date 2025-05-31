@@ -225,6 +225,29 @@ class AsistenteController extends AbstractController
     }
 
     /**
+     * Endpoint para obtener el historial de conversación
+     */
+    #[Route('/historial', name: 'app_asistente_historial', methods: ['GET'])]
+    #[IsGranted('ROLE_CLIENTE')]
+    public function obtenerHistorial(): JsonResponse
+    {
+        try {
+            $historial = $this->servicioAsistenteCore->obtenerHistorialConversacion();
+            
+            return new JsonResponse([
+                'exito' => true,
+                'historial' => $historial
+            ]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error' => true,
+                'mensaje' => 'Error al obtener el historial'
+            ], 500);
+        }
+    }
+
+    /**
      * Widget del asistente para incluir en otras páginas
      */
     #[Route('/widget', name: 'app_asistente_widget')]

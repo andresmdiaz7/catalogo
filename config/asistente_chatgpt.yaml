@@ -241,7 +241,6 @@ areas_especializadas:
     telefono: "(223) 499-1616"
     whatsapp: "2236565505"
     especialidades: ["Motores industriales", "Tableros", "Automatización", "Proyectos industriales"]
-    
   telecomunicaciones:
     nombre: "Telecomunicaciones"
     responsable: "Lautaro Pili"
@@ -249,7 +248,6 @@ areas_especializadas:
     telefono: "(223) 499-1617"
     whatsapp: "2236565503"
     especialidades: ["Fibra óptica", "Redes", "Telefonía", "Conectividad"]
-    
   iluminacion:
     nombre: "Iluminación"
     responsable: "Lara Lapin"

@@ -10,6 +10,7 @@
 
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('css/personalizacion.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/widget-asistente.css') }}">
         {% endblock %}
     </head>
     <body>
@@ -164,6 +165,9 @@
                 </div>
             </div>
         </footer>
+        
+        {# Widget del Asistente Virtual #}
+        {% include 'partials/_widget_asistente.html.twig' %}
         
         {# En base.html.twig, antes del cierre del body #}
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

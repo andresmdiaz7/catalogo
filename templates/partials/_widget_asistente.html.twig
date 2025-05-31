@@ -1,0 +1,379 @@
+{# Widget del Asistente Virtual Tito #}
+{% if is_granted('ROLE_CLIENTE') %}
+<!-- Widget Asistente Flotante -->
+<div id="asistenteWidget" class="asistente-widget-container">
+    <!-- Botón del widget -->
+    <button id="btnAbrirAsistente" class="asistente-btn-toggle" type="button" title="Asistente Virtual Tito">
+        <img src="/images/avatar.png" alt="Tito" class="asistente-avatar">
+        <span class="asistente-notificacion d-none" id="asistenteNotificacion">1</span>
+    </button>
+
+    <!-- Panel del Chat (sin modal backdrop) -->
+    <div id="panelAsistente" class="asistente-panel d-none">
+        <div class="asistente-panel-content">
+            <div class="asistente-panel-header">
+                <div class="d-flex align-items-center">
+                    <img src="/images/avatar.png" alt="Tito" class="avatar-tito-header me-2">
+                    <div>
+                        <h5 class="mb-0">Tito - Asistente Virtual</h5>
+                        <small class="text-white-50">Ciardi Hnos - Materiales Eléctricos</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-cerrar-asistente" id="btnCerrarAsistente">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            
+            <div class="asistente-panel-body">
+                <!-- Contenedor del Chat -->
+                <div id="chatContainer" class="asistente-chat-container">
+                    <!-- Los mensajes se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+            
+            <div class="asistente-panel-footer">
+                <form id="formChatWidget" class="d-flex w-100 gap-2">
+                    <input 
+                        type="text" 
+                        id="inputMensajeWidget" 
+                        class="form-control" 
+                        placeholder="Escribe tu consulta..." 
+                        autocomplete="off"
+                        maxlength="500">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript del Widget -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Variables globales del widget
+    const btnAbrirAsistente = document.getElementById('btnAbrirAsistente');
+    const btnCerrarAsistente = document.getElementById('btnCerrarAsistente');
+    const panelAsistente = document.getElementById('panelAsistente');
+    const formChatWidget = document.getElementById('formChatWidget');
+    const inputMensajeWidget = document.getElementById('inputMensajeWidget');
+    const chatContainer = document.getElementById('chatContainer');
+    const usuarioId = {{ app.user ? app.user.id : 'null' }};
+    
+    // Variables del widget
+    let panelAbierto = false;
+    let historialChat = [];
+
+    // Abrir panel del asistente
+    btnAbrirAsistente.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (panelAbierto) {
+            cerrarPanel();
+        } else {
+            abrirPanel();
+        }
+    });
+
+    // Cerrar panel
+    btnCerrarAsistente.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        cerrarPanel();
+    });
+
+    // Función para abrir el panel
+    function abrirPanel() {
+        panelAsistente.classList.remove('d-none');
+        
+        setTimeout(() => {
+            panelAsistente.classList.add('show');
+        }, 10);
+        
+        panelAbierto = true;
+        
+        // Si es la primera apertura, mostrar bienvenida
+        if (chatContainer.children.length === 0) {
+            // Cargar historial existente primero
+            cargarHistorialExistente().then(() => {
+                // Si no hay historial, mostrar mensaje de bienvenida
+                if (chatContainer.children.length === 0) {
+                    mostrarMensajeBienvenida();
+                }
+            });
+        }
+
+        // Focus en el input y scroll al final después de que la animación termine
+        setTimeout(() => {
+            inputMensajeWidget.focus();
+            
+            // Asegurar que el scroll esté al final
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 350);
+    }
+
+    // Función para cerrar el panel
+    function cerrarPanel() {
+        panelAsistente.classList.remove('show');
+        setTimeout(() => {
+            panelAsistente.classList.add('d-none');
+        }, 300);
+        panelAbierto = false;
+    }
+
+    // Cerrar al hacer clic fuera del widget
+    document.addEventListener('click', function(e) {
+        if (panelAbierto && !e.target.closest('#asistenteWidget')) {
+            cerrarPanel();
+        }
+    });
+
+    // Cargar historial existente de la sesión
+    function cargarHistorialExistente() {
+        return fetch('/asistente/historial', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.exito && data.historial && data.historial.length > 0) {
+                // Limpiar chat container
+                chatContainer.innerHTML = '';
+                historialChat = [];
+                
+                // Mostrar mensajes del historial
+                data.historial.forEach(mensaje => {
+                    if (mensaje.role && mensaje.content) {
+                        const origen = mensaje.role === 'user' ? 'usuario' : 'asistente';
+                        mostrarMensajeHistorial(origen, mensaje.content);
+                        
+                        // Agregar al historial local
+                        historialChat.push({
+                            role: mensaje.role,
+                            content: mensaje.content
+                        });
+                    }
+                });
+                
+                // Scroll al final si hay mensajes
+                if (data.historial.length > 0) {
+                    setTimeout(() => {
+                        chatContainer.scrollTo({
+                            top: chatContainer.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                    }, 100);
+                }
+            }
+        })
+        .catch(error => {
+            console.log('No se pudo cargar el historial:', error);
+            // No mostrar error al usuario, solo continuar sin historial
+        });
+    }
+
+    // Mostrar mensaje en el chat sin agregarlo al historial (para cargar historial existente)
+    function mostrarMensajeHistorial(origen, texto) {
+        const div = document.createElement('div');
+        div.className = origen === 'usuario' ? 'mensaje-usuario' : 'mensaje-asistente';
+        
+        if (origen === 'asistente') {
+            // Procesar markdown básico
+            let textoFormateado = texto
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+            
+            div.innerHTML = `
+                <div class="d-flex align-items-start gap-2">
+                    <img src="/images/avatar.png" alt="Tito" class="avatar-tito">
+                    <span class="burbuja burbuja-${origen}">${textoFormateado}</span>
+                </div>
+            `;
+        } else {
+            div.innerHTML = `<span class="burbuja burbuja-${origen}">${texto}</span>`;
+        }
+        
+        chatContainer.appendChild(div);
+    }
+
+    // Mostrar mensaje de bienvenida
+    function mostrarMensajeBienvenida() {
+        let mensaje = '¡Hola! 🙋‍♂️ Soy **Tito**, tu asistente virtual de Ciardi Hnos.\n\n';
+        mensaje += '¿En qué puedo ayudarte hoy? Puedo:\n';
+        mensaje += '• 🔍 Buscar productos en nuestro catálogo\n';
+        mensaje += '• 💰 Consultar precios personalizados\n';
+        mensaje += '• 📍 Brindarte información de sucursales\n';
+        mensaje += '• 🛒 Ayudarte con tu carrito de compras';
+        
+        mostrarMensaje('asistente', mensaje);
+    }
+
+    // Mostrar mensaje en el chat
+    function mostrarMensaje(origen, texto) {
+        const div = document.createElement('div');
+        div.className = origen === 'usuario' ? 'mensaje-usuario' : 'mensaje-asistente';
+        
+        if (origen === 'asistente') {
+            // Procesar markdown básico
+            let textoFormateado = texto
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+            
+            div.innerHTML = `
+                <div class="d-flex align-items-start gap-2">
+                    <img src="/images/avatar.png" alt="Tito" class="avatar-tito">
+                    <span class="burbuja burbuja-${origen}">${textoFormateado}</span>
+                </div>
+            `;
+        } else {
+            div.innerHTML = `<span class="burbuja burbuja-${origen}">${texto}</span>`;
+        }
+        
+        chatContainer.appendChild(div);
+        
+        // Forzar scroll hacia abajo de manera suave
+        setTimeout(() => {
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 100);
+        
+        // Guardar mensaje en el historial
+        historialChat.push({ 
+            role: origen === 'usuario' ? 'user' : 'assistant', 
+            content: texto 
+        });
+    }
+
+    // Mostrar animación "escribiendo"
+    function mostrarEscribiendo() {
+        const div = document.createElement('div');
+        div.className = 'mensaje-asistente escribiendo';
+        div.innerHTML = `
+            <div class="d-flex align-items-start gap-2">
+                <img src="/images/avatar.png" alt="Tito" class="avatar-tito">
+                <span class="burbuja burbuja-asistente">
+                    <span class="puntos">Tito está escribiendo<span class="punto">.</span><span class="punto">.</span><span class="punto">.</span></span>
+                </span>
+            </div>
+        `;
+        div.id = 'tito-escribiendo';
+        chatContainer.appendChild(div);
+        
+        // Scroll inmediato para mostrar "escribiendo"
+        setTimeout(() => {
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 50);
+    }
+
+    function ocultarEscribiendo() {
+        const escribiendo = document.getElementById('tito-escribiendo');
+        if (escribiendo) escribiendo.remove();
+    }
+
+    // Mostrar producto en el chat
+    function mostrarProducto(producto) {
+        const div = document.createElement('div');
+        div.className = 'mensaje-asistente';
+        
+        const precio = producto.precioPersonalizado || producto.precioLista;
+        
+        div.innerHTML = `
+            <div class="d-flex align-items-start gap-2">
+                <img src="/images/avatar.png" alt="Tito" class="avatar-tito">
+                <div class="card-producto">
+                    ${producto.imagen ? `<img src="${producto.imagen}" alt="${producto.detalle}">` : ''}
+                    <div class="p-3">
+                        <h6 class="card-title mb-2">${producto.detalleWeb || producto.detalle}</h6>
+                        <p class="card-text mb-2">
+                            <strong>Código:</strong> ${producto.codigo}<br>
+                            <strong>Marca:</strong> <span class="text-primary">${producto.marca}</span>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-success fw-bold">$${precio.toLocaleString('es-AR', {minimumFractionDigits: 2})}</span>
+                            <a href="${producto.urlProducto || '#'}" class="btn btn-sm btn-outline-primary">Ver</a>
+                        </div>
+                        ${producto.fichaTecnica ? `<a href="${producto.fichaTecnica}" target="_blank" class="btn btn-sm btn-outline-info mt-2 w-100">Ficha técnica</a>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        chatContainer.appendChild(div);
+        
+        // Scroll suave hacia el producto
+        setTimeout(() => {
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 100);
+    }
+
+    // Enviar mensaje al backend
+    function enviarMensajeAlAsistente(mensaje) {
+        mostrarMensaje('usuario', mensaje);
+        inputMensajeWidget.value = '';
+        mostrarEscribiendo();
+        
+        // Obtener contexto de la página actual
+        const contextoUsuario = {
+            url_actual: window.location.pathname,
+            pagina_titulo: document.title
+        };
+
+        fetch('/asistente/mensaje', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mensaje: mensaje,
+                usuario_id: usuarioId,
+                historial: historialChat, // Enviar todo el historial local
+                contexto_usuario: contextoUsuario
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            ocultarEscribiendo();
+            mostrarMensaje('asistente', data.respuesta);
+            
+            if (data.productos && data.productos.length > 0) {
+                data.productos.forEach(mostrarProducto);
+            }
+        })
+        .catch(error => {
+            ocultarEscribiendo();
+            mostrarMensaje('asistente', 'Lo siento, tengo problemas técnicos en este momento. Por favor, intenta nuevamente o contacta a un asesor.');
+            console.error('Error:', error);
+        });
+    }
+
+    // Manejar envío del formulario
+    formChatWidget.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const mensaje = inputMensajeWidget.value.trim();
+        if (mensaje) {
+            enviarMensajeAlAsistente(mensaje);
+        }
+    });
+
+    // Enter para enviar mensaje
+    inputMensajeWidget.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            formChatWidget.dispatchEvent(new Event('submit'));
+        }
+    });
+});
+</script>
+{% endif %} 
