@@ -1,1 +1,23 @@
 # Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+
+# Logs
+*.log
+
+# Cache and temporary files
+/var/cache/
+/var/log/
+.phpunit.result.cache
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Uploads and generated files
+/public/uploads/
+/public/build/
+
+# IDE files
+.vscode/
+.idea/
+
+# Don't ignore .env file - needed for configuration

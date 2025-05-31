@@ -1,0 +1,341 @@
+<!-- Widget del Asistente Virtual Tito -->
+<style>
+    .asistente-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1050;
+    }
+
+    .asistente-toggle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);
+        transition: all 0.3s ease;
+        animation: pulse 2s infinite;
+    }
+
+    .asistente-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(0, 123, 255, 0.4);
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3); }
+        50% { box-shadow: 0 4px 30px rgba(0, 123, 255, 0.5); }
+        100% { box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3); }
+    }
+
+    .asistente-chat-panel {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 380px;
+        height: 500px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .asistente-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .asistente-chat-body {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+    }
+
+    .asistente-input-area {
+        padding: 15px;
+        background: white;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .mensaje-widget {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .mensaje-usuario-widget {
+        justify-content: flex-end;
+    }
+
+    .burbuja-widget {
+        max-width: 80%;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+    }
+
+    .burbuja-usuario-widget {
+        background-color: #007bff;
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .burbuja-asistente-widget {
+        background-color: white;
+        color: #333;
+        border: 1px solid #dee2e6;
+        border-bottom-left-radius: 4px;
+        margin-left: 8px;
+    }
+
+    .avatar-tito-widget {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background-color: #28a745;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+
+    .typing-widget {
+        display: none;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .typing-dots-widget {
+        display: flex;
+        align-items: center;
+        margin-left: 8px;
+    }
+
+    .typing-dots-widget span {
+        height: 6px;
+        width: 6px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 1px;
+        animation: typing-widget 1.4s infinite ease-in-out;
+    }
+
+    @keyframes typing-widget {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
+    }
+
+    @media (max-width: 480px) {
+        .asistente-chat-panel {
+            width: 95vw;
+            height: 70vh;
+            right: 2.5vw;
+        }
+    }
+</style>
+
+<div class="asistente-widget">
+    <!-- Botón principal -->
+    <button class="asistente-toggle" id="asistenteToggle" title="Asistente Virtual Tito">
+        <i class="bi bi-robot"></i>
+    </button>
+
+    <!-- Panel del chat -->
+    <div class="asistente-chat-panel" id="asistenteChatPanel">
+        <!-- Header -->
+        <div class="asistente-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0">Tito - Asistente Virtual</h6>
+                    <small>Ciardi Hnos</small>
+                </div>
+                <button class="btn btn-sm text-white" id="asistenteClose">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            {% if cliente %}
+                <div class="mt-1">
+                    <small><i class="bi bi-person-check"></i> {{ cliente.razonSocial }}</small>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Chat body -->
+        <div class="asistente-chat-body" id="asistenteChatBody">
+            <!-- Mensaje de bienvenida -->
+            <div class="mensaje-widget">
+                <div class="avatar-tito-widget">T</div>
+                <div class="burbuja-widget burbuja-asistente-widget">
+                    {{ mensaje_bienvenida }}
+                </div>
+            </div>
+
+            <!-- Indicador de escritura -->
+            <div id="typingWidgetIndicator" class="typing-widget">
+                <div class="avatar-tito-widget">T</div>
+                <div class="typing-dots-widget">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input area -->
+        <div class="asistente-input-area">
+            <form id="asistenteForm" class="d-flex gap-2">
+                <input 
+                    type="text" 
+                    id="asistenteInput" 
+                    class="form-control form-control-sm" 
+                    placeholder="Pregúntame algo..."
+                    autocomplete="off"
+                >
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-send"></i>
+                </button>
+            </form>
+            
+            <!-- Botones rápidos -->
+            <div class="mt-2">
+                <div class="d-flex flex-wrap gap-1">
+                    <button class="btn btn-outline-secondary btn-xs widget-sugerencia" data-mensaje="Ver carrito">
+                        Carrito
+                    </button>
+                    <button class="btn btn-outline-secondary btn-xs widget-sugerencia" data-mensaje="Sucursales">
+                        Sucursales
+                    </button>
+                    <button class="btn btn-outline-secondary btn-xs widget-sugerencia" data-mensaje="Necesito cables">
+                        Cables
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('asistenteToggle');
+    const panel = document.getElementById('asistenteChatPanel');
+    const close = document.getElementById('asistenteClose');
+    const form = document.getElementById('asistenteForm');
+    const input = document.getElementById('asistenteInput');
+    const chatBody = document.getElementById('asistenteChatBody');
+    const typingIndicator = document.getElementById('typingWidgetIndicator');
+
+    // Toggle panel
+    toggle.addEventListener('click', function() {
+        const isVisible = panel.style.display === 'flex';
+        panel.style.display = isVisible ? 'none' : 'flex';
+        if (!isVisible) {
+            setTimeout(() => input.focus(), 100);
+        }
+    });
+
+    // Close panel
+    close.addEventListener('click', function() {
+        panel.style.display = 'none';
+    });
+
+    // Función para mostrar mensaje
+    function mostrarMensajeWidget(origen, contenido) {
+        const div = document.createElement('div');
+        div.className = `mensaje-widget ${origen === 'usuario' ? 'mensaje-usuario-widget' : ''}`;
+        
+        let html = '';
+        if (origen === 'asistente') {
+            html = `
+                <div class="avatar-tito-widget">T</div>
+                <div class="burbuja-widget burbuja-asistente-widget">
+                    ${contenido}
+                </div>
+            `;
+        } else {
+            html = `<div class="burbuja-widget burbuja-usuario-widget">${contenido}</div>`;
+        }
+        
+        div.innerHTML = html;
+        chatBody.insertBefore(div, typingIndicator);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // Función para mostrar/ocultar typing
+    function mostrarTypingWidget() {
+        typingIndicator.style.display = 'flex';
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function ocultarTypingWidget() {
+        typingIndicator.style.display = 'none';
+    }
+
+    // Enviar mensaje
+    async function enviarMensajeWidget(mensaje) {
+        mostrarMensajeWidget('usuario', mensaje);
+        mostrarTypingWidget();
+
+        try {
+            const response = await fetch('{{ path('app_asistente_mensaje') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    mensaje: mensaje,
+                    url_actual: window.location.pathname
+                })
+            });
+
+            const data = await response.json();
+            ocultarTypingWidget();
+
+            if (data.exito) {
+                mostrarMensajeWidget('asistente', data.respuesta);
+            } else {
+                mostrarMensajeWidget('asistente', data.mensaje || 'Error procesando la consulta');
+            }
+        } catch (error) {
+            ocultarTypingWidget();
+            mostrarMensajeWidget('asistente', 'Error técnico. Intenta nuevamente.');
+        }
+    }
+
+    // Event listeners
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const mensaje = input.value.trim();
+        if (mensaje) {
+            enviarMensajeWidget(mensaje);
+            input.value = '';
+        }
+    });
+
+    // Botones de sugerencias
+    document.querySelectorAll('.widget-sugerencia').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const mensaje = this.dataset.mensaje;
+            enviarMensajeWidget(mensaje);
+        });
+    });
+
+    // Cerrar al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.asistente-widget')) {
+            panel.style.display = 'none';
+        }
+    });
+});
+</script> 

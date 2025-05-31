@@ -4,7 +4,7 @@ namespace App\Asistente;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class ServicioOpenAIChat
+class ServicioOpenAIChat implements OpenAIInterface
 {
     private HttpClientInterface $httpClient;
     private string $apiKey;
@@ -35,29 +35,37 @@ class ServicioOpenAIChat
         }
         $mensajes[] = ['role' => 'user', 'content' => $prompt];
 
-        $response = $this->httpClient->request('POST', $endpoint, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'Content-Type' => 'application/json',
-            ],
-            'json' => [
-                'model' => $this->modelo,
-                'messages' => $mensajes,
-                'temperature' => 0.7,
-                'max_tokens' => 800,
-                'top_p' => 1,
-                'frequency_penalty' => 0,
-                'presence_penalty' => 0,
-            ],
-        ]);
+        try {
+            $response = $this->httpClient->request('POST', $endpoint, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->apiKey,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'model' => $this->modelo,
+                    'messages' => $mensajes,
+                    'temperature' => 0.7,
+                    'max_tokens' => 800,
+                    'top_p' => 1,
+                    'frequency_penalty' => 0,
+                    'presence_penalty' => 0,
+                ],
+            ]);
 
-        $data = $response->toArray(false);
+            $data = $response->toArray(false);
 
-        // Verificar la respuesta y manejar posibles errores
-        if (isset($data['error'])) {
-            throw new \RuntimeException('Error de OpenAI: ' . ($data['error']['message'] ?? 'Error desconocido'));
+            // Verificar la respuesta y manejar posibles errores
+            if (isset($data['error'])) {
+                throw new \RuntimeException('Error de OpenAI: ' . ($data['error']['message'] ?? 'Error desconocido'));
+            }
+
+            return $data['choices'][0]['message']['content'] ?? '';
+        } catch (\Exception $e) {
+            // Log del error para debugging
+            error_log('Error en ServicioOpenAIChat: ' . $e->getMessage());
+            
+            // Devolver un mensaje de error amigable
+            return "Lo siento, tengo problemas técnicos en este momento. Por favor, intenta nuevamente o contacta a un asesor.";
         }
-
-        return $data['choices'][0]['message']['content'] ?? '';
     }
 } 

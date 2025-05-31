@@ -13,7 +13,7 @@ parameters:
     openai_model: '%env(OPENAI_MODEL)%'
     
     # Parámetro para controlar si se usa el servicio mock o real
-    usar_mock_openai: true
+    usar_mock_openai: false
     
     # Configuración para importación de artículos
     import_email_to: 'sistemas@ciardi.com.ar'
@@ -63,10 +63,34 @@ services:
         arguments:
             $sliderDirectory: '%slider_directory%'
 
+    # =====================================================
+    # CONFIGURACIÓN DEL ASISTENTE VIRTUAL TITO
+    # =====================================================
+    
+    # Servicio principal de OpenAI Chat
     App\Asistente\ServicioOpenAIChat:
         arguments:
             $apiKey: '%openai_api_key%'
             $modelo: '%openai_model%'
+        tags: ['app.openai_service']
+
+    # Servicio de búsqueda de productos para el asistente
+    App\Asistente\ServicioBusquedaProductos:
+        # Autowiring automático, no necesita configuración manual
+
+    # Servicio de conversación del asistente
+    App\Asistente\ServicioConversacionAsistente:
+        # Autowiring automático
+
+    # Servicio núcleo del asistente (coordinador principal)
+    App\Asistente\ServicioAsistenteCore:
+        # Autowiring automático
+        public: true  # Hacerlo público para acceso desde controladores
+
+    # Configuración de prompts (clase estática, no necesita inyección)
+    # App\Asistente\ConfiguracionPromptsChatGPT es una clase estática
+
+    # =====================================================
 
     App\Twig\AppExtension:
         tags: ['twig.extension']
