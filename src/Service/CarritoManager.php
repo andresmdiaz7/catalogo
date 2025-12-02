@@ -58,7 +58,7 @@ class CarritoManager
                 'detalle' => $articulo->getDetalle(),
                 'marca' => $articulo->getMarca(),
                 'modelo' => $articulo->getModelo(), 
-                'precio' => $articulo->getPrecios()['precioFinal'],
+                'precio' => $this->articuloPrecioService->getPrecioFinalCIVA($articulo),
                 'cantidad' => 0
             ];
         }
@@ -206,7 +206,7 @@ class CarritoManager
 
         // Si no existe, crear nuevo item
         $cliente = $this->clienteManager->getClienteActivo();
-        $precioUnitario = $this->articuloPrecioService->getPrecioFinal($articulo);
+        $precioUnitario = $this->articuloPrecioService->getPrecioFinalCIVA($articulo);
 
         $item = new CarritoItem();
         $item->setCarrito($carrito);
@@ -288,61 +288,85 @@ class CarritoManager
             throw new \Exception('No hay cliente activo');
         }
 
-        // Crear nuevo pedido
-        $pedido = new Pedido();
-        $pedido->setCliente($cliente);
-        $pedido->setFecha(new \DateTime());
-        $pedido->setEstado(EstadoPedido::PENDIENTE);
+        // Iniciar transacción para asegurar consistencia
+        $this->entityManager->beginTransaction();
         
-        // Agregar los items del carrito al pedido
-        $total = 0;
-        foreach ($carrito->getItems() as $item) {
-            $pedidoDetalle = new PedidoDetalle();
-            $pedidoDetalle->setPedido($pedido);
-            $pedidoDetalle->setArticulo($item->getArticulo());
-            $pedidoDetalle->setCantidad($item->getCantidad());
-            $pedidoDetalle->setPrecioUnitario($item->getPrecioUnitario());
+        try {
+            // Crear nuevo pedido
+            $pedido = new Pedido();
+            $pedido->setCliente($cliente);
+            $pedido->setFecha(new \DateTime());
+            $pedido->setEstado(EstadoPedido::PENDIENTE);
             
-            // Calcular subtotal del item
-            $subtotal = $item->getCantidad() * $item->getPrecioUnitario();
-            $total += $subtotal;
+            // Validar que todos los artículos del carrito estén disponibles
+            $total = 0;
+            foreach ($carrito->getItems() as $item) {
+                // Validar que el artículo aún exista
+                if (!$item->getArticulo()) {
+                    throw new \Exception('Uno de los artículos del carrito ya no está disponible');
+                }
+                
+                // Validar cantidad mínima
+                if ($item->getCantidad() <= 0) {
+                    throw new \Exception('La cantidad debe ser mayor a 0');
+                }
+                
+                $pedidoDetalle = new PedidoDetalle();
+                $pedidoDetalle->setPedido($pedido);
+                $pedidoDetalle->setArticulo($item->getArticulo());
+                $pedidoDetalle->setCantidad($item->getCantidad());
+                $pedidoDetalle->setPrecioUnitario($item->getPrecioUnitario());
+                
+                // Calcular subtotal del item
+                $subtotal = $item->getCantidad() * $item->getPrecioUnitario();
+                $total += $subtotal;
+                
+                $pedido->addDetalle($pedidoDetalle);
+            }
             
-            $pedido->addDetalle($pedidoDetalle);
+            // Validar que el total sea mayor a 0
+            if ($total <= 0) {
+                throw new \Exception('El total del pedido debe ser mayor a 0');
+            }
+            
+            // Establecer el total del pedido
+            $pedido->setTotal($total);
+            
+            // Persistir el pedido
+            $this->entityManager->persist($pedido);
+            
+            // Marcar el carrito como convertido
+            $carrito->setEstado('convertido');
+            
+            // Confirmar transacción
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+            
+            // Solo enviar emails si la creación del pedido fue exitosa
+            try {
+                $this->enviarNotificacionesPedido($pedido);
+            } catch (\Exception $emailError) {
+                // Si falla el envío de emails, no fallar la creación del pedido
+                // Solo registrar el error para el administrador
+                error_log('Error al enviar notificaciones del pedido ' . $pedido->getId() . ': ' . $emailError->getMessage());
+            }
+            
+            return $pedido;
+            
+        } catch (\Exception $e) {
+            // Revertir transacción en caso de error
+            $this->entityManager->rollback();
+            throw new \Exception('Error al crear el pedido: ' . $e->getMessage());
         }
-        
-        // Establecer el total del pedido
-        $pedido->setTotal($total);
-        
-        // Persistir el pedido
-        $this->entityManager->persist($pedido);
-        
-        // Marcar el carrito como convertido
-        $carrito->setEstado('convertido');
-        
-        $this->entityManager->flush();
-        
-        // Enviar notificaciones por email
-        //$this->enviarNotificacionesPedido($pedido);
-        
-        return $pedido;
     }
 
     private function enviarNotificacionesPedido(Pedido $pedido): void
     {
         // Notificar al cliente
-        $this->emailService->enviarConfirmacionPedidoCliente($pedido);
+        $this->emailService->sendPedidoConfirmation($pedido);
         
-        // Notificar al vendedor
-        $vendedor = $pedido->getCliente()->getVendedor();
-        if ($vendedor) {
-            $this->emailService->enviarNotificacionPedidoVendedor($pedido, $vendedor);
-        }
-        
-        // Notificar al responsable de logística
-        $responsableLogistica = $pedido->getCliente()->getResponsableLogistica();
-        if ($responsableLogistica) {
-            $this->emailService->enviarNotificacionPedidoLogistica($pedido, $responsableLogistica);
-        }
+        // Notificar al vendedor y responsable de logística
+        $this->emailService->sendPedidoNotification($pedido);
     }
 
     public function getClienteManager(): ClienteManager

@@ -43,10 +43,11 @@ class EmailService
         $email = (new TemplatedEmail())
             ->from(new Address($this->emailFrom, 'Ciardi Hnos'))
             ->to(new Address($pedido->getCliente()->getEmail(), $pedido->getCliente()->getRazonSocial()))
-            ->subject('Confirmación de Pedido #')
+            ->subject('Confirmación de Pedido #' . $pedido->getId())
             ->htmlTemplate('emails/pedido_confirmation.html.twig')
             ->context([
-                'pedido' => $pedido
+                'pedido' => $pedido,
+                'show_logo' => true
             ]);
 
         $this->mailer->send($email);
@@ -65,11 +66,12 @@ class EmailService
             $emailVendedor = (new TemplatedEmail())
                 ->from(new Address($this->emailFrom, 'Ciardi Hnos'))
                 ->to($cliente->getVendedor()->getEmail())
-                ->subject('Nuevo pedido de ' . $cliente->getRazonSocial())
+                ->subject('Nuevo pedido #' . $pedido->getId() . ' de ' . $cliente->getRazonSocial())
                 ->htmlTemplate('emails/pedido_notification.html.twig')
                 ->context([
                     'pedido' => $pedido,
-                    'recipient' => 'vendedor'
+                    'recipient' => 'vendedor',
+                    'show_logo' => true
                 ]);
 
             $this->mailer->send($emailVendedor);
@@ -83,11 +85,12 @@ class EmailService
             $emailLogistica = (new TemplatedEmail())
                 ->from(new Address($this->emailFrom, 'Ciardi Hnos'))
                 ->to($cliente->getResponsableLogistica()->getEmail())
-                ->subject('Nuevo pedido de ' . $cliente->getRazonSocial())
+                ->subject('Nuevo pedido #' . $pedido->getId() . ' de ' . $cliente->getRazonSocial())
                 ->htmlTemplate('emails/pedido_notification.html.twig')
                 ->context([
                     'pedido' => $pedido,
-                    'recipient' => 'logistica'
+                    'recipient' => 'logistica',
+                    'show_logo' => true
                 ]);
 
             $this->mailer->send($emailLogistica);

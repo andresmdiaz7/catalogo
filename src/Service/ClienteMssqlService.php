@@ -25,12 +25,11 @@ class ClienteMssqlService
     /**
      * Buscar un cliente por código en la base de datos MSSQL
      */
-    public function buscarClientePorCodigo(int $codigo): ?array
+    public function buscarClientePorCodigo(string $codigo): ?array
     {
         try {
             $conn = $this->getMssqlConnection();
             
-            // Consulta SQL original para referencia durante debug
             $sql = "
                 SELECT 
                 Clientes.codigo as codigo,
@@ -45,16 +44,15 @@ class ClienteMssqlService
                 INNER JOIN Localidades ON Clientes.ID_LOCALIDAD = Localidades.ID_Localidad
                 WHERE Clientes.codigo = :codigo
             ";            
-            // Debug: Imprimir consulta con parámetros reemplazados
-            $stmt = $conn->prepare($sql);
-
-            $result = $conn->executeQuery($sql, ['codigo' => $codigo])->fetchAssociative();
-
-            if ($result === false) {
+            
+            $result = $conn->executeQuery($sql, ['codigo' => $codigo]);
+            $data = $result->fetchAssociative();
+            
+            if ($data === false) {
                 return null;
             }
             
-            return $result;
+            return $data;
         } catch (\Exception $e) {
             error_log("Error en consulta MSSQL: " . $e->getMessage());
             $this->logError('Error consultando cliente MSSQL', $e);
@@ -76,12 +74,13 @@ class ClienteMssqlService
                 WHERE CODIGO = :codigo 
                 AND Tipo_Operacion = :tipoOperacion 
                 AND Pendiente <> 0
+                AND ID_Empresa IN (1, 2);
             ";
             
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue('codigo', $codigo, PDO::PARAM_STR);
-            $stmt->bindValue('tipoOperacion', 'Cta.Cte.');
-            $result = $stmt->executeQuery();
+            $result = $conn->executeQuery($sql, [
+                'codigo' => $codigo,
+                'tipoOperacion' => 'Cta.Cte.'
+            ]);
             
             $data = $result->fetchAssociative();
             return $data['total'] ? (float)$data['total'] : 0.0;
@@ -110,13 +109,11 @@ class ClienteMssqlService
                 FROM Comprobantes_Ventas
                 WHERE CODIGO = :codigo 
                 AND Pendiente <> 0
+                AND ID_Empresa IN (1, 2);
                 ORDER BY Fecha_Comprobante DESC
             ";
             
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue('codigo', $codigo, PDO::PARAM_STR);
-            $result = $stmt->executeQuery();
-            
+            $result = $conn->executeQuery($sql, ['codigo' => $codigo]);
             return $result->fetchAllAssociative();
         } catch (\Exception $e) {
             $this->logError('Error consultando comprobantes pendientes', $e);
@@ -180,16 +177,7 @@ class ClienteMssqlService
             
             $sql .= " ORDER BY Fecha_Comprobante DESC";
             
-            $stmt = $conn->prepare($sql);
-            foreach ($params as $key => $value) {
-                if ($key === 'codigo') {
-                    $stmt->bindValue($key, $value, PDO::PARAM_STR);
-                } else {
-                    $stmt->bindValue($key, $value);
-                }
-            }
-            $result = $stmt->executeQuery();
-            
+            $result = $conn->executeQuery($sql, $params);
             return $result->fetchAllAssociative();
         } catch (\Exception $e) {
             $this->logError('Error consultando historial de compras', $e);

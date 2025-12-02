@@ -115,11 +115,17 @@ class CatalogoController extends AbstractController
         SubrubroRepository $subrubroRepository,
         ArticuloRepository $articuloRepository,
         PaginatorInterface $paginator,
+        ManagerRegistry $doctrine,
         string $id,
         ?string $rubro = null,
         ?string $subrubro = null
     ): Response {
-
+        // Obtener el número de elementos por página del request o usar valor por defecto
+        $itemsPorPagina = $request->query->getInt('items_por_pagina', 12);
+        
+        // Obtener las marcas seleccionadas del request
+        $marcasSeleccionadas = $request->query->all('marcas') ?? [];
+        
         $seccion = $seccionRepository->createQueryBuilder('s')
             ->leftJoin('s.rubros', 'r')
             ->leftJoin('r.subrubros', 'sr')
@@ -134,10 +140,67 @@ class CatalogoController extends AbstractController
             ->orderBy('r.nombre', 'ASC')
             ->getQuery()
             ->getOneOrNullResult();
-
+        
         if (!$seccion) {
             throw $this->createNotFoundException('La sección no existe'); 
         }
+
+        // Obtener todas las marcas disponibles para esta sección/rubro/subrubro
+        $em = $doctrine->getManager();
+        $dql = "SELECT DISTINCT m 
+                FROM App\Entity\Marca m 
+                WHERE m.habilitado = :marcaHabilitada 
+                AND EXISTS (
+                    SELECT 1 
+                    FROM App\Entity\Articulo a 
+                    INNER JOIN App\Entity\Subrubro s WITH a.subrubro = s 
+                    INNER JOIN App\Entity\Rubro r WITH s.rubro = r 
+                    INNER JOIN a.archivos aa 
+                    INNER JOIN aa.archivo ar 
+                    WHERE a.marca = m 
+                    AND r.seccion = :seccion 
+                    AND a.habilitadoWeb = :habilitado 
+                    AND a.habilitadoGestion = :habilitadoGestion 
+                    AND r.habilitado = :rubroHabilitado 
+                    AND s.habilitado = :subrubroHabilitado
+                    AND a.precioLista > :precio
+                    AND ar.tipoMime LIKE :tipoImagen";
+
+        // Agregar condiciones de rubro y subrubro si existen
+        if ($rubro) {
+            $dql .= " AND r.codigo = :rubro";
+        }
+        if ($subrubro) {
+            $dql .= " AND s.codigo = :subrubro";
+        }
+
+        $dql .= ")";
+
+        $query = $em->createQuery($dql)
+            ->setParameter('seccion', $seccion)
+            ->setParameter('habilitado', true)
+            ->setParameter('habilitadoGestion', true)
+            ->setParameter('marcaHabilitada', true)
+            ->setParameter('rubroHabilitado', true)
+            ->setParameter('subrubroHabilitado', true)
+            ->setParameter('precio', 0)
+            ->setParameter('tipoImagen', 'image/%');
+
+        // Agregar parámetros de rubro y subrubro si existen
+        if ($rubro) {
+            $query->setParameter('rubro', $rubro);
+        }
+        if ($subrubro) {
+            $query->setParameter('subrubro', $subrubro);
+        }
+
+        // Obtener todas las marcas disponibles
+        $marcas = $query->getResult();
+        
+        // Ordenar marcas por nombre
+        usort($marcas, function($a, $b) {
+            return strcmp($a->getNombre(), $b->getNombre());
+        });
 
         // Iniciar la consulta de artículos
         $queryBuilder = $articuloRepository->createQueryBuilder('a')
@@ -163,6 +226,12 @@ class CatalogoController extends AbstractController
             ->setParameter('rubroHabilitado', true)
             ->setParameter('subrubroHabilitado', true)
             ->distinct();
+
+        // Aplicar filtro de marcas si hay alguna seleccionada
+        if (!empty($marcasSeleccionadas)) {
+            $queryBuilder->andWhere('m.codigo IN (:marcasSeleccionadas)')
+                ->setParameter('marcasSeleccionadas', $marcasSeleccionadas);
+        }
 
         // Obtener rubro y subrubro activos si existen
         $rubroActual = null;
@@ -191,14 +260,17 @@ class CatalogoController extends AbstractController
         $articulos = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
-            12
+            $itemsPorPagina
         );
         
         return $this->render('catalogo/seccion.html.twig', [
             'seccion' => $seccion,
             'articulos' => $articulos,
             'rubro_actual' => $rubroActual,
-            'subrubro_actual' => $subrubroActual
+            'subrubro_actual' => $subrubroActual,
+            'marcas' => $marcas,
+            'marcas_seleccionadas' => $marcasSeleccionadas,
+            'items_por_pagina' => $itemsPorPagina
         ]);
     }
 

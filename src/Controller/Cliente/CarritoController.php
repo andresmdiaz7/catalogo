@@ -56,7 +56,7 @@ class CarritoController extends AbstractController
             return new JsonResponse(['success' => true]);
         }
 
-        $this->addFlash('success', 'Artículo agregado al carrito');
+        $this->addFlash('success', $cantidad . ' <strong>' . $articulo->getDetalle() . '</strong> agregado al carrito');
         return $this->redirect($request->headers->get('referer', $this->generateUrl('app_cliente_carrito_index')));
     }
 

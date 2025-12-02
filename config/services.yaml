@@ -5,16 +5,9 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     articulos_directory: '%kernel.project_dir%/public/uploads/articulos'
-    directorio_archivos: '/uploads/archivos/'
+    directorio_archivos: '%kernel.project_dir%/public/uploads/archivos'
     slider_directory: '%kernel.project_dir%/public/uploads/sliders'
 
-    # datos de OPENAI
-    openai_api_key: '%env(OPENAI_API_KEY)%'
-    openai_model: '%env(OPENAI_MODEL)%'
-    
-    # Parámetro para controlar si se usa el servicio mock o real
-    usar_mock_openai: false
-    
     # Configuración para importación de artículos
     import_email_to: 'sistemas@ciardi.com.ar'
     import_email_subject: 'Catalogo Ciardi - Importación de artículos'
@@ -62,35 +55,7 @@ services:
     App\Command\CrearDirectorioSliderCommand:
         arguments:
             $sliderDirectory: '%slider_directory%'
-
-    # =====================================================
-    # CONFIGURACIÓN DEL ASISTENTE VIRTUAL TITO
-    # =====================================================
-    
-    # Servicio principal de OpenAI Chat
-    App\Asistente\ServicioOpenAIChat:
-        arguments:
-            $apiKey: '%openai_api_key%'
-            $modelo: '%openai_model%'
-        tags: ['app.openai_service']
-
-    # Servicio de búsqueda de productos para el asistente
-    App\Asistente\ServicioBusquedaProductos:
-        # Autowiring automático, no necesita configuración manual
-
-    # Servicio de conversación del asistente
-    App\Asistente\ServicioConversacionAsistente:
-        # Autowiring automático
-
-    # Servicio núcleo del asistente (coordinador principal)
-    App\Asistente\ServicioAsistenteCore:
-        # Autowiring automático
-        public: true  # Hacerlo público para acceso desde controladores
-
-    # Configuración de prompts (clase estática, no necesita inyección)
-    # App\Asistente\ConfiguracionPromptsChatGPT es una clase estática
-
-    # =====================================================
+            $archivosDirectory: '%directorio_archivos%'
 
     App\Twig\AppExtension:
         tags: ['twig.extension']

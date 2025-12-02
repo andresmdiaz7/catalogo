@@ -37,7 +37,7 @@ class UsuarioType extends AbstractType
                 'label' => 'Contraseña',
                 'mapped' => false,
                 'required' => $options['require_password'],
-                'constraints' => [
+                'constraints' => $options['require_password'] ? [
                     new NotBlank([
                         'message' => 'Por favor ingrese una contraseña',
                         'groups' => ['create']
@@ -48,7 +48,7 @@ class UsuarioType extends AbstractType
                         'max' => 4096,
                         'groups' => ['create', 'edit']
                     ]),
-                ],
+                ] : [],
                 'attr' => ['class' => 'form-control'],
                 'row_attr' => [
                     'class' => 'mb-3'

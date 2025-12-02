@@ -2,7 +2,7 @@
 <div class="pedido-details">
     <p><strong>Pedido #:</strong> {{ pedido.id }}</p>
     <p><strong>Fecha:</strong> {{ pedido.fecha|date('d/m/Y H:i') }}</p>
-    <p><strong>Estado:</strong> {{ pedido.estado }}</p>
+    <p><strong>Estado:</strong> {{ pedido.estado.value }}</p>
 
     <h3>Artículos solicitados:</h3>
     <table class="items-table">

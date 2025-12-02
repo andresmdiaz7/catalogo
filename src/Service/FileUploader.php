@@ -24,15 +24,28 @@ class FileUploader
         $this->projectDir = $parameterBag->get('kernel.project_dir');
         
         // Asegurarse de que el directorio base existe
-        if (!is_dir($this->targetDirectory) && !mkdir($this->targetDirectory, 0777, true)) {
-            throw new \RuntimeException(sprintf('No se pudo crear el directorio "%s"', $this->targetDirectory));
+        if (!is_dir($this->targetDirectory)) {
+            if (!@mkdir($this->targetDirectory, 0755, true)) {
+                // En producción, intentar crear en una ubicación alternativa
+                $alternativeDir = $this->projectDir . '/var/uploads/archivos';
+                if (!is_dir($alternativeDir) && !@mkdir($alternativeDir, 0755, true)) {
+                    throw new \RuntimeException(sprintf(
+                        'No se pudo crear el directorio de archivos. Intentó crear: "%s" y "%s". ' .
+                        'Verifique los permisos del servidor web.', 
+                        $this->targetDirectory, 
+                        $alternativeDir
+                    ));
+                }
+                $this->targetDirectory = $alternativeDir;
+            }
         }
         
         // Crear los subdirectorios del 0 al 99 si no existen
         for ($i = 0; $i < 100; $i++) {
             $subDir = $this->targetDirectory . '/' . $i;
-            if (!is_dir($subDir) && !mkdir($subDir, 0777, true)) {
-                throw new \RuntimeException(sprintf('No se pudo crear el subdirectorio "%s"', $subDir));
+            if (!is_dir($subDir) && !@mkdir($subDir, 0755, true)) {
+                // Log el error pero no fallar completamente
+                error_log(sprintf('No se pudo crear el subdirectorio "%s"', $subDir));
             }
         }
     }

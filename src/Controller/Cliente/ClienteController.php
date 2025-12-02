@@ -4,6 +4,7 @@ namespace App\Controller\Cliente;
 
 use App\Entity\Usuario;
 use App\Entity\EstadoPedido;
+use App\Form\ClientePerfilType;
 use App\Service\ClienteManager;
 use App\Repository\ClienteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +19,14 @@ use Doctrine\ORM\EntityManagerInterface;
 #[IsGranted('ROLE_CLIENTE')]
 class ClienteController extends AbstractController
 {
+    /**
+     * Seleccionar cliente de los que tenga asociados al usuario
+     * 
+     * @param Request $request
+     * @param ClienteManager $clienteManager
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/seleccionar', name: 'app_cliente_seleccionar')]
     public function seleccionar(Request $request, ClienteManager $clienteManager, EntityManagerInterface $entityManager): Response
     {
@@ -38,7 +47,7 @@ class ClienteController extends AbstractController
             $cliente->incrementarCantidadIngresos();
             $cliente->setUltimaVisita(new \DateTime());
             $entityManager->flush();
-            return $this->redirectToRoute('app_cliente_dashboard');
+            return $this->redirectToRoute('app_cliente_panel');
         }
         
         // Para cambiar de cliente activo
@@ -52,8 +61,8 @@ class ClienteController extends AbstractController
                     $cliente->incrementarCantidadIngresos();
                     $cliente->setUltimaVisita(new \DateTime());
                     $entityManager->flush();
-                    $this->addFlash('success', 'Cliente seleccionado: ' . $cliente->getRazonSocial());
-                    return $this->redirectToRoute('app_cliente_dashboard');
+                    $this->addFlash('success', 'Cliente activo: ' . $cliente->getRazonSocial());
+                    return $this->redirectToRoute('app_cliente_panel');
                 }
             }
             
@@ -65,40 +74,63 @@ class ClienteController extends AbstractController
         ]);
     }
     
-    /**
-     * @todo ver si esto se puede eliminar
-     */
-    /*
-    #[Route('/dashboard', name: 'app_cliente_dashboard')]
-    public function dashboard(ClienteManager $clienteManager): Response
-    {
-        // Verificar si hay un cliente activo
-        if (!$clienteManager->hasClienteActivo()) {
-            // Intentar configurar automáticamente
-            if (!$clienteManager->configurarClienteActivoAutomaticamente()) {
-                return $this->redirectToRoute('app_cliente_seleccionar');
-            }
-        }
-        
-        // Verificar que el cliente activo pertenece al usuario actual
-        if (!$clienteManager->validarClienteActivo()) {
-            $this->addFlash('error', 'El cliente seleccionado no es válido');
-            return $this->redirectToRoute('app_cliente_seleccionar');
-        }
-        
-        $clienteActivo = $clienteManager->getClienteActivo();
-        
-        return $this->render('cliente/panel/index.html.twig', [
-            'cliente' => $clienteActivo
-        ]);
-    }
-    */
     
+    /**
+     * Cambiar cliente
+     * 
+     * @param ClienteManager $clienteManager
+     * @return Response
+     */
     #[Route('/cambiar-cliente', name: 'app_cliente_cambiar')]
     public function cambiarCliente(ClienteManager $clienteManager): Response
     {
         // Limpiar el cliente activo y redirigir a la selección
         $clienteManager->clearClienteActivo();
         return $this->redirectToRoute('app_cliente_seleccionar');
+    }
+
+
+    /**
+     * Perfil del cliente
+     * 
+     * @param Request $request
+     * @param ClienteManager $clienteManager
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    #[Route('/perfil', name: 'app_cliente_perfil', methods: ['GET', 'POST'])]
+    public function perfil(
+        Request $request,
+        ClienteManager $clienteManager,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $cliente = $clienteManager->getClienteActivo();
+        
+        if (!$cliente) {
+            $this->addFlash('error', 'Debe seleccionar un cliente para ver su perfil');
+            return $this->redirectToRoute('app_cliente_seleccionar');
+        }
+
+        $form = $this->createForm(ClientePerfilType::class, $cliente);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $entityManager->flush();
+                $this->addFlash('success', 'Perfil actualizado correctamente');
+                
+                // Actualizar los datos en la sesión
+                $clienteManager->setClienteActivo($cliente);
+                
+                return $this->redirectToRoute('app_cliente_perfil');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Error al actualizar el perfil: ' . $e->getMessage());
+            }
+        }
+
+        return $this->render('cliente/perfil.html.twig', [
+            'cliente' => $cliente,
+            'form' => $form->createView(),
+        ]);
     }
 }

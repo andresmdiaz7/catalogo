@@ -18,24 +18,22 @@
                 
                     <div class="row">
                         <div class="col-md-6">
-                            {{ form_row(form.nombre) }}
+                            {{ form_row(form.nombreReferencia) }}
                         </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.apellido) }}
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             {{ form_row(form.email) }}
                         </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.plainPassword) }}
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
+                            {{ form_row(form.plainPassword) }}
+                        </div>
+                        <div class="col-md-6">
                             {{ form_row(form.tipoUsuario) }}
                         </div>
+                    </div>
+                    <div class="row">
+                        
                     </div>
                     <div class="d-grid gap-2 mt-4">
                         <button type="submit" class="btn btn-primary">

@@ -12,7 +12,7 @@
     {# Botón del carrito #}
     <a class="btn btn-outline-primary position-relative" href="{{ path('app_cliente_carrito_index') }}">
         <i class="bi bi-cart me-1"></i>
-        <span class="badge text-bg-secondary badge rounded-pill bg-danger">{{ carrito_cliente.items|length }}</span>
+        <span class="badge text-bg-secondary badge rounded-pill bg-danger">{{ carrito_cliente ? carrito_cliente.items|length : 0 }}</span>
     </a>
     
     {# Dropdown para opciones de usuario #}
@@ -35,6 +35,9 @@
             
             <li><a class="dropdown-item" href="{{ path('app_cliente_panel') }}">
                 <i class="bi bi-person me-2"></i>Panel de control
+            </a></li>
+            <li><a class="dropdown-item" href="{{ path('app_cliente_perfil') }}">
+                <i class="bi bi-person-circle me-2"></i>Mi Perfil de cliente
             </a></li>
             <li><a class="dropdown-item" href="{{ path('app_cliente_pedido_index') }}">
                 <i class="bi bi-bag me-2"></i>Mis Pedidos

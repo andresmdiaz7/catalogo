@@ -141,12 +141,39 @@ class UsuarioController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
         if ($this->isCsrfTokenValid('delete'.$usuario->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($usuario);
-            $entityManager->flush();
-            $this->addFlash('success', 'Usuario eliminado correctamente.');
+            try {
+                // Verificar si el usuario tiene clientes asociados
+                if ($usuario->hasClientes()) {
+                    $cantidadClientes = $usuario->getClientes()->count();
+                    $this->addFlash('error', 
+                        'No se puede eliminar el usuario porque tiene ' . $cantidadClientes . 
+                        ' cliente(s) asociado(s). Primero debe eliminar o reasignar los clientes.'
+                    );
+                    return $this->redirectToRoute('app_admin_usuario_index');
+                }
+
+                $entityManager->remove($usuario);
+                $entityManager->flush();
+                $this->addFlash('success', 'Usuario eliminado correctamente.');
+                
+            } catch (\Exception $e) {
+                // Capturar cualquier error de constraint de base de datos
+                $this->addFlash('error', 
+                    'No se puede eliminar el usuario. Verifique que no tenga datos relacionados en el sistema.'
+                );
+            }
         }
 
         return $this->redirectToRoute('app_admin_usuario_index');
+    }
+
+    #[Route('/{id}/clientes', name: 'app_admin_usuario_clientes', methods: ['GET'])]
+    public function verClientes(Usuario $usuario): Response
+    {
+        return $this->render('admin/usuario/clientes.html.twig', [
+            'usuario' => $usuario,
+            'clientes' => $usuario->getClientes(),
+        ]);
     }
     
     /**

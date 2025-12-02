@@ -75,7 +75,7 @@ class VendedorType extends AbstractType
             ->add('usuario', EntityType::class, [
                 'class' => Usuario::class,
                 'choice_label' => function(Usuario $usuario) {
-                    return $usuario->getEmail() . ' (' . ($usuario->getNombreCompleto() ?: 'Sin nombre') . ')';
+                    return $usuario->getEmail() . ' (' . ($usuario->getNombreReferencia() ?: 'Sin nombre') . ')';
                 },
                 'required' => false,
                 'placeholder' => 'Seleccione un usuario (opcional)',

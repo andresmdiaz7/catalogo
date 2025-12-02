@@ -92,6 +92,7 @@
                             <th>Localidad</th>
                             <th>Estado</th>
                             <th>Categoría</th>
+                            <th>Ingresos</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -112,6 +113,7 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ cliente.categoria ? cliente.categoria.nombre : 'Sin categoría' }}</td>
+                                <td class="text-center">{{ cliente.cantidadIngresos }}</td>
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="{{ path('app_admin_cliente_editar', {'id': cliente.id}) }}" 

@@ -270,6 +270,8 @@ class ClienteType extends AbstractType
                     'mapped' => false,
                     'required' => false,
                     'label' => false,
+                    'require_password' => false,
+                    'validation_groups' => false,
                     'attr' => [
                         'class' => 'collapse',
                         'id' => 'nuevoUsuarioCollapse'
@@ -315,6 +317,12 @@ class ClienteType extends AbstractType
                 // Si se selecciona un usuario existente, limpiar los datos del nuevo usuario
                 if (isset($data['usuario']) && $data['usuario']) {
                     $data['crearNuevoUsuario'] = false;
+                    $data['nuevoUsuario'] = null;
+                    $event->setData($data);
+                }
+
+                // Si no se va a crear un nuevo usuario, limpiar los datos del nuevo usuario
+                if (!isset($data['crearNuevoUsuario']) || !$data['crearNuevoUsuario']) {
                     $data['nuevoUsuario'] = null;
                     $event->setData($data);
                 }

@@ -41,10 +41,10 @@ class Articulo
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     private ?string $impuesto = null;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+    #[ORM\Column(type: 'decimal', precision: 17, scale: 2)]
     private ?string $precioLista = null;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+    #[ORM\Column(type: 'decimal', precision: 17, scale: 2)]
     private ?string $precio400 = null;
 
     #[ORM\Column(type: 'boolean')]

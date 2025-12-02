@@ -52,17 +52,10 @@ class ArticuloPrecioService
     }
 
     /**
-     * Obtiene el precio sin IVA de un artículo
+     * Obtiene el precio con descuento de un artículo
      * @param Articulo $articulo
      * @return float
      */
-    public function getPrecioSinIVA(Articulo $articulo): float
-    {
-        $precioBase = $this->getPrecioBase($articulo);
-        $calculo = $precioBase / (1 + ($articulo->getImpuesto() / 100));
-        return number_format($calculo, 2, '.', '');
-    }
-
     public function getPrecioConDescuento(Articulo $articulo): float
     {
         $clienteActivo = $this->getClienteActivo();
@@ -71,7 +64,7 @@ class ArticuloPrecioService
         }
         
         $descuento = $clienteActivo->getPorcentajeDescuento();
-        $calculo = $this->getPrecioSinIVA($articulo) * (1 - ($descuento / 100));
+        $calculo = $this->getPrecioBase($articulo) * (1 - ($descuento / 100));
         return number_format($calculo, 2, '.', '');
     }
 
@@ -92,12 +85,28 @@ class ArticuloPrecioService
         return number_format($calculo, 2, '.', '');
     }
 
+
     /**
-     * Obtiene el precio final de un artículo
+     * Obtiene el precio final de un artículo sin IVA, con descuento y rentabilidad
      * @param Articulo $articulo
      * @return float
      */
-    public function getPrecioFinal(Articulo $articulo): float
+    public function getPrecioFinalSIVA(Articulo $articulo): float
+    {
+        if (!$this->getClienteActivo()) {
+            return $this->getPrecioBase($articulo);
+        }
+        $calculo = $this->getPrecioConDescuentoyRentabilidad($articulo);
+        return number_format($calculo, 2, '.', '');
+    }
+
+
+    /**
+     * Obtiene el precio final de un artículo con IVA
+     * @param Articulo $articulo
+     * @return float
+     */
+    public function getPrecioFinalCIVA(Articulo $articulo): float
     {
         if (!$this->getClienteActivo()) {
             return $this->getPrecioBase($articulo);
@@ -117,10 +126,10 @@ class ArticuloPrecioService
     {
         return [
             'precioBase' => $this->getPrecioBase($articulo),
-            'precioBaseSIVA' => $this->getPrecioSinIVA($articulo),
             'precioConDescuento' => $this->getPrecioConDescuento($articulo),
             'precioConDescuentoRentabilidad' => $this->getPrecioConDescuentoyRentabilidad($articulo),
-            'precioFinal' => $this->getPrecioFinal($articulo)
+            'precioFinalSIVA' => $this->getPrecioFinalSIVA($articulo),
+            'precioFinalCIVA' => $this->getPrecioFinalCIVA($articulo)
         ];
     }
 

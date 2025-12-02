@@ -48,7 +48,7 @@
     <td class="align-top">
         <div class="d-flex flex-column text-end">
             <span>
-                ${{ articulo.precios.precioFinal|number_format(2, ',', '.') }}
+                ${{ articulo.precios.precioFinalCIVA|number_format(2, ',', '.') }}
             </span>    
         </div>
     </td>
@@ -57,11 +57,13 @@
         <div class="d-flex justify-content-end">
         {# Si existe en el carrito, mostrar la cantidad #}
             {% set item_carrito = null %}
-            {% for item in carrito_cliente.items %}
-                {% if item.articulo.codigo == articulo.codigo %}
-                    {% set item_carrito = item %}
-                {% endif %}
-            {% endfor %}
+            {% if carrito_cliente %}
+                {% for item in carrito_cliente.items %}
+                    {% if item.articulo.codigo == articulo.codigo %}
+                        {% set item_carrito = item %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             
             
             <form action="{{ path('app_cliente_carrito_agregar') }}" method="POST">

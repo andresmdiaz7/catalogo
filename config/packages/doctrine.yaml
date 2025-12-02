@@ -11,6 +11,9 @@ doctrine:
                 password: '%env(resolve:MYSQL_PASSWORD)%'
                 server_version: '%env(resolve:MYSQL_SERVER_VERSION)%'
                 charset: utf8mb4
+                options:
+                    1002: "SET sql_mode=(SELECT CONCAT(@@sql_mode, ',PIPES_AS_CONCAT,NO_ENGINE_SUBSTITUTION'))"
+                use_savepoints: true
                 
             mssql:
                 url: '%env(resolve:DATABASE_URL_MSSQL)%'

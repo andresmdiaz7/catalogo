@@ -432,24 +432,38 @@ class ImportarArticulosCommand extends Command
         $marcaCodigo = $articuloData['codigo_marca'] ?? null;
         $marcaNombre = $articuloData['marca'] ?? null;
 
-        // Obtener o crear rubro
+        // Obtener o crear rubro y actualizar nombre si es diferente
         if (!isset($this->rubrosCache[$rubroCodigo])) {
             $rubro = new Rubro();
             $rubro->setCodigo($rubroCodigo);
             $rubro->setNombre($articuloData['rubro']);
             $this->rubrosCache[$rubroCodigo] = $rubro;
+        } else {
+            // Si ya existe, verificar si el nombre necesita actualización
+            $rubroExistente = $this->rubrosCache[$rubroCodigo];
+            if ($rubroExistente->getNombre() !== $articuloData['rubro']) {
+                $rubroExistente->setNombre($articuloData['rubro']);
+            }
         }
 
-        // Obtener o crear subrubro
+        // Obtener o crear subrubro y actualizar nombre si es diferente
         if (!isset($this->subrubrosCache[$subrubroCodigo])) {
             $subrubro = new Subrubro();
             $subrubro->setCodigo($subrubroCodigo);
             $subrubro->setNombre($articuloData['subrubro']);
             $subrubro->setRubro($this->rubrosCache[$rubroCodigo]);
             $this->subrubrosCache[$subrubroCodigo] = $subrubro;
+        } else {
+            // Si ya existe, verificar si el nombre necesita actualización
+            $subrubroExistente = $this->subrubrosCache[$subrubroCodigo];
+            if ($subrubroExistente->getNombre() !== $articuloData['subrubro']) {
+                $subrubroExistente->setNombre($articuloData['subrubro']);
+            }
+            // Asegurar que la relación con el rubro esté correcta
+            $subrubroExistente->setRubro($this->rubrosCache[$rubroCodigo]);
         }
         
-        // Obtener o crear marca si existe el código
+        // Obtener o crear marca si existe el código y actualizar nombre si es diferente
         $marca = null;
         if (!empty($marcaCodigo)) {
             if (!isset($this->marcasCache[$marcaCodigo])) {
@@ -459,7 +473,12 @@ class ImportarArticulosCommand extends Command
                 $marca->setHabilitado(true);
                 $this->marcasCache[$marcaCodigo] = $marca;
             } else {
-                $marca = $this->marcasCache[$marcaCodigo];
+                $marcaExistente = $this->marcasCache[$marcaCodigo];
+                // Actualizar el nombre si es diferente y no está vacío
+                if (!empty($marcaNombre) && $marcaExistente->getNombre() !== $marcaNombre) {
+                    $marcaExistente->setNombre($marcaNombre);
+                }
+                $marca = $marcaExistente;
             }
         }
 
@@ -520,7 +539,7 @@ class ImportarArticulosCommand extends Command
             $subrubrosCodigos = array_unique($subrubrosCodigos);
             $marcasCodigos = array_unique($marcasCodigos);
 
-            // Verificar rubros existentes
+            // Verificar y sincronizar rubros existentes
             $rubrosExistentes = $em->createQueryBuilder()
                 ->select('r')
                 ->from(Rubro::class, 'r')
@@ -529,12 +548,22 @@ class ImportarArticulosCommand extends Command
                 ->getQuery()
                 ->getResult();
 
-            // Actualizar caché de rubros con los existentes
-            foreach ($rubrosExistentes as $rubro) {
-                $this->rubrosCache[$rubro->getCodigo()] = $rubro;
+            $rubrosExistentesMap = [];
+            foreach ($rubrosExistentes as $rubroExistente) {
+                $rubrosExistentesMap[$rubroExistente->getCodigo()] = $rubroExistente;
+                
+                // Si existe en el caché pero con nombre diferente, actualizar el existente
+                if (isset($this->rubrosCache[$rubroExistente->getCodigo()])) {
+                    $rubroDelCache = $this->rubrosCache[$rubroExistente->getCodigo()];
+                    if ($rubroExistente->getNombre() !== $rubroDelCache->getNombre()) {
+                        $rubroExistente->setNombre($rubroDelCache->getNombre());
+                    }
+                }
+                // Actualizar el caché con la entidad gestionada
+                $this->rubrosCache[$rubroExistente->getCodigo()] = $rubroExistente;
             }
 
-            // Verificar subrubros existentes
+            // Verificar y sincronizar subrubros existentes
             $subrubrosExistentes = $em->createQueryBuilder()
                 ->select('s')
                 ->from(Subrubro::class, 's')
@@ -543,12 +572,28 @@ class ImportarArticulosCommand extends Command
                 ->getQuery()
                 ->getResult();
 
-            // Actualizar caché de subrubros con los existentes
-            foreach ($subrubrosExistentes as $subrubro) {
-                $this->subrubrosCache[$subrubro->getCodigo()] = $subrubro;
+            $subrubrosExistentesMap = [];
+            foreach ($subrubrosExistentes as $subrubroExistente) {
+                $subrubrosExistentesMap[$subrubroExistente->getCodigo()] = $subrubroExistente;
+                
+                // Si existe en el caché pero con nombre diferente, actualizar el existente
+                if (isset($this->subrubrosCache[$subrubroExistente->getCodigo()])) {
+                    $subrubroDelCache = $this->subrubrosCache[$subrubroExistente->getCodigo()];
+                    if ($subrubroExistente->getNombre() !== $subrubroDelCache->getNombre()) {
+                        $subrubroExistente->setNombre($subrubroDelCache->getNombre());
+                    }
+                    // Actualizar la relación con el rubro también
+                    $codigoRubro = $subrubroDelCache->getRubro()->getCodigo();
+                    if (isset($this->rubrosCache[$codigoRubro])) {
+                        $subrubroExistente->setRubro($this->rubrosCache[$codigoRubro]);
+                    }
+                }
+                // Actualizar el caché con la entidad gestionada
+                $this->subrubrosCache[$subrubroExistente->getCodigo()] = $subrubroExistente;
             }
             
-            // Verificar marcas existentes
+            // Verificar y sincronizar marcas existentes
+            $marcasExistentesMap = [];
             if (!empty($marcasCodigos)) {
                 $marcasExistentes = $em->createQueryBuilder()
                     ->select('m')
@@ -558,34 +603,69 @@ class ImportarArticulosCommand extends Command
                     ->getQuery()
                     ->getResult();
 
-                // Actualizar caché de marcas con las existentes
-                foreach ($marcasExistentes as $marca) {
-                    $this->marcasCache[$marca->getCodigo()] = $marca;
+                foreach ($marcasExistentes as $marcaExistente) {
+                    $marcasExistentesMap[$marcaExistente->getCodigo()] = $marcaExistente;
+                    
+                    // Si existe en el caché pero con nombre diferente, actualizar el existente
+                    if (isset($this->marcasCache[$marcaExistente->getCodigo()])) {
+                        $marcaDelCache = $this->marcasCache[$marcaExistente->getCodigo()];
+                        if ($marcaExistente->getNombre() !== $marcaDelCache->getNombre()) {
+                            $marcaExistente->setNombre($marcaDelCache->getNombre());
+                        }
+                    }
+                    // Actualizar el caché con la entidad gestionada
+                    $this->marcasCache[$marcaExistente->getCodigo()] = $marcaExistente;
                 }
             }
 
-            // Persistir solo los rubros, subrubros y marcas nuevos
+            // Procesar artículos y sus entidades relacionadas
             foreach ($articulos as $articulo) {
                 $rubro = $articulo->getSubrubro()->getRubro();
                 $subrubro = $articulo->getSubrubro();
                 $marca = $articulo->getMarca();
 
-                // Solo persistir rubros nuevos
-                if (!$em->contains($rubro)) {
-                    $em->persist($rubro);
+                // Manejar rubros: usar existente si está en BD, o persistir nuevo
+                $codigoRubro = $rubro->getCodigo();
+                if (isset($rubrosExistentesMap[$codigoRubro])) {
+                    // Usar el rubro existente de la BD
+                    $rubroFinal = $rubrosExistentesMap[$codigoRubro];
+                    $subrubro->setRubro($rubroFinal);
+                } else {
+                    // Es un rubro nuevo, persistir
+                    if (!$em->contains($rubro)) {
+                        $em->persist($rubro);
+                    }
                 }
 
-                // Solo persistir subrubros nuevos
-                if (!$em->contains($subrubro)) {
-                    $em->persist($subrubro);
+                // Manejar subrubros: usar existente si está en BD, o persistir nuevo
+                $codigoSubrubro = $subrubro->getCodigo();
+                if (isset($subrubrosExistentesMap[$codigoSubrubro])) {
+                    // Usar el subrubro existente de la BD
+                    $subrubroFinal = $subrubrosExistentesMap[$codigoSubrubro];
+                    $articulo->setSubrubro($subrubroFinal);
+                } else {
+                    // Es un subrubro nuevo, persistir
+                    if (!$em->contains($subrubro)) {
+                        $em->persist($subrubro);
+                    }
                 }
                 
-                // Solo persistir marcas nuevas
-                if ($marca && !$em->contains($marca)) {
-                    $em->persist($marca);
+                // Manejar marcas: usar existente si está en BD, o persistir nueva
+                if ($marca) {
+                    $codigoMarca = $marca->getCodigo();
+                    if (isset($marcasExistentesMap[$codigoMarca])) {
+                        // Usar la marca existente de la BD
+                        $marcaFinal = $marcasExistentesMap[$codigoMarca];
+                        $articulo->setMarca($marcaFinal);
+                    } else {
+                        // Es una marca nueva, persistir
+                        if (!$em->contains($marca)) {
+                            $em->persist($marca);
+                        }
+                    }
                 }
 
-                // El artículo ya está gestionado (nuevo o actualizado)
+                // Persistir el artículo
                 if (!$em->contains($articulo)) {
                     $em->persist($articulo);
                 }
@@ -595,11 +675,17 @@ class ImportarArticulosCommand extends Command
             $em->flush();
             $em->getConnection()->commit();
             
-            // Limpiar el EntityManager y recargar las entidades del caché
+            // Limpiar el EntityManager completamente
             $em->clear();
             
-            // Recargar las entidades en el caché después del clear
-            $this->recargarCache($em);
+            // PUNTO 1: Limpiar completamente los cachés después de $em->clear()
+            $this->rubrosCache = [];
+            $this->subrubrosCache = [];
+            $this->marcasCache = [];
+            $this->articulosExistentesCache = [];
+            
+            // PUNTO 2: Ya no recargar caché aquí para evitar problemas de Identity Map
+            // El caché se reconstruirá según se necesite en el próximo lote
             
             gc_collect_cycles();
 
@@ -607,7 +693,7 @@ class ImportarArticulosCommand extends Command
                 $io->info($this->formatearMensajeLog(sprintf('Procesados %d artículos', count($articulos))));
             }
         } catch (\Exception $e) {
-            // Revertir transacción en caso de error
+            // PUNTO 4: Resetear el EntityManager y limpiar cachés en caso de error
             if ($em->getConnection()->isTransactionActive()) {
                 $em->getConnection()->rollBack();
             }
@@ -616,54 +702,14 @@ class ImportarArticulosCommand extends Command
                 $em->close();
             }
             $this->doctrine->resetManager();
-            throw $e;
-        }
-    }
-
-    private function recargarCache(EntityManager $em): void
-    {
-        // Recargar rubros
-        $rubros = $em->createQueryBuilder()
-            ->select('r')
-            ->from(Rubro::class, 'r')
-            ->where('r.codigo IN (:codigos)')
-            ->setParameter('codigos', array_keys($this->rubrosCache))
-            ->getQuery()
-            ->getResult();
-
-        $this->rubrosCache = [];
-        foreach ($rubros as $rubro) {
-            $this->rubrosCache[$rubro->getCodigo()] = $rubro;
-        }
-
-        // Recargar subrubros
-        $subrubros = $em->createQueryBuilder()
-            ->select('s')
-            ->from(Subrubro::class, 's')
-            ->where('s.codigo IN (:codigos)')
-            ->setParameter('codigos', array_keys($this->subrubrosCache))
-            ->getQuery()
-            ->getResult();
-
-        $this->subrubrosCache = [];
-        foreach ($subrubros as $subrubro) {
-            $this->subrubrosCache[$subrubro->getCodigo()] = $subrubro;
-        }
-        
-        // Recargar marcas
-        if (!empty($this->marcasCache)) {
-            $marcas = $em->createQueryBuilder()
-                ->select('m')
-                ->from(Marca::class, 'm')
-                ->where('m.codigo IN (:codigos)')
-                ->setParameter('codigos', array_keys($this->marcasCache))
-                ->getQuery()
-                ->getResult();
-
+            
+            // Limpiar cachés después del error
+            $this->rubrosCache = [];
+            $this->subrubrosCache = [];
             $this->marcasCache = [];
-            foreach ($marcas as $marca) {
-                $this->marcasCache[$marca->getCodigo()] = $marca;
-            }
+            $this->articulosExistentesCache = [];
+            
+            throw $e;
         }
     }
 

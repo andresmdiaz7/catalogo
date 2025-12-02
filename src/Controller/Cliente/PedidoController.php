@@ -168,8 +168,10 @@ class PedidoController extends AbstractController
             
             // Si es una solicitud POST, crear el pedido
             if ($request->isMethod('POST')) {
+                
                 try {
                     $pedido = $this->carritoManager->convertirAPedido();
+                    
 
                     if ($pedido && $pedido->getId()) {
                         $this->addFlash('success', 'Pedido confirmado correctamente');

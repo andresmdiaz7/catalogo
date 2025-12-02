@@ -11,6 +11,17 @@
                     <h1 class="h4 mb-0">Seleccione un Cliente</h1>
                 </div>
                 <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <h4>Clientes</h4>
+                            Usted tiene {{ clientes|length }} clientes en su cuenta. <br>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Seleccione un cliente para continuar, ver su estado de cuenta y realizar pedidos.
+                            </small>
+                        </div>
+                    </div>
+
                     {% for label, messages in app.flashes %}
                         {% for message in messages %}
                             <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
@@ -19,16 +30,19 @@
                             </div>
                         {% endfor %}
                     {% endfor %}
-                    
                     <div class="list-group">
                         {% for cliente in clientes %}
                             <form method="post" action="{{ path('app_cliente_seleccionar') }}">
                                 <input type="hidden" name="cliente_id" value="{{ cliente.id }}">
                                 <button type="submit" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong>{{ cliente.razonSocial }}</strong>
+                                        <i class="bi bi-building me-2"></i><strong>{{ cliente.razonSocial }}</strong>
                                         <br>
-                                        <small class="text-muted">{{ cliente.codigo }}</small>
+                                        <small class="text-muted">
+                                            Código: {{ cliente.codigo }}
+                                            <br>
+                                            CUIT: {{ cliente.cuit }}
+                                        </small>
                                     </div>
                                     <i class="bi bi-chevron-right"></i>
                                 </button>

@@ -35,7 +35,9 @@
                             <td>{{ item.articulo.codigo }}</td>
                             <td>{{ item.articulo.detalle }}</td>
                             <td>{{ item.articulo.marca.nombre }}</td>
-                            <td>{{ item.precioUnitario|number_format(2, ',', '.') }}</td>
+                            <td class="text-end">
+                                {{ item.precioUnitario|number_format(2, ',', '.') }}
+                            </td>
                             <td>
                                 <form action="{{ path('app_cliente_carrito_actualizar', {'id': item.id}) }}" method="post" class="quantity-form">
                                     <div class="input-group input-group-sm">
@@ -46,7 +48,9 @@
                                     </div>
                                 </form>
                             </td>
-                            <td>{{ (item.precioUnitario * item.cantidad)|number_format(2, ',', '.') }}</td>
+                            <td class="text-end">
+                                {{ (item.precioUnitario * item.cantidad)|number_format(2, ',', '.') }}
+                            </td>
                             <td>
                                 <form action="{{ path('app_cliente_carrito_eliminar', {'id': item.id}) }}" method="post" onsubmit="return confirm('¿Está seguro de eliminar este artículo?')">
                                     <button type="submit" class="btn btn-sm btn-danger">
@@ -57,8 +61,8 @@
                         </tr>
                     {% endfor %}
                     <tr class="table-info">
-                        <th colspan="4" class="text-end">Total:</th>
-                        <th>{{ carrito.total|number_format(2, ',', '.') }}</th>
+                        <th colspan="5" class="text-end">Total:</th>
+                        <th class="text-end">{{ carrito.total|number_format(2, ',', '.') }}</th>
                         <td></td>
                     </tr>
                 </tbody>

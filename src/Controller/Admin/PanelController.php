@@ -43,11 +43,7 @@ class PanelController extends AdminController
             'totalClientes' => $clienteRepository->count([])
         ];
 
-        // Obtener cantidad de artículos sin imagen
-        $articulosSinImagenQb = $articuloRepository->createQueryBuilderArticulosSinImagen();
-        $stats['articulosSinImagen'] = $articulosSinImagenQb->select('COUNT(a.codigo)')
-            ->getQuery()
-            ->getSingleScalarResult();
+        
 
         // Últimos pedidos
         $ultimosPedidos = $pedidoRepository->findBy(

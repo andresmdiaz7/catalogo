@@ -42,7 +42,7 @@ class Pedido
     )]
     private Collection $detalles;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $total = '0';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]

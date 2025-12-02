@@ -43,12 +43,16 @@ class PedidoController extends AdminController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $pedido->recalcularTotal();
-            $entityManager->persist($pedido);
-            $entityManager->flush();
+            try {
+                $pedido->recalcularTotal();
+                $entityManager->persist($pedido);
+                $entityManager->flush();
 
-            $this->addSuccessFlash('Pedido creado correctamente.');
-            return $this->redirectToRoute('app_admin_pedido_index');
+                $this->addSuccessFlash('Pedido creado correctamente.');
+                return $this->redirectToRoute('app_admin_pedido_index');
+            } catch (\Exception $e) {
+                $this->addErrorFlash('Error al crear el pedido: ' . $e->getMessage());
+            }
         }
 
         return $this->render('admin/pedido/new.html.twig', [
@@ -67,11 +71,15 @@ class PedidoController extends AdminController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $pedido->recalcularTotal();
-            $entityManager->flush();
+            try {
+                $pedido->recalcularTotal();
+                $entityManager->flush();
 
-            $this->addSuccessFlash('Pedido actualizado correctamente.');
-            return $this->redirectToRoute('app_admin_pedido_index');
+                $this->addSuccessFlash('Pedido actualizado correctamente.');
+                return $this->redirectToRoute('app_admin_pedido_index');
+            } catch (\Exception $e) {
+                $this->addErrorFlash('Error al actualizar el pedido: ' . $e->getMessage());
+            }
         }
 
         return $this->render('admin/pedido/edit.html.twig', [
@@ -108,11 +116,14 @@ class PedidoController extends AdminController
     ): Response {
         
         if ($this->isCsrfTokenValid('cambiar-estado-'.$pedido->getId(), $request->request->get('_token'))) {
-            $pedido->setEstado($estado);
-            $pedido->setFechaLeido(new \DateTime());
-            $entityManager->flush();
-            $this->addSuccessFlash('Estado del pedido actualizado correctamente.');
-            
+            try {
+                $pedido->setEstado($estado);
+                $pedido->setFechaLeido(new \DateTime());
+                $entityManager->flush();
+                $this->addSuccessFlash('Estado del pedido actualizado correctamente.');
+            } catch (\Exception $e) {
+                $this->addErrorFlash('Error al cambiar el estado del pedido: ' . $e->getMessage());
+            }
         }
         
         return $this->redirectToRoute('app_admin_pedido_index');

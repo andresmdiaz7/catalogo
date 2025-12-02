@@ -146,15 +146,7 @@ class ClienteController extends AdminController
                     ]);
                 }
 
-                // Verificar si el usuario ya está asignado a otro cliente
-                $clienteExistente = $entityManager->getRepository(Cliente::class)->findOneBy(['usuario' => $cliente->getUsuario()]);
-                if ($clienteExistente) {
-                    $this->addFlash('danger', 'El usuario seleccionado ya está asignado a otro cliente');
-                    return $this->render('admin/cliente/nuevo.html.twig', [
-                        'cliente' => $cliente,
-                        'form' => $form->createView(),
-                    ]);
-                }
+                // Nota: Se permite que un usuario esté asignado a múltiples clientes
 
                 // Persistir el cliente
                 $entityManager->persist($cliente);

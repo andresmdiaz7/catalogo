@@ -84,8 +84,8 @@ class PedidoDetalle
             $this->setArticuloModelo($articulo->getModelo());
             $this->setArticuloMarca($articulo->getMarca() ? $articulo->getMarca()->getNombre() : null);
             $this->setArticuloImpuesto($articulo->getImpuesto());
-            $this->setArticuloPrecioLista($articulo->getPrecios()['precioBase']); // Asignar el precio de lista
-            $this->setPrecioUnitario($articulo->getPrecios()['precioFinal']); // Asignar el precio despues de todos los calculos
+            $this->setArticuloPrecioLista($articulo->getPrecios()['precioBase']); // Asignar el precio de lista despues de chequear si es de lista o no dependiendo del cliente
+            $this->setPrecioUnitario($articulo->getPrecios()['precioFinalCIVA']); // Asignar el precio despues de todos los calculos
         }
         
         return $this;

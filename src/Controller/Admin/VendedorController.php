@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 #[Route('/admin/vendedores')]
 class VendedorController extends AbstractController
@@ -45,26 +45,16 @@ class VendedorController extends AbstractController
     }
 
     #[Route('/{id}/editar', name: 'app_admin_vendedor_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Vendedor $vendedor, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, Vendedor $vendedor, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(VendedorType::class, $vendedor, [
-            'require_password' => false,
-        ]);
+        $form = $this->createForm(VendedorType::class, $vendedor);
         
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($vendedor->getPlainPassword()) {
-                $hashedPassword = $passwordHasher->hashPassword(
-                    $vendedor,
-                    $vendedor->getPlainPassword()
-                );
-                $vendedor->setPassword($hashedPassword);
-            }
-            
             $entityManager->flush();
             $this->addFlash('success', 'Vendedor actualizado correctamente');
-            return $this->redirectToRoute('app_vendedor_index');
+            return $this->redirectToRoute('app_admin_vendedor_index');
         }
 
         return $this->render('admin/vendedor/edit.html.twig', [
@@ -95,7 +85,7 @@ class VendedorController extends AbstractController
             $vendedor->setActivo(!$vendedor->isActivo());
             $entityManager->flush();
 
-            $this->addSuccessFlash(
+            $this->addFlash('success',
                 'El vendedor ha sido ' . ($vendedor->isActivo() ? 'activado' : 'desactivado')
             );
         }

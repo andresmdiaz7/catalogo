@@ -32,7 +32,7 @@
             #{{ articulo.codigo }}
         </p>
         <p class="card-text fs-5 text-end">
-            ${{ articulo.precios.precioFinal|number_format(0, ',', '.') }}
+            ${{ articulo.precios.precioFinalCIVA|number_format(0, ',', '.') }}
         </p>
         
         {% if articulo.destacado %}
@@ -48,20 +48,17 @@
             
             {# Si existe en el carrito, mostrar la cantidad #}
             {% set item_carrito = null %}
-            {% for item in carrito_cliente.items %}
-                {% if item.articulo.codigo == articulo.codigo %}
-                    {% set item_carrito = item %}
-                {% endif %}
-            {% endfor %}
+            {% if carrito_cliente %}
+                {% for item in carrito_cliente.items %}
+                    {% if item.articulo.codigo == articulo.codigo %}
+                        {% set item_carrito = item %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             
             {% if item_carrito %}
                 <p class="fw-bold mb-1 text-center text-danger" style="font-size:12px">
-                    Actualmente tienes {{ item_carrito.cantidad }} en tu carrito.....
-                </p>
-            {% endif %}
-            {% if carrito_cliente.items[articulo.codigo] is defined %}
-                <p class="fw-bold mb-1 text-center text-danger" style="font-size:12px">
-                    Actualmente tienes {{ carrito_cliente.items[articulo.codigo]['cantidad'] }} en tu carrito.
+                    Actualmente tienes {{ item_carrito.cantidad }} en tu carrito
                 </p>
             {% endif %}
             <form action="{{ path('app_cliente_carrito_agregar') }}" method="POST" style="display: inline;">
