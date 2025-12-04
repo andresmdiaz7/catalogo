@@ -39,7 +39,7 @@ class PedidoDetalle
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $articuloImpuesto = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
     private ?string $articuloPrecioLista = null; // Nuevo campo articuloPrecioLista
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
@@ -47,7 +47,7 @@ class PedidoDetalle
     #[Assert\Positive]
     private ?string $cantidad = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $precioUnitario = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
