@@ -1,0 +1,212 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Ciardi Hnos - Sustentabilidad{% endblock %}
+
+{% block body %}
+<section class="sust-section py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10 text-center">
+                <h1 class="sust-title">Sustentabilidad</h1>
+                <p class="sust-intro">
+                    Consideramos que una empresa familiar como la nuestra debe tener un impacto positivo en la sociedad.
+                    Estamos convencidos de que debemos velar por un desarrollo sostenible de la comunidad en la cual opera
+                    nuestra empresa y en donde, principalmente, crecerán nuestros hijos.
+                </p>
+            </div>
+        </div>
+
+        {# Área para slider / video de sustentabilidad #}
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="sust-media-placeholder">
+                    <span class="sust-media-label">
+                        <iframe width="950" height="534" src="https://www.youtube.com/embed/U5Y2vl8nRus?si=MNUEbEGxwfoAZR8D" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                <h2 class="sust-subtitle">¿De qué manera?</h2>
+                <p class="sust-text">
+                    Generando espacios en los cuales nuestros colaboradores puedan interactuar con su grupo familiar,
+                    donde las nuevas generaciones puedan incorporar la cultura del trabajo. También impulsando acciones
+                    abiertas a la comunidad con el fin de acercar a todos al mercado laboral.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4 sust-stats-grid">
+            <div class="col-md-4">
+                <article class="sust-stat-card text-center">
+                    <div class="sust-stat-icon">
+                        <i class="bi bi-award-fill" style="font-size: 52px; color: #c92127;"></i>
+                    </div>
+                    <h3 class="sust-stat-title">Trayectoria</h3>
+                    <p class="sust-stat-value">Desde 1979</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="sust-stat-card text-center">
+                    <div class="sust-stat-icon">
+                        <i class="bi bi-people-fill" style="font-size: 52px; color: #c92127;"></i>
+                    </div>
+                    <h3 class="sust-stat-title">Recursos humanos</h3>
+                    <p class="sust-stat-value">80 personas</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="sust-stat-card text-center">
+                    <div class="sust-stat-icon">
+                        <i class="bi bi-shop-window" style="font-size: 52px; color: #c92127;"></i>
+                    </div>
+                    <h3 class="sust-stat-title">Locales propios</h3>
+                    <p class="sust-stat-value">4 puntos de venta</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="sust-stat-card text-center">
+                    <div class="sust-stat-icon">
+                        <i class="bi bi-buildings-fill" style="font-size: 52px; color: #c92127;"></i>
+                    </div>
+                    <h3 class="sust-stat-title">Infraestructura</h3>
+                    <p class="sust-stat-value">25.000 m²</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="sust-stat-card text-center">
+                    <div class="sust-stat-icon">
+                        <i class="bi bi-box-seam-fill" style="font-size: 52px; color: #c92127;"></i>
+                    </div>
+                    <h3 class="sust-stat-title">Proveedores</h3>
+                    <p class="sust-stat-value">260 activos</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="sust-stat-card text-center">
+                    <div class="sust-stat-icon">
+                        <i class="bi bi-grid-3x3-gap-fill" style="font-size: 52px; color: #c92127;"></i>
+                    </div>
+                    <h3 class="sust-stat-title">Variedad de productos</h3>
+                    <p class="sust-stat-value">45.000 referencias</p>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .sust-section {
+        background: #f7f7f9;
+    }
+
+    .sust-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 32px;
+        font-weight: 600;
+        color: #252525;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+
+    .sust-intro,
+    .sust-text {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        color: #676a6d;
+        line-height: 1.8;
+        margin-bottom: 0;
+    }
+
+    .sust-subtitle {
+        font-family: 'Oswald', sans-serif;
+        font-size: 22px;
+        font-weight: 500;
+        color: #252525;
+        margin-bottom: 12px;
+    }
+
+    .sust-media-placeholder {
+        border-radius: 12px;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        padding: 40px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .sust-media-label {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #6c757d;
+    }
+
+    .sust-stats-grid {
+        margin-top: 20px;
+    }
+
+    .sust-stat-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 22px 18px 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .sust-stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .sust-stat-icon {
+        margin-bottom: 10px;
+    }
+
+    .sust-stat-icon img {
+        max-width: 52px;
+    }
+
+    .sust-stat-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        color: #c92127;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+    }
+
+    .sust-stat-value {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        color: #343a40;
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 767.98px) {
+        .sust-title {
+            font-size: 26px;
+        }
+
+        .sust-media-placeholder {
+            padding: 28px 16px;
+        }
+
+        .sust-stat-card {
+            padding: 18px 14px 16px;
+        }
+    }
+</style>
+{% endblock %}

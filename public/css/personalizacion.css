@@ -47,15 +47,174 @@ vertical-align: middle;
 }
 
 
-/* Estilo para el rubro activo */
-.text-ciardi {
-    color: #e20018 !important;
+/* ============================================
+   COLORES PERSONALIZADOS CIARDI
+   ============================================ */
+
+/* Variable de color principal */
+:root {
+    --ciardi-color: #e20018;
+    --ciardi-color-dark: #b30014;
+    --ciardi-color-light: #ff1a3a;
 }
 
+/* Estilo para el texto en color Ciardi */
+.text-ciardi {
+    color: var(--ciardi-color) !important;
+}
+
+/* Fondo en color Ciardi */
+.bg-ciardi {
+    background-color: var(--ciardi-color) !important;
+    color: #ffffff !important;
+}
+
+/* ============================================
+   BOTONES PERSONALIZADOS CIARDI
+   ============================================ */
+
+/* Botón sólido Ciardi */
+.btn-ciardi {
+    color: #fff;
+    background-color: var(--ciardi-color);
+    border-color: var(--ciardi-color);
+}
+
+.btn-ciardi:hover {
+    color: #fff;
+    background-color: var(--ciardi-color-dark);
+    border-color: var(--ciardi-color-dark);
+}
+
+.btn-ciardi:focus,
+.btn-ciardi.focus {
+    color: #fff;
+    background-color: var(--ciardi-color-dark);
+    border-color: var(--ciardi-color-dark);
+    box-shadow: 0 0 0 0.2rem rgba(226, 0, 24, 0.5);
+}
+
+.btn-ciardi:active,
+.btn-ciardi.active,
+.show > .btn-ciardi.dropdown-toggle {
+    color: #fff;
+    background-color: var(--ciardi-color-dark);
+    border-color: var(--ciardi-color-dark);
+}
+
+.btn-ciardi:disabled,
+.btn-ciardi.disabled {
+    color: #fff;
+    background-color: var(--ciardi-color);
+    border-color: var(--ciardi-color);
+    opacity: 0.65;
+}
+
+/* Botón outline Ciardi */
+.btn-outline-ciardi {
+    color: var(--ciardi-color);
+    border-color: var(--ciardi-color);
+    background-color: transparent;
+}
+
+.btn-outline-ciardi:hover {
+    color: #fff;
+    background-color: var(--ciardi-color);
+    border-color: var(--ciardi-color);
+}
+
+.btn-outline-ciardi:focus,
+.btn-outline-ciardi.focus {
+    box-shadow: 0 0 0 0.2rem rgba(226, 0, 24, 0.5);
+}
+
+.btn-outline-ciardi:active,
+.btn-outline-ciardi.active,
+.show > .btn-outline-ciardi.dropdown-toggle {
+    color: #fff;
+    background-color: var(--ciardi-color);
+    border-color: var(--ciardi-color);
+}
+
+.btn-outline-ciardi:disabled,
+.btn-outline-ciardi.disabled {
+    color: var(--ciardi-color);
+    background-color: transparent;
+    opacity: 0.65;
+}
+
+/* ============================================
+   BADGES PERSONALIZADOS CIARDI
+   ============================================ */
+
+.badge-ciardi {
+    color: #fff;
+    background-color: var(--ciardi-color);
+}
+
+/* ============================================
+   OTROS ESTILOS
+   ============================================ */
 
 /* Estilo para el icono de copiar */
 .copiable {
     cursor: pointer;
     transition: color 0.2s ease;
+}
+
+/* ============================================
+   IMAGEN CON CAMBIO EN HOVER (IMG-SWAP)
+   ============================================ */
+.img-swap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    max-width: 100%;
+    display: block;
+}
+
+.img-swap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+    display: block;
+}
+
+.img-swap-hover {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+}
+
+.img-swap:hover .img-swap-hover {
+    opacity: 1;
+}
+
+.img-swap:hover .img-swap-base {
+    opacity: 0;
+}
+
+/* ============================================
+   EFECTO HOVER BRILLO/ILUMINACIÓN AUMENTADA
+   ============================================ */
+.img-hover-zoom-overlay {
+    position: relative;
+    overflow: hidden;
+}
+
+.img-hover-zoom-overlay img {
+    transition: filter 0.3s ease, transform 0.3s ease;
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: brightness(0.95);
+    transform: scale(1);
+}
+
+.img-hover-zoom-overlay:hover img {
+    filter: brightness(1.15);
+    transform: scale(1.05);
 }
 

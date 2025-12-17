@@ -21,6 +21,73 @@
             </div>
         </div>
 
+        {# Menú responsivo de páginas estáticas #}
+        <nav class="navbar navbar-expand-lg navbar-light bg-white py-0 border-bottom border-light shadow-sm" style="background-color: #ffffff !important;">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPaginasEstaticas" aria-controls="menuPaginasEstaticas" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="ms-2 d-inline-block text-dark">Menú</span>
+                </button>
+                <div class="collapse navbar-collapse" id="menuPaginasEstaticas">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        
+                        {# Ejemplo de menú con dropdown #}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" 
+                               href="#" 
+                               id="dropdownHogar" 
+                               role="button" 
+                               data-bs-toggle="dropdown" 
+                               aria-expanded="false">
+                                Empresa
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownHogar">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_pagina_sucursales') }}">
+                                        Sucursales
+                                    </a>
+                                </li>
+                                <li><a class="dropdown-item" href="#">Nosotros</a></li>
+                                <li><a class="dropdown-item" href="#">RRHH</a></li>
+                                <li><a class="dropdown-item" href="#">Trayectoria</a></li>
+                                <li><a class="dropdown-item" href="#">Nuestros Valores</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_pagina_sustentabilidad') }}">
+                                        Sustentabilidad
+                                    </a>
+                                </li>
+                                <li><a class="dropdown-item" href="#">R.S.E.</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="{{ path('app_pagina_fegime') }}">
+                                Fegime
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="{{ path('app_pagina_academy') }}">
+                                Academy
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#">
+                                Solicitar Presupuesto
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#">
+                                Contacto
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
         {# Header de la página #}
         <div class="container-fluid px-0">
             <div class="row align-items-center py-2 py-lg-3 px-2 px-lg-3">
@@ -42,11 +109,25 @@
                                    value="{{ app.request.query.get('buscar') }}"
                                    aria-label="Buscar artículo" 
                                    aria-describedby="button-addon2">
-                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Buscar</button>
+                            <button class="btn btn-secondary" type="submit" id="button-addon2">Buscar</button>
                         </div>
                     </form>
+                    <div class="d-flex gap-2 justify-content-center align-items-center mt-3 mt-lg-4">
+
+                        <!-- Botón "Tienda" -->
+                        <a href="https://www.ciardi.com.ar" class="btn  fw-semibold" style="font-weight: 700; letter-spacing: 0.03em; font-size: 1.05rem;  background: #fff; color: #232323; padding: 0.5rem 1.15rem;">
+                            Tienda
+                        </a>
+
+                        <!-- Botón "Ciardi Lighting" -->
+                        <a href="/lighting" target="_blank" class=" btn fw-semibold" style="font-weight: 600; letter-spacing: 0.03em; font-size: 1.05rem; padding: 0.5rem 1.15rem;">
+                            </i>Ciardi Lighting
+                        </a>
+                        
+                    </div>
                 </div>
-                
+
+               
                 
                 <!-- Botones de usuario - Columna derecha -->
                 <div class="col-12 col-lg-4 text-center text-lg-end">
@@ -61,7 +142,7 @@
                             {% if is_granted('ROLE_CLIENTE') %} {% include 'partials/_menu_cliente.html.twig' %} {% endif %}
                             
                         {% else %}
-                            <a class="btn btn-primary" href="{{ path('app_login') }}"><i class="bi bi-box-arrow-in-right pe-2"></i>Iniciar Sesión</a>
+                            <a class="btn btn-ciardi" href="{{ path('app_login') }}"><i class="bi bi-box-arrow-in-right pe-2"></i>Iniciar Sesión</a>
                         {% endif %}
                     </div>
                 </div>
@@ -98,7 +179,7 @@
         {% block body %}{% endblock %}
         
         <footer class="bg-dark text-white pt-5 mt-5">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col-12 text-center mb-4">
                         <h2 class="h3">Nuestras Sucursales</h2>
@@ -107,50 +188,67 @@
                 </div>
                 <div class="row g-4">
                     <!-- Casa Central -->
-                    <div class="col-md-3">
+                    <div class="col">
                         <div class="text-center">
                             <i class="bi bi-building fs-2 text-ciardi mb-3"></i>
                             <h3 class="h5">Casa Central</h3>
-                            <p class="mb-1 small">Av. Luro 7146, Mar del Plata</p>
-                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(0223) 499-1600</p>
-                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(0223) 223 594 0094</p>
+                            <p class="mb-1 small">Av. Luro 7146 - Mar del Plata</p>
+                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(223) 499-1600</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(223) 223594 0094</p>
                             <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>contacto@ciardi.com.ar</p>
+                            <p class="mb-0 small"><i class="bi bi-clock me-2"></i>Lunes a viernes de 8:00 hs a 17:00 hs.</br> Sábados de 8:00 hs a 13:00 hs.</p>
                         </div>
                     </div>
 
                     <!-- Sucursal Belgrano -->
-                    <div class="col-md-3">
+                    <div class="col">
                         <div class="text-center">
                             <i class="bi bi-shop fs-2 text-ciardi mb-3"></i>
                             <h3 class="h5">Centro</h3>
-                            <p class="mb-1 small">Belgrano 3547, Mar del Plata</p>
-                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(0223) 499-1670</p>
-                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(0223) 223 524 7095</p>
-                            <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>sucursalbelgrano@ciardi.com.ar</p>
+                            <p class="mb-1 small">Belgrano 3547 - Mar del Plata</p>
+                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(223) 499-1670</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(223) 223524 7095</p>
+                            <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>sucursalcentro@ciardi.com.ar</p>
+                            <p class="mb-0 small"><i class="bi bi-clock me-2"></i>Lunes a viernes de 8:00 hs a 17:00 hs.</br> Sábados de 8:00 hs a 13:00 hs.</p>
                         </div>
                     </div>
 
                     <!-- Sucursal Puerto -->
-                    <div class="col-md-3">
+                    <div class="col">
                         <div class="text-center">
                             <i class="bi bi-shop fs-2 text-ciardi mb-3"></i>
-                            <h3 class="h5">Sucursal Puerto</h3>
-                            <p class="mb-1 small">Edison 701, Mar del Plata</p>
-                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(0223) 499-1680</p>
-                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(0223) 223 302 6092</p>
+                            <h3 class="h5">Puerto</h3>
+                            <p class="mb-1 small">Edison 701 - Mar del Plata</p>
+                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(223) 499-1680</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(223) 223302 6092</p>
                             <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>sucursalpuerto@ciardi.com.ar</p>
+                            <p class="mb-0 small"><i class="bi bi-clock me-2"></i>Lunes a viernes de 8:00 hs a 17:00 hs.</br> Sábados de 8:00 hs a 13:00 hs.</p>
                         </div>
                     </div>
 
                     <!-- Sucursal Balcarce -->
-                    <div class="col-md-3">
+                    <div class="col">
                         <div class="text-center">
                             <i class="bi bi-shop fs-2 text-ciardi mb-3"></i>
-                            <h3 class="h5">Sucursal Balcarce</h3>
-                            <p class="mb-1 small">Av. Favaloro 850 esq. 26, Balcarce</p>
-                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(0223) 464-1666</p>
-                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(0223) 2266 47 0734</p>
+                            <h3 class="h5">Balcarce</h3>
+                            <p class="mb-1 small">Av. Favaloro 850 esq. 26 - Balcarce</p>
+                            <p class="mb-1 small"><i class="bi bi-telephone-fill me-2"></i>(223) 464-1666</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(223) 2266 47 0734</p>
                             <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>sucursalbalcarce@ciardi.com.ar</p>
+                            <p class="mb-0 small"><i class="bi bi-clock me-2"></i>Lunes a viernes de 8:00 a 13:00 hs y de 15:00 a 19:00 hs.</br> Sábados de 8:00 hs a 13:00 hs.</p>
+                        </div>
+                    </div>
+
+
+                    <!-- Sucursal La Costa -->
+                    <div class="col">
+                        <div class="text-center">
+                            <i class="bi bi-shop fs-2 text-ciardi mb-3"></i>
+                            <h3 class="h5">La Costa</h3>
+                            <p class="mb-1 small">RN11 Km 398.5 - Gral. Madariaga</p>
+                            <p class="mb-1 small"><i class="bi bi-whatsapp me-2"></i></i>(223) 225453 4772</p>
+                            <p class="mb-0 small"><i class="bi bi-envelope-fill me-2"></i>sucursalcosta@ciardi.com.ar</p>
+                            <!--<p class="mb-0 small"><i class="bi bi-clock me-2"></i>Lunes a viernes de 8:00 a 13:00 hs y de 15:00 a 19:00 hs. Sábados de 8:00 hs a 13:00 hs.</p>-->
                         </div>
                     </div>
                 </div>

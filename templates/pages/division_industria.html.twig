@@ -6,6 +6,7 @@
 <div class="container-fluid p-0" id="puntoEntrada">
 
     <!-- Banner principal -->
+    <!--
     <div id="carouselExampleIndicators" class="carousel slide">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -24,6 +25,8 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
+    -->
+    
 
     <!-- Rubros especializados -->
     <div class="container py-5">
@@ -40,7 +43,9 @@
         <div class="row g-5">
             <div class="col-md-6 col-lg-3">
                 <div class="card h-100 shadow-sm">
-                    <img src="{{ asset('images/divisiones/industria/card_distribucion.jpg') }}" class="card-img-top" alt="Distribución">
+                    <div class="img-hover-zoom-overlay">
+                        <img src="{{ asset('images/divisiones/industria/card_distribucion.jpg') }}" class="card-img-top" alt="Distribución">
+                    </div>
                     <div class="card-body text-center">
                         <i class="bi bi-list-check fs-1 mb-3 text-ciardi"></i>
                         <h3 class="h4 mb-3">Distribución y canalización de energía</h3>
@@ -51,7 +56,9 @@
             
             <div class="col-md-6 col-lg-3">
                 <div class="card h-100 shadow-sm">
-                    <img src="{{ asset('images/divisiones/industria/card_gabinetes.jpg') }}" class="card-img-top" alt="Gabinetes">
+                    <div class="img-hover-zoom-overlay">
+                        <img src="{{ asset('images/divisiones/industria/card_gabinetes.jpg') }}" class="card-img-top" alt="Gabinetes">
+                    </div>
                     <div class="card-body text-center">
                         <i class="bi bi-box-fill fs-1 mb-3 text-ciardi"></i>
                         <h3 class="h4 mb-3">Tableros y gabinetes</h3>
@@ -62,7 +69,9 @@
             
             <div class="col-md-6 col-lg-3">
                 <div class="card h-100 shadow-sm">
-                    <img src="{{ asset('images/divisiones/industria/card_protecciones.jpg') }}" class="card-img-top" alt="Protecciones">
+                    <div class="img-hover-zoom-overlay">
+                        <img src="{{ asset('images/divisiones/industria/card_protecciones.jpg') }}" class="card-img-top" alt="Protecciones">
+                    </div>
                     <div class="card-body text-center">
                         <i class="bi bi-shield-check fs-1 mb-3 text-ciardi"></i>
                         <h3 class="h4 mb-3">Comandos y protecciones</h3>
@@ -73,13 +82,67 @@
             
             <div class="col-md-6 col-lg-3">
                 <div class="card h-100 shadow-sm">
-                    <img src="{{ asset('images/divisiones/industria/card_automatizaciones.jpg') }}" class="card-img-top" alt="Automatizaciones">
+                    <div class="img-hover-zoom-overlay">
+                        <img src="{{ asset('images/divisiones/industria/card_automatizaciones.jpg') }}" class="card-img-top" alt="Automatizaciones">
+                    </div>
                     <div class="card-body text-center">
                         <i class="bi bi-cpu fs-1 mb-3 text-ciardi"></i>
                         <h3 class="h4 mb-3">Automatizaciones</h3>
                         <p>En un mercado cada vez más competitivo, la eficiencia y optimización de los procesos es clave para ser líder en su rubro. Tenemos todo el equipamiento necesario para poder lograrlo, entre ellos plc, sensores, relés programables y medidores de consumo.</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row g-5">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="img-hover-zoom-overlay">
+                            <img src="{{ asset('images/divisiones/industria/card_fotovoltaicos.jpg') }}" class="card-img-top" alt="Distribución">
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="bi bi-sun fs-1 mb-3 text-ciardi"></i>
+                            <h3 class="h4 mb-3">Sistemas fotovoltaicos</h3>
+                            <p>
+                                Distribuimos soluciones fotovoltaicas para proyectos residenciales, comerciales e industriales. Acompañamos a integradores e instaladores con tecnología, asesoramiento y marcas líderes en energía solar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="img-hover-zoom-overlay">
+                            <img src="{{ asset('images/divisiones/industria/card_neumatica.jpg') }}" class="card-img-top" alt="Gabinetes">
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="bi bi-funnel fs-1 mb-3 text-ciardi"></i>
+                            <h3 class="h4 mb-3">Neumática</h3>
+                            <p>
+                                Contamos con una amplia gama de soluciones neumáticas: válvulas, actuadores, compresores y accesorios de las marcas líderes del mercado. Brindamos soporte técnico y asesoramiento para optimizar cada aplicación y garantizar el máximo rendimiento de los procesos industriales.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="img-hover-zoom-overlay">
+                            <img src="{{ asset('images/divisiones/industria/card_e-mobility.jpg') }}" class="card-img-top" alt="Protecciones">
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="bi bi-car-front-fill fs-1 mb-3 text-ciardi"></i>
+                            <h3 class="h4 mb-3">E-Mobility</h3>
+                            <p>
+                                Ofrecemos cargadores para vehículos eléctricos con asesoramiento técnico, selección de equipos, integración a instalaciones industriales y comerciales y stock disponible. Trabajamos con marcas confiables, garantizando seguridad, eficiencia y soluciones completas para impulsar la movilidad eléctrica en la región.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                
             </div>
         </div>
     </div>
@@ -95,10 +158,14 @@
             <div class="row g-2">
                 <div class="col-6 col-sm-4 col-md-3">
                     <div class="position-relative">
-                        <img src="{{ asset('images/divisiones/industria/caso_1.jpg') }}" 
-                             class="img-fluid w-100" 
-                             alt="Canalización"
-                             style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="img-swap">
+                            <img src="{{ asset('images/divisiones/industria/caso_1.jpg') }}" 
+                                 class="img-swap-base" 
+                                 alt="Canalización - vista general">
+                            <img src="{{ asset('images/divisiones/industria/caso_1_hover.jpg') }}" 
+                                 class="img-swap-hover" 
+                                 alt="Canalización - producto implementado">
+                        </div>
                         <div class="position-absolute bottom-0 start-0 w-100 p-2" 
                              style="background: rgba(0,0,0,0.7);">
                             <h6 class="text-white mb-0 small">Canalización</h6>
@@ -265,32 +332,94 @@
             </div>
             
             <div class="row g-4 justify-content-center">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="card text-center h-100 shadow-sm">
                         <div class="card-body">
-                            <img src="{{ asset('images/divisiones/industria/equipo_luciano.jpg') }}" alt="Luciano Eriksen" class="rounded-circle mb-3" width="300">
+                            <img src="{{ asset('images/divisiones/industria/equipo_luciano.jpg') }}" alt="Luciano Eriksen" class="rounded-2 mb-3" width="300">
                             <h3 class="h4 mb-0">Luciano Eriksen</h3>
                             <p class="text-muted">Ingeniero Electromecánico</p>
                             <div class="mt-3">
-                                <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
-                                <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
-                                <a href="https://www.linkedin.com/in/lucianoeriksen/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-linkedin"></i></a>
+                                <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                                    <a href="https://www.linkedin.com/company/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-linkedin"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="card text-center h-100 shadow-sm">
                         <div class="card-body">
-                            <img src="{{ asset('images/divisiones/industria/equipo_jose.jpg') }}" alt="Jose Angelillo" class="rounded-circle mb-3" width="300">
+                            <img src="{{ asset('images/divisiones/industria/equipo_jose.jpg') }}" alt="Jose Angelillo" class="rounded-2 mb-3" width="300">
                             <h3 class="h4 mb-0">Jose Angelillo</h3>
                             <p class="text-muted">Técnico Electromecánico</p>
                             <div class="mt-3">
-                                <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
-                                <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-primary btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                                <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                                    <a href="https://www.linkedin.com/company/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-linkedin"></i></a>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100 shadow-sm">
+                        <div class="card-body">
+                            <img src="{{ asset('images/divisiones/industria/equipo_angie.jpg') }}" alt="Jose Angelillo" class="rounded-2 mb-3" width="300">
+                            <h3 class="h4 mb-0">Angie Tamoy</h3>
+                            <p class="text-muted">Ingeniera Electrónica</p>
+                            <div class="mt-3">
+                                <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                                    <a href="https://www.linkedin.com/company/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-4 justify-content-center mt-3">
+                    <div class="col-md-4">
+                        <div class="card text-center h-100 shadow-sm">
+                            <div class="card-body">
+                                <img src="{{ asset('images/divisiones/industria/equipo_fernando.jpg') }}" alt="Luciano Eriksen" class="rounded-2 mb-3 mt-3" width="300">
+                                <h3 class="h4 mb-0">Fernado Di Lello - Ventas</h3>
+                                
+                                <div class="mt-3">
+                                    <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                                    <a href="https://www.linkedin.com/company/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-linkedin"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center h-100 shadow-sm">
+                            <div class="card-body">
+                                <img src="{{ asset('images/divisiones/industria/equipo_ariel.jpg') }}" alt="Jose Angelillo" class="rounded-2 mb-3 mt-3" width="300">
+                                <h3 class="h4 mb-0">Ariel Giles - Ventas</h3>
+                                
+                                <div class="mt-3">
+                                    <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                                    <a href="https://www.linkedin.com/company/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-linkedin"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="col-md-4">
+                        <div class="card text-center h-100 shadow-sm">
+                            <div class="card-body">
+                                <img src="{{ asset('images/divisiones/industria/equipo_jose.jpg') }}" alt="Jose Angelillo" class="rounded-circle mb-3" width="300">
+                                <h3 class="h4 mb-0">Jose Angelillo</h3>
+                                <p class="text-muted">Técnico Electromecánico</p>
+                                <div class="mt-3">
+                                    <a href="https://www.facebook.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://www.instagram.com/ciardihnos/" class="btn btn-outline-ciardi btn-sm rounded-circle mx-1"><i class="bi bi-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    -->
                 </div>
             </div>
         </div>
@@ -318,10 +447,10 @@
                 <!-- Pestañas -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="division-tab" data-bs-toggle="tab" data-bs-target="#division-tab-pane" type="button" role="tab" aria-controls="division-tab-pane" aria-selected="true">División Industria</button>
+                        <button class="nav-link active text-ciardi" id="division-tab" data-bs-toggle="tab" data-bs-target="#division-tab-pane" type="button" role="tab" aria-controls="division-tab-pane" aria-selected="true">División Industria</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="sustentabilidad-tab" data-bs-toggle="tab" data-bs-target="#sustentabilidad-tab-pane" type="button" role="tab" aria-controls="sustentabilidad-tab-pane" aria-selected="false">Sustentabilidad</button>
+                        <button class="nav-link text-ciardi" id="sustentabilidad-tab" data-bs-toggle="tab" data-bs-target="#sustentabilidad-tab-pane" type="button" role="tab" aria-controls="sustentabilidad-tab-pane" aria-selected="false">Sustentabilidad</button>
                     </li>
                 </ul>
                 
@@ -331,23 +460,23 @@
                             Contamos con un equipo de profesionales listos para acoplarse al desarrollo de proyectos industriales y cubrir todo tipo de necesidades.
                         </p>
                         <div class="d-flex align-items-center mt-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <i class="bi bi-check-circle-fill text-ciardi me-2"></i>
                             <p class="mb-0">Asesoramiento durante la fase de diseño.</p>
                         </div>
                         <div class="d-flex align-items-center mt-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <i class="bi bi-check-circle-fill text-ciardi me-2"></i>
                             <p class="mb-0">Presentación de muestras.</p>
                         </div>
                         <div class="d-flex align-items-center mt-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <i class="bi bi-check-circle-fill text-ciardi me-2"></i>
                             <p class="mb-0">Presentación del proyecto en general.</p>
                         </div>
                         <div class="d-flex align-items-center mt-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <i class="bi bi-check-circle-fill text-ciardi me-2"></i>
                             <p class="mb-0">Logística de entrega.</p>
                         </div>
                         <div class="d-flex align-items-center mt-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <i class="bi bi-check-circle-fill text-ciardi me-2"></i>
                             <p class="mb-0">Servicio postventa.</p>
                         </div>
                     </div>
@@ -357,21 +486,21 @@
                             Analizamos cada proyecto buscando alcanzar la máxima eficiencia, no solo desde la perspectiva económica sino en todos los aspectos del proceso.
                         </p>
                         <div class="d-flex align-items-start mt-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2 mt-1"></i>
+                            <i class="bi bi-check-circle-fill text-ciardi me-2 mt-1"></i>
                             <div>
                                 <h5 class="h6 mb-1">Eficiencia energética</h5>
                                 <p>Tenemos un fuerte compromiso en proveer materiales de calidad, que favorezcan el ahorro de energía tanto desde su proceso de fabricación como así también en todo el ciclo de vida del producto.</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mt-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2 mt-1"></i>
+                            <i class="bi bi-check-circle-fill text-ciardi me-2 mt-1"></i>
                             <div>
                                 <h5 class="h6 mb-1">Alianzas estratégicas</h5>
                                 <p>Trabajamos en conjunto con fabricantes y proveedores que son lideres mundiales en sustentabilidad.</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mt-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2 mt-1"></i>
+                            <i class="bi bi-check-circle-fill text-ciardi me-2 mt-1"></i>
                             <div>
                                 <h5 class="h6 mb-1">Acompañamiento en proyectos</h5>
                                 <p>Damos soporte y guiamos a nuestros clientes en la selección de productos que complementan cada obra, para hacerla sostenible y respetuosa del medio ambiente.</p>
@@ -390,7 +519,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <div class="rounded-circle bg-ciardi text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                                 <i class="bi bi-award fs-3"></i>
                             </div>
                             <h4 class="h5 mb-3">Distribuidor Nº1</h4>
@@ -402,7 +531,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <div class="rounded-circle bg-ciardi text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                                 <i class="bi bi-bounding-box-circles fs-3"></i>
                             </div>
                             <h4 class="h5 mb-3">Acuerdo con proveedores</h4>
@@ -414,7 +543,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <div class="rounded-circle bg-ciardi text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                                 <i class="bi bi-boxes fs-3"></i>
                             </div>
                             <h4 class="h5 mb-3">Disponibilidad de productos</h4>
@@ -426,7 +555,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <div class="rounded-circle bg-ciardi text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                                 <i class="bi bi-wallet2 fs-3"></i>
                             </div>
                             <h4 class="h5 mb-3">Precios competitivos</h4>
@@ -438,7 +567,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <div class="rounded-circle bg-ciardi text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                                 <i class="bi bi-save2 fs-3"></i>
                             </div>
                             <h4 class="h5 mb-3">Acopio/Guarda de materiales</h4>
@@ -450,7 +579,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <div class="rounded-circle bg-ciardi text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                                 <i class="bi bi-person-check fs-3"></i>
                             </div>
                             <h4 class="h5 mb-3">Asesoramiento técnico</h4>
@@ -462,7 +591,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <div class="rounded-circle bg-ciardi text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                                 <i class="bi bi-people fs-3"></i>
                             </div>
                             <h4 class="h5 mb-3">Asesoramiento técnico</h4>
@@ -471,6 +600,16 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Boton Volver al Inicio - Sticky -->
+    <div class="container ">
+        <div class="pt-5">
+            <a href="{{ path('app_catalogo_index') }}" class="btn btn-ciardi d-inline-flex align-items-center">
+                <i class="bi bi-arrow-left me-2"></i>
+                Volver al Inicio
+            </a>
         </div>
     </div>
 </div>

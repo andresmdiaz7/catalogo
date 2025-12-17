@@ -4,9 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    articulos_directory: '%kernel.project_dir%/public/uploads/articulos'
-    directorio_archivos: '%kernel.project_dir%/public/uploads/archivos'
-    slider_directory: '%kernel.project_dir%/public/uploads/sliders'
+    #articulos_directory: '%kernel.project_dir%/public/uploads/articulos'
+    articulos_directory: '/uploads/articulos/'
+    directorio_archivos: '/uploads/archivos/'
+    slider_directory: '/uploads/sliders/'
 
     # Configuración para importación de artículos
     import_email_to: 'sistemas@ciardi.com.ar'

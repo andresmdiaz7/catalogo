@@ -58,6 +58,7 @@
                         <div id="carouselArticulo" class="carousel slide">
                             <div class="carousel-inner">
                                 {% if imagen_principal %}
+                                {{ asset(directorio_archivos,null) }}
                                     <div class="carousel-item active" style="transition: none !important;">
                                     <img src="{{ asset(directorio_archivos ~ imagen_principal.filePath) }}" 
                                             class="d-block w-100 rounded shadow img-thumbnail" 

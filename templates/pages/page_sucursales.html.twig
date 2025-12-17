@@ -1,0 +1,288 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ciardi Hnos - Sucursales{% endblock %}
+
+{% block body %}
+<section class="branches-section">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-12 text-center">
+        <h1 class="branches-title">Nuestras sucursales</h1>
+        <p class="branches-subtitle">
+          Encontranos en diferentes puntos estratégicos de la ciudad y la zona.
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+
+      {# SUCURSAL 1 #}
+      <div class="col-lg-6 col-md-6">
+        <article class="branch-card">
+          <div class="branch-image-wrapper">
+            <img
+              src="{{ asset('images/pages_statics/sucursales/sucursal_luro.jpg') }}"
+              alt="Sucursal Casa Central"
+              class="img-fluid branch-image"
+            >
+          </div>
+          <div class="branch-body">
+            <h3 class="branch-name">
+              Casa Central
+            </h3>
+            <p class="branch-address">
+              <i class="bi bi-map-fill"></i>
+              Av. Luro 7146 – Mar del Plata
+            </p>
+            <p class="branch-contact">
+              <span><i class="bi bi-telephone-fill"></i> Tel: (223) 499-1600</span>
+              <span>
+                <i class="bi bi-whatsapp"></i>
+                WhatsApp:
+                <a href="https://wa.me/5492235940094" target="_blank">
+                  223 594 0094
+                </a>
+              </span>
+            </p>
+            <p class="branch-hours">
+              <i class="bi bi-clock"></i>
+              Lunes a viernes de 8:00 a 17:00 hs. Sábados de 8:00 a 13:00 hs.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      {# SUCURSAL 2 #}
+      <div class="col-lg-6 col-md-6">
+        <article class="branch-card">
+          <div class="branch-image-wrapper">
+            <img
+              src="{{ asset('images/pages_statics/sucursales/sucursal_belgrano.jpg') }}"
+              alt="Sucursal Centro"
+              class="img-fluid branch-image"
+            >
+          </div>
+          <div class="branch-body">
+            <h3 class="branch-name">
+              Centro
+            </h3>
+            <p class="branch-address">
+              <i class="bi bi-geo-alt-fill"></i>
+              Belgrano 3547 – Mar del Plata
+            </p>
+            <p class="branch-contact">
+              <span><i class="bi bi-telephone-fill"></i> Tel: (223) 499-1670</span>
+              <span>
+                <i class="bi bi-whatsapp"></i>
+                WhatsApp:
+                <a href="https://wa.me/5492235940094" target="_blank">
+                  223 594 0094
+                </a>
+              </span>
+            </p>
+            <p class="branch-hours">
+              <i class="bi bi-clock"></i>
+              Lunes a viernes de 8:00 a 17:00 hs. Sábados de 8:00 a 13:00 hs.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      {# SUCURSAL 3 #}
+      <div class="col-lg-6 col-md-6">
+        <article class="branch-card">
+          <div class="branch-image-wrapper">
+            <img
+              src="{{ asset('images/pages_statics/sucursales/sucursal_edison.jpg') }}"
+              alt="Sucursal Puerto"
+              class="img-fluid branch-image"
+            >
+          </div>
+          <div class="branch-body">
+            <h3 class="branch-name">
+              Puerto
+            </h3>
+            <p class="branch-address">
+              <i class="bi bi-geo-alt-fill"></i>
+              Av. Edison 701 – Mar del Plata
+            </p>
+            <p class="branch-contact">
+              <span><i class="bi bi-telephone-fill"></i> Tel: (223) 499-1680</span>
+              <span>
+                <i class="bi bi-whatsapp"></i>
+                WhatsApp:
+                <a href="https://wa.me/5492235940094" target="_blank">
+                  223 594 0094
+                </a>
+              </span>
+            </p>
+            <p class="branch-hours">
+              <i class="bi bi-clock"></i>
+              Lunes a viernes de 8:00 a 17:00 hs. Sábados de 8:00 a 13:00 hs.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      {# SUCURSAL 4 #}
+      <div class="col-lg-6 col-md-6">
+        <article class="branch-card">
+          <div class="branch-image-wrapper">
+            <img
+              src="{{ asset('images/pages_statics/sucursales/sucursal_balcarce.jpg') }}"
+              alt="Sucursal Balcarce"
+              class="img-fluid branch-image"
+            >
+          </div>
+          <div class="branch-body">
+            <h3 class="branch-name">
+              Balcarce
+            </h3>
+            <p class="branch-address">
+              <i class="bi bi-geo-alt-fill"></i>
+              Av. Favaloro 850 esq. 26 – Balcarce
+            </p>
+            <p class="branch-contact">
+              <span><i class="bi bi-telephone-fill"></i> Tel: (2266) 42-0405</span>
+              <span>
+                <i class="bi bi-whatsapp"></i>
+                WhatsApp:
+                <a href="https://wa.me/5492235940094" target="_blank">
+                  223 594 0094
+                </a>
+              </span>
+            </p>
+            <p class="branch-hours">
+              <i class="bi bi-clock"></i>
+              Lunes a viernes de 8:00 a 13:00 hs y de 15:00 a 19:00 hs.
+              Sábados de 8:00 a 13:00 hs.
+            </p>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  #maincontent {
+    padding-bottom: 0 !important;
+  }
+
+  .branches-section {
+    padding: 40px 0 60px;
+    background: #f7f7f9;
+  }
+
+  .branches-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #252525;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+
+  .branches-subtitle {
+    color: #6c757d;
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
+
+  .branch-card {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .branch-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
+  }
+
+  .branch-image-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .branch-image {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .branch-card:hover .branch-image {
+    transform: scale(1.05);
+  }
+
+  .branch-body {
+    padding: 18px 20px 20px;
+  }
+
+  .branch-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #212529;
+  }
+
+  .branch-address,
+  .branch-hours {
+    margin-bottom: 6px;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .branch-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 6px;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .branch-contact span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .branch-hours i,
+  .branch-contact i,
+  .branch-address i {
+    color: #007bff;
+    margin-right: 4px;
+  }
+
+  .branch-contact a {
+    color: #25d366;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .branch-contact a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 767.98px) {
+    .branches-section {
+      padding: 25px 0 40px;
+    }
+    .branch-image {
+      height: 200px;
+    }
+    .branch-body {
+      padding: 14px 15px 16px;
+    }
+  }
+</style>
+{% endblock %}
